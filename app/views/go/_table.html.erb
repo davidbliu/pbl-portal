@@ -1,0 +1,74 @@
+<table class = 'table table-condensed'>
+	<thead>
+		<th></th>
+		<th>Key</th>
+		<th>Title</th>
+		<th>Description</th>
+		<th>Url</th>
+		<th>Permissions</th>
+		<th>Clicks</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<tr ng-repeat = 'golink in golinks' id = '{{golink.id}}' data-id = '{{golink.id}}'>
+			<td>
+				<a href = '{{golink.url}}'>
+					<img src = 'http://www.google.com/s2/favicons?domain={{golink.url}}'>
+				</a>
+			</td>
+
+			<td class = 'editable' data-col = 'key'>{{golink.key}}</td>
+			<td class = 'editable' data-col = 'title'>{{golink.title}}</td>
+			<td class = 'editable' data-col = 'description'>{{golink.description}}</td>
+			<td class = 'editable' data-col = 'url'><a href = '{{golink.url}}'>{{golink.url}}</a></td>
+			<td>{{golink.permissions}}</td>
+			<td>{{golink.num_clicks ? golink.num_clicks : 0}}</td>
+			<td>
+				<a href = 'javascript:void(0)' class = 'delete-link' data-id = '{{golink.id}}'>x</a>
+			</td>
+	</tbody>
+</table>
+
+<script type = 'text/javascript'>
+var editData;
+function activateEditable(){
+	$('.editable').attr('contenteditable', true);
+	$('.editable').focusin(function(){
+		editData = $(this).text();
+	});
+	$('.editable').focusout(function(){
+		if(editData != $(this).text()){
+			var col = $(this).attr('data-col');
+			var val = $(this).text();
+			var id = $(this).parent().attr('data-id');
+			var updateData = { id: id }
+			updateData[col] = val;
+			console.log(col + ':' + val + ':' + id);
+			$.ajax({
+				url: '/go/update',
+				type:'POST',
+				data: updateData,
+				success:function(data){
+					console.log('updated golinks');
+				}
+			});
+		}
+	});
+}
+
+function activateDelete(){
+	$('.delete-link').click(function(){
+		var that = $(this);
+		$.ajax({
+			url:'/go/destroy',
+			type:'POST',
+			data:{id: $(this).attr('data-id')},
+			success:function(){
+				$(that).parent().parent().remove();
+			}
+		});
+	});	
+}
+
+
+</script>

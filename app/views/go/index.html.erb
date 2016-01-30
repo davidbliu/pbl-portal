@@ -10,29 +10,12 @@ td{
 <body ng-app = 'goApp'>
 <div ng-controller = 'GoCtrl'>
 <h1>Recent Links</h1>
-<input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'search'>
-<table class = 'table table-condensed'>
-	<thead>
-		<th></th>
-		<th>Key</th>
-		<th>Title</th>
-		<th>Description</th>
-		<th>Url</th>
-		<th>Permissions</th>
-		<th>Clicks</th>
-	</thead>
-	<tbody>
-		<tr ng-repeat = 'golink in golinks' id = '{{golink.id}}' data-id = '{{golink.id}}'>
-			<td><img src = 'http://www.google.com/s2/favicons?domain={{golink.url}}'></td>
+<p>
+	<a href = '/go/add'>Add a link</a>
+</p>
 
-			<td class = 'editable' data-col = 'key'>{{golink.key}}</td>
-			<td class = 'editable' data-col = 'title'>{{golink.title}}</td>
-			<td class = 'editable' data-col = 'description'>{{golink.description}}</td>
-			<td class = 'editable' data-col = 'url'><a href = '{{golink.url}}'>{{golink.url}}</a></td>
-			<td>{{golink.permissions}}</td>
-			<td>{{golink.num_clicks ? golink.num_clicks : 0}}</td>
-	</tbody>
-</table>
+<input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'search'>
+<%= render partial: 'table' %>
 </div>
 
 <!-- <%= @golinks %> -->
@@ -65,34 +48,9 @@ app.controller('GoCtrl', function($scope){
 	}
 
 	//editable
-	var editData;
-	function activateEditable(){
-		$('.editable').attr('contenteditable', true);
-		$('.editable').focusin(function(){
-			editData = $(this).text();
-		});
-		$('.editable').focusout(function(){
-			if(editData != $(this).text()){
-				var col = $(this).attr('data-col');
-				var val = $(this).text();
-				var id = $(this).parent().attr('data-id');
-				var updateData = { id: id }
-				updateData[col] = val;
-				console.log(col + ':' + val + ':' + id);
-				$.ajax({
-					url: '/go/update',
-					type:'POST',
-					data: updateData,
-					success:function(data){
-						console.log('updated');
-					}
-				});
-				console.log('edit has been made to: '+$(this).text());
-			}
-		});
-	}
 	setTimeout(function(){
 		activateEditable();
+		activateDelete();
 	}, 500);
 	activateSearch();
 });

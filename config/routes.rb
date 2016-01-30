@@ -18,7 +18,11 @@ Rails.application.routes.draw do
   get 'go/menu' => 'go#index'
   get 'go/search' => 'go#search'
   get 'go/insights/:id' => 'go#insights'
+  
+  get 'go/add' => 'go#add'
+  post 'go/create' => 'go#create'
   post 'go/update' => 'go#update'
+  post 'go/destroy' => 'go#destroy'
 
   #blog
   get 'blog' => 'blog#index'

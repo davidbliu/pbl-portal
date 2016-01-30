@@ -17,6 +17,18 @@ class GoController < ApplicationController
   end
 
   def add
+    @url = params[:url]
+    @key = params[:key]
+  end
+
+  def create
+    if not params[:key] or not params[:url]
+      render json: []
+    else
+      GoLink.create(key: params[:key], url: params[:url])
+      golinks = GoLink.where(key: params[:key]).to_a
+      render json: golinks.map{|x| x.to_json}
+    end
   end
 
   def search
@@ -43,7 +55,11 @@ class GoController < ApplicationController
     end
     golink.save!
     render json: golink.to_json
+  end
 
+  def destroy
+    GoLink.find(params[:id]).destroy
+    render nothing: true, status: 200
   end
 
 end
