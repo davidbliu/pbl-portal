@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160129190726) do
+ActiveRecord::Schema.define(version: 20160130195410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20160129190726) do
     t.string   "title"
     t.integer  "num_clicks"
     t.datetime "timestamp"
+    t.string   "permissions"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end
@@ -41,6 +42,25 @@ ActiveRecord::Schema.define(version: 20160129190726) do
     t.text     "commitments"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.string   "title"
+    t.string   "author"
+    t.string   "edit_permissions"
+    t.string   "view_permissions"
+    t.string   "folder"
+    t.text     "content"
+    t.datetime "timestamp"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tabling_slots", force: :cascade do |t|
+    t.integer  "time"
+    t.text     "member_emails"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
 end

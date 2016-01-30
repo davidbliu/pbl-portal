@@ -1,0 +1,110 @@
+
+
+<style type = 'text/css'>
+.day-div{
+	text-align: center;
+}
+.hour-div{
+	padding:5px;
+	border:1px solid rgba(0,0,0,0.1);
+	text-align: center;
+	cursor:pointer;
+}
+.hour-div.selected{
+	background-color:rgba(0,0,0,0.1);
+}
+</style>
+<body ng-app = 'meApp'>
+
+<h2>Account information</h2>
+<p>If these are incorrect, edit your information in pbl.link/contact-sheet</p>
+
+<div>Name: <%= @me.name %></div>
+<div>Email: <%= @me.email %></div>
+<div>Phone: <%= @me.phone %></div>
+
+
+<h2>Tabling Setup</h2>
+<p>Tell us when you're free</p>
+<div id = 'commitments-container' ng-controller = 'CommitmentsCtrl' class = 'row'>
+	<div class = 'row'>
+		<div ng-repeat = 'dayIndex in dayIndices' class = 'col-md-2 day-div'>
+			{{days[dayIndex]}}
+			<div ng-repeat = 'hourIndex in hourIndices' class = 'hour-div' id = 'hour-{{dayIndex * 24 + (hourIndex+9)}}'>
+				{{hours[hourIndex]}}
+			</div>
+		</div>
+	</div>
+	<!-- end of chart -->
+	<div class = 'btn btn-default' ng-click = 'saveCommitments()'>Save Times</div>
+	<div class = 'btn btn-default' ng-click = 'clear()'>Clear</div>
+
+</div>
+
+<h2>Wiki Account</h2>
+You can log into the wiki with username <b><%= @me.email.split('@')[0] %></b> and password: <b>asdf</b>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+<script type = 'text/javascript'>
+var app = angular.module('meApp', []);
+var commitments = <%= @me.commitments.to_json %>;
+app.controller('CommitmentsCtrl', function($scope){
+	$scope.msg = 'hi';
+	$scope.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+	$scope.dayIndices = _.range($scope.days.length);
+	$scope.hours = ['9-10', '10-11', '11-12', '12-1', '1-2', '2-3'];
+	$scope.hourIndices = _.range($scope.hours.length);
+	$scope.clear = function(){
+		$('.selected').each(function(){
+			$(this).removeClass('selected');
+		});
+	}
+	$scope.saveCommitments = function(){
+		hours = [];
+		$('.hour-div.selected').each(function(){
+			hours.push(parseInt($(this).attr('id').split('-')[1]));
+		});
+		$.ajax({
+			url: '/me/update_commitments',
+			data: {'hours': hours},
+			type: 'POST', 
+			success: function(data){
+				console.log('success');
+				console.log(data);
+				commitments = data;
+				colorCommitments();
+			}
+		})
+	};
+
+	function activateHours(){
+		$('.hour-div').click(function(){
+			if($(this).hasClass('selected')){
+				$(this).removeClass('selected');
+			}
+			else{
+				$(this).addClass('selected');
+			}			
+		});
+	}
+
+	function colorCommitments(){
+		$('.selected').each(function(){
+			$(this).removeClass('selected');
+		});
+		_.each(_.range(commitments.length), function(x){
+			selection = $('#hour-'+x);
+			if(selection.length > 0 && commitments[x] == 1){
+				$('#hour-'+x).addClass('selected');
+			}
+		});
+	}
+
+	setTimeout(function(){
+		activateHours();
+		colorCommitments();
+	}, 500);
+});
+</script>
+</body>

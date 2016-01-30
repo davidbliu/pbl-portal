@@ -1,0 +1,101 @@
+<style type = 'text/css'>
+td{
+	max-width:200px;
+	overflow:auto;
+}
+#search-input{
+	width:300px;
+}
+</style>
+<body ng-app = 'goApp'>
+<div ng-controller = 'GoCtrl'>
+<h1>Recent Links</h1>
+<input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'search'>
+<table class = 'table table-condensed'>
+	<thead>
+		<th></th>
+		<th>Key</th>
+		<th>Title</th>
+		<th>Description</th>
+		<th>Url</th>
+		<th>Permissions</th>
+		<th>Clicks</th>
+	</thead>
+	<tbody>
+		<tr ng-repeat = 'golink in golinks' id = '{{golink.id}}' data-id = '{{golink.id}}'>
+			<td><img src = 'http://www.google.com/s2/favicons?domain={{golink.url}}'></td>
+
+			<td class = 'editable' data-col = 'key'>{{golink.key}}</td>
+			<td class = 'editable' data-col = 'title'>{{golink.title}}</td>
+			<td class = 'editable' data-col = 'description'>{{golink.description}}</td>
+			<td class = 'editable' data-col = 'url'><a href = '{{golink.url}}'>{{golink.url}}</a></td>
+			<td>{{golink.permissions}}</td>
+			<td>{{golink.num_clicks ? golink.num_clicks : 0}}</td>
+	</tbody>
+</table>
+</div>
+
+<!-- <%= @golinks %> -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+<script type = 'text/javascript'>
+var app = angular.module('goApp', []);
+var golinks = <%= raw(@golinks.to_json) %>;
+console.log(golinks);
+app.controller('GoCtrl', function($scope){
+	$scope.golinks = golinks;
+
+	//search
+	function activateSearch(){
+		$('#search-input').keypress(function(e) {
+		    if(e.which == 13) {
+		    	searchTerm = $(this).val();
+		    	$.ajax({
+		    		url: '/go/search',
+		    		type: 'GET',
+		    		data: {q: searchTerm},
+		    		success:function(data){
+		    			$scope.golinks = data;
+		    			$scope.$digest();
+		    			activateEditable();
+		    		}
+		    	});
+		    }
+		});
+	}
+
+	//editable
+	var editData;
+	function activateEditable(){
+		$('.editable').attr('contenteditable', true);
+		$('.editable').focusin(function(){
+			editData = $(this).text();
+		});
+		$('.editable').focusout(function(){
+			if(editData != $(this).text()){
+				var col = $(this).attr('data-col');
+				var val = $(this).text();
+				var id = $(this).parent().attr('data-id');
+				var updateData = { id: id }
+				updateData[col] = val;
+				console.log(col + ':' + val + ':' + id);
+				$.ajax({
+					url: '/go/update',
+					type:'POST',
+					data: updateData,
+					success:function(data){
+						console.log('updated');
+					}
+				});
+				console.log('edit has been made to: '+$(this).text());
+			}
+		});
+	}
+	setTimeout(function(){
+		activateEditable();
+	}, 500);
+	activateSearch();
+});
+</script>
+
+</body>

@@ -1,0 +1,15 @@
+<div class = 'col-md-4'>
+	<% @posts.each do |post| %>
+		<div>
+			<a href = '#<%= post.id %>'><%= post.title %></a>
+		</div>
+	<% end %>
+</div>
+<div class = 'col-md-8'>
+	<% @posts.each do |post| %>
+		<h2 id = '<%= post.id %>'><%= post.title %></h2>
+		<div contentEditable = true>
+			<%= raw(post.content)%>
+		</div>
+	<% end %>
+</div>

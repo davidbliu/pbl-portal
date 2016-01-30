@@ -1,5 +1,11 @@
 class Member < ActiveRecord::Base
   serialize :commitments
+  
+  def self.default_commitments
+    default_com = Array.new(168)
+    168.times{|i| default_com[i] = 0}
+    return default_com
+  end
 
   def to_json
     return {

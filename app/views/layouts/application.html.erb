@@ -5,10 +5,64 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <link rel = 'stylesheet' href = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
 </head>
 <body>
 
+<style type = 'text/css'>
+#main-content{
+  margin-left:25px;
+  margin-right:25px;
+}
+#searchInput{
+  border-radius:3px;
+}
+#header-search{
+  display:block;
+}
+</style>
+
+<nav style = 'border-radius:0px; margin-bottom:15px; padding:10px; ' class="navbar navbar-default navbar-inverse">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <img src = '/logo-135.png' height = 45/>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="http://wd.berkeley-pbl.com/wiki">Wiki</a></li>
+        <li><a href="/go/menu">PBL Links</a></li>
+        <li><a href="/tabling">Tabling</a></li>
+        <li><a href="/points">Points</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/flickr/go">Gallery</a></li>
+        <li><a href="/me">Me</a></li>
+
+      </ul>
+      <div id="p-search header-search" class="p-search pull-right" role="search">
+        <form id="searchform" class="navbar-form navbar-right" action="http://wd.berkeley-pbl.com/wiki/index.php">
+          <input type="hidden" name="title" value="Special:Search" class="webfonts-changed">
+          <div class="input-group">
+            <input name="search" placeholder="Search" title="Search PBL Wiki [ctrl-option-f]" accesskey="f" id="searchInput" class="form-control webfonts-changed" autocomplete="off">
+          </div>
+        </form>
+      </div>
+
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<div id = 'main-content'>
 <%= yield %>
+</div>
 
 </body>
 </html>

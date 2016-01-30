@@ -1,0 +1,18 @@
+<table>
+	<thead>
+		<th>Name</th>
+		<th>Email</th>
+		<th>Committee</th>
+		<th>Position</th>
+	</thead>
+	<tbody>
+	<% @members.each do |member| %>
+	<tr>
+		<td><%= member.name %></td>
+		<td><%= member.email %></td>
+		<td><%= member.committee %></td>
+		<td><%= member.position %></td>
+	</tr>
+	<% end %>
+	</tbody>
+</table>

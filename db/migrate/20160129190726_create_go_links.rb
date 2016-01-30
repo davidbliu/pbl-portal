@@ -8,6 +8,7 @@ class CreateGoLinks < ActiveRecord::Migration
       t.string :title
       t.integer :num_clicks
       t.datetime :timestamp
+      t.string :permissions
 
       t.timestamps null: false
     end
