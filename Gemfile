@@ -12,6 +12,10 @@ gem 'parse_resource', github: 'adelevie/parse_resource'
 
 # oauth
 gem 'omniauth-google-oauth2', :git => 'https://github.com/zquestz/omniauth-google-oauth2.git'
+
+# search
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets

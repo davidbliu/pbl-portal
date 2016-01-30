@@ -32,8 +32,8 @@ class GoController < ApplicationController
   end
 
   def search
-    golinks = GoLink.first(10)
-    render json: golinks
+    golinks = GoLink.default_search(params[:q]).to_a
+    render json: golinks.map{|x| x.to_json}
   end
 
   def insights

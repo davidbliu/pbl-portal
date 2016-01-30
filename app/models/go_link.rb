@@ -1,5 +1,8 @@
+require 'elasticsearch/model'
 class GoLink < ActiveRecord::Base
-
+	include Elasticsearch::Model
+ 	include Elasticsearch::Model::Callbacks
+ 	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 	def to_json
 		return {
 	      key: self.key,
@@ -11,6 +14,28 @@ class GoLink < ActiveRecord::Base
 	      num_clicks: self.num_clicks,
 	      id: self.id
 	    }
+	end
+
+
+	def self.default_search(search_term)
+		q = {
+			multi_match: {
+				query: search_term, 
+				fields: ['key^3','description', 'title', 'url', 'member_email'], 
+				fuzziness:1
+			}
+		}
+		results = GoLink.search(query: q, :size=>100).results
+		ids = results.map{|x| x._source.id}
+		golinks = GoLink.where('id in (?)', ids)
+		return golinks
+	end
+
+
+
+	def self.search_my_links(search_term, email)
+		results = GoLink.search(query: {multi_match: {query: search_term, fields: ['key^3', 'tags^2', 'description', 'text', 'url', 'member_email'], fuzziness:1}}, :size=>100).results
+		return self.search_results_to_golinks(results)
 	end
 
 	def get_permissions
