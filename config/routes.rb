@@ -1,5 +1,18 @@
 Rails.application.routes.draw do
   get 'test' => 'test#test'
+  root 'main#home'
+
+  # authentication 
+  get "/auth/google_oauth2/callback", to: "auth#google_callback"
+  get '/auth/email', to:'auth#email'
+
+  # get and set member data
+  get 'me' => 'members#me'
+  post 'me/update' => 'members#update'
+
+  # pbl links
+  get ':key/go' => 'go#redirect'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

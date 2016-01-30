@@ -1,6 +1,8 @@
 class TestController < ApplicationController
   def test
-    obj = {'a'=>'something'}
+    members = Member.all.map{|x| x.email}
+    obj = {'a'=>'something',
+      'emails' => members}
     render :json => obj
   end
 end

@@ -3,10 +3,8 @@ development:
   database: v2_development
   username: postgres
   password: password
-  # host: localhost
-  # port: 5432
-  host: <%= ENV['PG_HOST'] %>
-  port: <%= ENV['PG_PORT'] %>
+  host: localhost
+  port: 5432
   pool: 30
   timeout: 5000
 
@@ -18,8 +16,8 @@ test:
   database: v2_testing
   username: postgres
   password: password
-  host: <%= ENV['PG_HOST'] %>
-  port: <%= ENV['PG_PORT'] %>
+  host: localhost
+  port: 5432
   pool: 30
   timeout: 5000
 
@@ -28,7 +26,7 @@ production:
   database: v2_development
   username: postgres
   password: password
-  host: <%= ENV['PG_HOST'] %>
+  host: localhost
   port: <%= ENV['PG_PORT'] %>
   pool: 30
   timeout: 5000
