@@ -1,13 +1,4 @@
 class MembersController < ApplicationController
-  # def me
-  #   w = Member.where(email:myEmail)
-  #   if w.length > 0
-  #     me = w.first
-  #     render json: me.to_json
-  #   else
-  #     render json: nil
-  #   end
-  # end
 
   def index
     @members = Member.where(latest_semester: 'Fall 2015').sort_by{|x| x.committee}
@@ -20,8 +11,10 @@ class MembersController < ApplicationController
   def update_commitments
     if current_member
       default = Member.default_commitments
-      params[:hours].each do |hour|
-        default[hour.to_i] = 1
+      if params[:hours]
+        params[:hours].each do |hour|
+          default[hour.to_i] = 1
+        end
       end
       #TODO: current_member is cached?
       mem = Member.find(current_member.id)

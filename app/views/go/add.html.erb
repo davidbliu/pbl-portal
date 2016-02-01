@@ -1,7 +1,12 @@
 <body ng-app = 'goApp'>
 <div ng-controller = 'AddCtrl'>
 
-<h1>Add a PBL Link</h1>
+<ul class="nav nav-tabs">
+  <li role="presentation"><a href="/go/menu">Home</a></li>
+  <li role="presentation" class = 'active'><a href="/go/add">Add</a></li>
+</ul>
+<div style = 'clear:both; height:25px'></div>
+
 
 <div class="input-group">
   <span class="input-group-addon" id="key-addon1">pbl.link/</span>
@@ -24,6 +29,9 @@
 	</div>
 
 	<%= render partial: 'table' %>
+	<a href = '/go/menu'>
+		<div class = 'btn btn-default'>See your link on PBL Links Homepage</div>
+	</a>
 </div>
 <!-- end of golinks area -->
 

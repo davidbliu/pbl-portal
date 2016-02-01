@@ -9,11 +9,15 @@ td{
 </style>
 <body ng-app = 'goApp'>
 <div ng-controller = 'GoCtrl'>
-<h1>Recent Links</h1>
-<p>
-	<a href = '/go/add'>Add a link</a>
-</p>
 
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="/go/menu">Home</a></li>
+  <li role="presentation"><a href="/go/add">Add</a></li>
+</ul>
+<div style = 'clear:both; height:25px'></div>
+
+
+<%= will_paginate @golinks %>
 <input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'search'>
 <%= render partial: 'table' %>
 </div>

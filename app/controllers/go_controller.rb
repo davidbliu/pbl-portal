@@ -12,8 +12,8 @@ class GoController < ApplicationController
 
   def index
     me = Member.where(email:'davidbliu@gmail.com').first
-  	@golinks = GoLink.order(:timestamp).last(100).select{|x| x.can_view(me)}.reverse
-    @golinks = @golinks.map{|x| x.to_json}
+  	@golinks = GoLink.order(:created_at).select{|x| x.can_view(me)}.reverse.map{|x| x.to_json}
+    @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
   end
 
   def add
@@ -25,10 +25,18 @@ class GoController < ApplicationController
     if not params[:key] or not params[:url]
       render json: []
     else
-      GoLink.create(key: params[:key], url: params[:url])
+      GoLink.create(
+        key: params[:key], 
+        url: params[:url],
+        permissions: 'Anyone'
+      )
       golinks = GoLink.where(key: params[:key]).to_a
       render json: golinks.map{|x| x.to_json}
     end
+  end
+
+  def lookup
+    render json: GoLink.url_matches(params[:url]).map{|x| x.to_json}
   end
 
   def search

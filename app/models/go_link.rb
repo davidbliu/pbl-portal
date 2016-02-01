@@ -12,22 +12,45 @@ class GoLink < ActiveRecord::Base
 	      permissions: self.permissions,
 	      title: self.title,
 	      num_clicks: self.num_clicks,
-	      id: self.id
+	      id: self.id,
+	      created_at: self.created_at,
+	      timestamp: self.timestamp,
+	      time_string: self.created_at.strftime('%m-%d-%Y')
 	    }
 	end
+
+
+  	def self.url_matches(url)
+  		direct_matches = GoLink.where('url=? OR url=?', url.gsub('https:', 'http:'), url.gsub('http:', 'https:')).to_a
+  		indirect_matches = []
+		if url.include?('docs.google.com') and url.include?("/d/")
+			begin
+				doc_id = url.split('/d/')[1].split('/')[0]
+				indirect_matches = GoLink.where('url LIKE ?', '%' + doc_id+'%').to_a
+			rescue
+				puts 'error'
+			end
+		end
+		matches = direct_matches + indirect_matches
+		matches = matches.uniq{|x| x.id}
+		return matches
+  	end
 
 
 	def self.default_search(search_term)
 		q = {
 			multi_match: {
 				query: search_term, 
-				fields: ['key^3','description', 'title', 'url', 'member_email'], 
-				fuzziness:1
+				fields: ['key^3','description','url', 'member_email']
 			}
 		}
 		results = GoLink.search(query: q, :size=>100).results
 		ids = results.map{|x| x._source.id}
 		golinks = GoLink.where('id in (?)', ids)
+		golinks_by_id = golinks.index_by(&:id)
+		puts golinks_by_id
+		golinks = ids.map{|x| golinks_by_id[x]}
+		puts golinks
 		return golinks
 	end
 

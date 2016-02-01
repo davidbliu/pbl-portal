@@ -16,6 +16,11 @@ gem 'omniauth-google-oauth2', :git => 'https://github.com/zquestz/omniauth-googl
 # search
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
+
+# pagination
+gem 'will_paginate'
+ # push notifications
+gem 'gcm'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets

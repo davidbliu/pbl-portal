@@ -1,6 +1,10 @@
 class Member < ActiveRecord::Base
   serialize :commitments
   
+  def self.current_members
+    Member.where(latest_semester: 'Fall 2015')
+  end
+
   def self.default_commitments
     default_com = Array.new(168)
     168.times{|i| default_com[i] = 0}

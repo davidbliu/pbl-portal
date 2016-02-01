@@ -11,6 +11,7 @@ namespace :parse do
         member_email: pgl.member_email,
         num_clicks: pgl.num_clicks,
         timestamp: pgl.createdAt,
+        created_at: pgl.createdAt,
         title: pgl.title,
         permissions: pgl.permissions
       )

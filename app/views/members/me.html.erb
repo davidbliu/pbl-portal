@@ -13,6 +13,9 @@
 .hour-div.selected{
 	background-color:rgba(0,0,0,0.1);
 }
+#notification-id-input{
+	width:300px;
+}
 </style>
 <body ng-app = 'meApp'>
 
@@ -38,7 +41,11 @@
 	<!-- end of chart -->
 	<div class = 'btn btn-default' ng-click = 'saveCommitments()'>Save Times</div>
 	<div class = 'btn btn-default' ng-click = 'clear()'>Clear</div>
+</div>
 
+<h2>Notification Setup</h2>
+<div>Notification ID (Chrome Extension)
+	<input type = 'text' placeholder = 'enter your notification id here' id = 'notification-id-input'>
 </div>
 
 <h2>Wiki Account</h2>
@@ -62,7 +69,7 @@ app.controller('CommitmentsCtrl', function($scope){
 	}
 	$scope.saveCommitments = function(){
 		hours = [];
-		$('.hour-div.selected').each(function(){
+		$('.selected').each(function(){
 			hours.push(parseInt($(this).attr('id').split('-')[1]));
 		});
 		$.ajax({
@@ -74,6 +81,7 @@ app.controller('CommitmentsCtrl', function($scope){
 				console.log(data);
 				commitments = data;
 				colorCommitments();
+				alert('Commitments saved!');
 			}
 		})
 	};

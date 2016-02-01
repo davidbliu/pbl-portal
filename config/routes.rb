@@ -15,8 +15,10 @@ Rails.application.routes.draw do
 
   # pbl links
   get ':key/go' => 'go#redirect'
+  get 'go' => 'go#index'
   get 'go/menu' => 'go#index'
   get 'go/search' => 'go#search'
+  get 'go/lookup' => 'go#lookup'
   get 'go/insights/:id' => 'go#insights'
   
   get 'go/add' => 'go#add'
@@ -29,6 +31,10 @@ Rails.application.routes.draw do
 
   #tabling
   get 'tabling' => 'tabling#index'
+
+  # push notifications
+  get 'push' => 'push#index'
+  get 'push/register'  => 'push#register'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

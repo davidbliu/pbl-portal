@@ -2,27 +2,27 @@
 	<thead>
 		<th></th>
 		<th>Key</th>
-		<th>Title</th>
 		<th>Description</th>
 		<th>Url</th>
 		<th>Permissions</th>
 		<th>Clicks</th>
+		<th>Timestamp</th>
 		<th></th>
 	</thead>
 	<tbody>
-		<tr ng-repeat = 'golink in golinks' id = '{{golink.id}}' data-id = '{{golink.id}}'>
+		<tr ng-repeat = 'golink in golinks track by $index' id = '{{golink.id}}' data-id = '{{golink.id}}' ng-show = 'golink.key != null '>
 			<td>
 				<a href = '{{golink.url}}'>
 					<img src = 'http://www.google.com/s2/favicons?domain={{golink.url}}'>
 				</a>
 			</td>
 
-			<td class = 'editable' data-col = 'key'>{{golink.key}}</td>
-			<td class = 'editable' data-col = 'title'>{{golink.title}}</td>
+			<td class = 'editable' data-col = 'key'>{{golink.key}}</td>	
 			<td class = 'editable' data-col = 'description'>{{golink.description}}</td>
 			<td class = 'editable' data-col = 'url'><a href = '{{golink.url}}'>{{golink.url}}</a></td>
 			<td>{{golink.permissions}}</td>
 			<td>{{golink.num_clicks ? golink.num_clicks : 0}}</td>
+			<td>{{golink.time_string}}</th>
 			<td>
 				<a href = 'javascript:void(0)' class = 'delete-link' data-id = '{{golink.id}}'>x</a>
 			</td>
