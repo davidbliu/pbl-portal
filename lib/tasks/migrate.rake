@@ -40,6 +40,7 @@ namespace :parse do
   end
 
   task :blog => :environment do
+    Post.all.destroy_all
     blogPosts = BlogPost.limit(maxint).all
     puts blogPosts.map{|x| x.title}
     blogPosts.each do |bp|
@@ -50,8 +51,13 @@ namespace :parse do
         edit_permissions: bp.edit_permissions,
         view_permissions: bp.view_permissions,
         folder: bp.folder,
-        timestamp: bp.createdAt
+        timestamp: bp.createdAt,
+        tags: bp.tags
       )
+    end
+    Post.all.each do |post|
+      post.semester = 'Fall 2015'
+      post.save
     end
   end
 end

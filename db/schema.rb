@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160201093904) do
+ActiveRecord::Schema.define(version: 20160202081450) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,25 @@ ActiveRecord::Schema.define(version: 20160201093904) do
     t.string   "gcm_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string   "type"
+    t.datetime "timestamp"
+    t.string   "dst"
+    t.string   "src"
+    t.text     "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "positions", force: :cascade do |t|
+    t.string   "member_email"
+    t.string   "semester"
+    t.string   "position"
+    t.string   "committee"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string   "title"
     t.string   "author"
@@ -55,6 +74,9 @@ ActiveRecord::Schema.define(version: 20160201093904) do
     t.datetime "timestamp"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "semester"
+    t.string   "last_editor"
+    t.text     "tags"
   end
 
   create_table "tabling_slots", force: :cascade do |t|

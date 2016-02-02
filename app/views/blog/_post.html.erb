@@ -1,0 +1,19 @@
+<li class = 'list-group-item'>
+	<h3 id = '<%= post.id %>'><%= post.title %></h3>
+	<% post.tags.each do |tag| %>
+		<div class = 'label-default label'><%= tag %></div>
+	<% end %>
+
+	<div><%= raw(post.content)%></div>
+
+	<div class = 'post-meta'>
+		<div><%= post.author %></div>
+		<div><%= post.view_permissions %> can view</div>
+		<div>
+			<a href = '/blog/edit?id=<%= post.id %>'>Edit post</a> 
+			<% if current_member.is_officer? %>
+			&nbsp;|&nbsp;<a href = '/blog/email/<%= post.id %>'>Email post</a>
+			<% end %>
+		</div>
+	</div>
+</li>

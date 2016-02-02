@@ -5,6 +5,7 @@
 		<th>Description</th>
 		<th>Url</th>
 		<th>Permissions</th>
+		<th>Creator</th>
 		<th>Clicks</th>
 		<th>Timestamp</th>
 		<th></th>
@@ -21,6 +22,7 @@
 			<td class = 'editable' data-col = 'description'>{{golink.description}}</td>
 			<td class = 'editable' data-col = 'url'><a href = '{{golink.url}}'>{{golink.url}}</a></td>
 			<td>{{golink.permissions}}</td>
+			<td>{{golink.member_email}}</td>
 			<td>{{golink.num_clicks ? golink.num_clicks : 0}}</td>
 			<td>{{golink.time_string}}</th>
 			<td>

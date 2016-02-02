@@ -28,6 +28,11 @@ Rails.application.routes.draw do
 
   #blog
   get 'blog' => 'blog#index'
+  get 'blog/edit' => 'blog#edit'
+  get 'blog/email/:id' => 'blog#email'
+  get 'blog/post/:id' => 'blog#post'
+  post 'blog/save' => 'blog#save'
+  post 'blog/destroy/:id' => 'blog#destroy'
 
   #tabling
   get 'tabling' => 'tabling#index'

@@ -1,0 +1,25 @@
+<style type = 'text/css'>
+#post-area{
+	overflow:auto;
+}
+#search-input{
+	width:300px;
+}
+.post-meta{
+	/*float:right;*/
+}
+.tag-label>a{
+	color:white;
+}
+</style>
+
+<div class = 'col-md-3'>
+<a href = '/blog'>Back to blog</a>
+</div>
+
+<div id = 'post-area' class = 'col-md-6'>
+	<%= render partial: 'post', locals: {post: @post} %>
+</div>
+
+
+<div class = 'col-md-3'></div>

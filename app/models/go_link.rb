@@ -41,7 +41,8 @@ class GoLink < ActiveRecord::Base
 		q = {
 			multi_match: {
 				query: search_term, 
-				fields: ['key^3','description','url', 'member_email']
+				fields: ['key^3','description','url', 'member_email'],
+				fuzziness: 2
 			}
 		}
 		results = GoLink.search(query: q, :size=>100).results

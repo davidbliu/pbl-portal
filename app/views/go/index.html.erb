@@ -10,13 +10,15 @@ td{
 <body ng-app = 'goApp'>
 <div ng-controller = 'GoCtrl'>
 
-<ul class="nav nav-tabs">
+<!-- <ul class="nav nav-tabs">
   <li role="presentation" class="active"><a href="/go/menu">Home</a></li>
   <li role="presentation"><a href="/go/add">Add</a></li>
 </ul>
-<div style = 'clear:both; height:25px'></div>
+<div style = 'clear:both; height:25px'></div> -->
 
-
+<div>
+	<a href="/go/add">Add a link</a>
+</div>
 <%= will_paginate @golinks %>
 <input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'search'>
 <%= render partial: 'table' %>

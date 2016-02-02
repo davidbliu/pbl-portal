@@ -4,6 +4,8 @@
 		<th>Email</th>
 		<th>Committee</th>
 		<th>Position</th>
+		<th>Phone</th>
+		
 	</thead>
 	<tbody>
 	<% @members.each do |member| %>
@@ -12,6 +14,8 @@
 		<td><%= member.email %></td>
 		<td><%= member.committee %></td>
 		<td><%= member.position %></td>
+		<td><%= member.phone %></td>
+
 	</tr>
 	<% end %>
 	</tbody>

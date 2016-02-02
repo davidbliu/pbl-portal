@@ -1,0 +1,173 @@
+<!--tinymce-->
+<script src = '//tinymce.cachefly.net/4.2/tinymce.min.js'></script>
+<style type = 'text/css'>
+#post-content{
+  min-height:300px;
+  width:100%;
+}
+.post-tag{
+  margin:2px;
+}
+.selected{
+  background-color:black;
+}
+</style>
+<body ng-app = 'blogApp'>
+<div ng-controller = 'EditCtrl'>
+<h1>Edit Post</h1>
+
+<div class = 'col-md-3'></div>
+<div class = 'col-md-6'>
+
+<!-- <ul class = 'list-group'> -->
+<!-- <li class = 'list-group-item'> -->
+	<div class = 'input-group'>
+	  <span class = 'input-group-addon'>Title</span>
+	  <input ng-model = 'post.title' type = 'text' placeholder = 'Post Title' class = 'form-control'>
+	</div>
+
+	<div class = 'input-group'>
+	  <span class = 'input-group-addon'>View Permissions</span>
+	  <select class = 'form-control' id = 'view-permissions'>
+	    <option ng-repeat = 'p in permissionsList track by $index' value = '{{$index}}'>{{p}}</option>
+	  </select>
+	</div>
+
+	<div class = 'input-group'>
+	  <span class = 'input-group-addon'>Edit Permissions</span>
+	  <select class = 'form-control' id = 'edit-permissions'>
+	    <option ng-repeat = 'p in permissionsList track by $index' value = '{{$index}}'>{{p}}</option>
+	  </select>
+	</div>
+
+	<div id = 'tags'>
+	  <div ng-repeat = 'tag in tags' ng-click = 'toggleTag(tag)' class = 'post-tag label label-default' id = '{{tag}}-tag'>{{tag}}</div>
+	</div>
+
+
+	<h1>{{post.title}}</h1>
+	<textarea id = 'post-content'></textarea>
+
+	<div>
+		<button id = 'save-btn' class = 'btn btn-success' ng-click = 'savePost()'>Save Post</button>
+		<button id = 'save-btn' class = 'btn btn-danger' ng-show = 'editing == true' ng-click = 'deletePost()'>Delete Post</button>
+	</div>
+
+</div><!-- end of col md 6 -->
+<div class = 'col-md-3'></div>
+
+
+
+</div><!-- end of EditCtrl -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+<script type = 'text/javascript'>
+var app = angular.module('blogApp', []);
+app.controller('EditCtrl', function($scope){
+	<% if @editing %>
+		$scope.editing = true;
+	<% end %>
+	$scope.post = <%= raw(@post) %>;
+	console.log('this is the post');
+	console.log($scope.post);
+	$scope.msg = 'hi there';
+	$scope.permissionsList = <%= raw(@permissions_list) %>;
+	$scope.tags = <%= raw(@tags) %>;
+
+	// options=['Only Me', 'Only Execs', 'Only Officers', 'Only PBL', 'Anyone'];
+	options = <%= raw(@permissions_list) %>;
+
+	function setPermissions(){
+		if($scope.post.edit_permissions){
+			var index = options.indexOf($scope.post.edit_permissions);
+			$('#edit-permissions').prop('selectedIndex', index);
+		}
+		if($scope.post.view_permissions){
+			var index = options.indexOf($scope.post.view_permissions);
+			$('#view-permissions').prop('selectedIndex', index);
+		}
+	}
+	function colorTags(tags){
+	    $('.post-tag').each(function(){
+	      id = $(this).attr("id").split('-')[0];
+	      if($scope.post.tags.indexOf($(this).attr('id').split('-')[0]) != -1 ){
+	        $(this).addClass('selected');
+	      }
+	    });
+	  }
+
+	$scope.savePost = function(){
+		var tags = [];
+		$('.selected').each(function(){
+			tags.push($(this).text());
+		});
+	    var post = {
+	    	id: $scope.post.id,
+	    	edit_permissions: options[parseInt($('#edit-permissions').val())],
+	    	view_permissions: options[parseInt($('#view-permissions').val())],
+	    	content: tinyMCE.activeEditor.getContent(),
+	    	title: $scope.post.title,
+	    	tags: tags
+	    };
+	    console.log(post);
+	    $.ajax({
+	    	url: '/blog/save',
+	    	data: post,
+	    	type: 'POST',
+	    	success:function(data){
+	    		window.location.href = '/blog';
+	    	}
+	    });
+	    
+	}
+
+
+	$scope.deletePost = function(){
+		$.ajax({
+			url:'/blog/destroy/'+$scope.post.id,
+			type:'POST',
+			success:function(data){
+				window.location.href = '/blog';
+			}
+		});
+	}
+
+	function activatePostTags(){
+		$('.post-tag').click(function(){
+			if($(this).hasClass('selected')){
+				$(this).removeClass('selected');
+			}
+			else{
+				$(this).addClass('selected');
+			}
+		});
+	}
+	setTimeout(function(){
+		activatePostTags();
+		setPermissions();
+		tinyMCE.activeEditor.setContent($scope.post.content, {format: 'raw'});
+		colorTags();
+	}, 500);
+});
+
+tinymce.init({
+  selector: "textarea",
+  theme: "modern",
+  plugins: [
+      "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+      "searchreplace wordcount visualblocks visualchars code fullscreen",
+      "insertdatetime media nonbreaking save table contextmenu directionality",
+      "emoticons template paste textcolor colorpicker textpattern imagetools"
+  ],
+  toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+  toolbar2: "print preview media | forecolor backcolor emoticons",
+  image_advtab: true,
+  templates: [
+      {title: 'Test template 1', content: 'Test 1'},
+      {title: 'Test template 2', content: 'Test 2'}
+  ]
+});
+
+</script>
+</body>

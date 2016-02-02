@@ -1,12 +1,19 @@
 class GoController < ApplicationController
   def redirect
-    puts 'redirect controller'
-    golink = GoLink.where(key: params[:key])
-    if golink.length > 0
-      redirect_to golink.first.url
+    if params[:key].include?('wiki:')
+      term = params[:key].split(':')[1]
+      redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term
+    elsif params[:key].include?('drive:')
+      term = params[:key].split(':')[1]
+      render json: 'should search the drive for ' + term  
     else
-    	# do a search
-      render json: 'not a valid key'
+      golink = GoLink.where(key: params[:key])
+      if golink.length > 0
+        redirect_to golink.first.url
+      else
+      	# do a search
+        render json: 'not a valid key'
+      end
     end
   end
 
@@ -28,7 +35,8 @@ class GoController < ApplicationController
       GoLink.create(
         key: params[:key], 
         url: params[:url],
-        permissions: 'Anyone'
+        permissions: 'Anyone',
+        member_email: current_member.email
       )
       golinks = GoLink.where(key: params[:key]).to_a
       render json: golinks.map{|x| x.to_json}
