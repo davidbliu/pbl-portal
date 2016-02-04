@@ -1,4 +1,61 @@
-<h1>Email Post</h1>
+<body ng-app = 'blogApp'>
+<div ng-controller = 'EmailCtrl'>
+<h1>Send Post</h1>
 
 <h3>Title: <%= @post.title %></h3>
+<div>
+	<a href = '/blog/post/<%= @post.id %>'>Back to post</a>
+</div>
 
+<p>Who should receive the post</p>
+<% @channels.each do |channel| %>
+<div class="checkbox">
+  <label><input type="checkbox" value="<%= channel %>"><%= channel %></label>
+</div>
+<% end %>
+
+<p>What medium should we use?</p>
+<div class = 'btn btn-default' ng-click = 'sendEmail()'>Email</div>
+<div class = 'btn btn-default' ng-click = 'sendNotification()'>Push Notification</div>
+
+<h3>Past Notifications</h3>
+<% if not @notifications or @notifications.length == 0 %>
+	Nothing to show
+<% else %>
+	<ul class = 'list-group'>
+	<% @notifications.each do |notification| %>
+		<li class = 'list-group-item'>
+			<%= notification.created_at %>
+			<%= notification.channels %>
+		</li>
+	<% end %>
+	</ul>
+<% end %>
+
+</div><!-- end of email controller -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+<script type = 'text/javascript'>
+var app = angular.module('blogApp', []);
+app.controller('EmailCtrl', function($scope){
+	$scope.sendNotification = function(){
+	}
+
+	$scope.sendEmail = function(){
+		channels = ['hi', 'ther'];
+		$.ajax({
+			url:'/blog/send_email/<%= @post.id %>',
+			data: {
+				channels: channels
+			},
+			type:'POST',
+			success:function(data){
+				location.reload();
+			}
+		});
+	}
+});
+</script>
+
+</body>

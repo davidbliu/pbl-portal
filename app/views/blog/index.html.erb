@@ -6,11 +6,15 @@
 	width:300px;
 }
 .post-meta{
+	margin-top:10px;
 	border-top:1px dotted rgba(0,0,0,0.1);
 	padding-top: 5px;
 }
 .tag-label>a{
 	color:white;
+}
+.tag-label{
+	margin:2px;
 }
 </style>
 
@@ -21,6 +25,10 @@
 	<a href = '/blog/edit'>
 		<div class = 'btn btn-default'>Add New Post</div>
 	</a>
+	
+
+</div>
+<div id = 'post-area' class = 'col-md-6'>
 	<div>
 		<% Post.tags.each do |tag| %>
 			<div class = 'tag-label label label-default'>
@@ -30,10 +38,11 @@
 			</div>
 		<% end %>
 	</div>
-
-</div>
-<div id = 'post-area' class = 'col-md-6'>
+	<div style = 'height:15px;clear:both'></div>
 	<input type = 'text' class = 'form-control' id = 'search-input' placeholder = 'Search Blogposts'>
+
+	
+
 	<% if @tag %>
 		<div>
 			<a href = '/blog'>Clear filters</a>
@@ -50,7 +59,7 @@
 <div class = 'col-md-3'>
 	<h3>Pinned Posts</h3>
 	<ul class = 'list-group'>
-	<% @posts.select{|x| x.tags.include?('Pin')}.each do |post| %>
+	<% @posts.select{|x| x.tags and x.tags.include?('Pin')}.each do |post| %>
 		<li class='list-group-item'>
 			<a href = '/blog/post/<%= post.id %>'><%= post.title %></a>
 		</li>

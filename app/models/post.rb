@@ -1,6 +1,14 @@
+require 'elasticsearch/model'
 class Post < ActiveRecord::Base
 	serialize :tags
 
+	include Elasticsearch::Model
+ 	include Elasticsearch::Model::Callbacks
+ 	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
+
+	def self.channels
+		['Execs', 'Officers', 'CMs', 'GMs', 'Alumni', 'Opportunities']
+	end
 	def to_json
 		return {
 			title: self.title,
@@ -35,18 +43,23 @@ class Post < ActiveRecord::Base
 	def self.can_view(member)
 		semesters = Semester.past_semesters
 		viewable = []
-		semesters.each do |semester|
-			pos = Position.where(member_email: member.email, semester: semester).first
-			pos = pos ? pos.position : 'gm'
-			posts = Post.where(semester: semester)
-				.where('author = ? OR last_editor = ? OR view_permissions in (?)',
-				 member.email,
-				 member.email,
+		viewable = Post.where('author = ? OR last_editor = ? OR semester = ?',
+			member.email,
+			member.email,
+			nil
+		).pluck(:id)
+		# semesters.each do |semester|
+		positions = Position.where(member_email: member.email)
+		positions.each do |position|
+			# pos = Position.where(member_email: member.email, semester: semester).first
+			pos = position.position
+			post_ids = Post.where(semester: position.semester)
+				.where('view_permissions in (?)',
 				 self.can_access(pos)
-			)
-			viewable = viewable + posts.map{|x| x.id}
+			).pluck(:id)
+			viewable = viewable + post_ids
 		end
-		return viewable
+		return viewable.uniq
 	end
 
 	def can_edit(member)
@@ -81,7 +94,7 @@ class Post < ActiveRecord::Base
 
 
 	def self.tags
-		['Pin', 'Announcements', 'Other', 'Reminders', 'Events', 'Email','Tech']
+		['Pin', 'Announcements', 'Other', 'Reminders', 'Events', 'Email','Tech', 'Newsletter']
 	end
 
 	def self.is_admin(member)
@@ -90,6 +103,25 @@ class Post < ActiveRecord::Base
 			return true
 		end
 		return false
+	end
+
+	def self.feed_type
+		'blog'
+	end
+
+
+	def add_to_feed(members, body='')
+		emails = members.map{|x| x.email}
+		item = FeedItem.create(
+			recipients: emails,
+			item_type: Post.feed_type,
+			title: self.title,
+			body: body,
+			link: ENV['HOST']+'/blog/post/'+self.id.to_s,
+			timestamp: Time.now
+		)
+		# push this out to everyone
+		resp = Pusher.push_feed_item(item)
 	end
 
 

@@ -1,0 +1,6 @@
+<h2>feed here</h2>
+
+<p>there are <%= @feed.length %> items</p>
+<% @feed.each do |feed_item| %>
+	<%= feed_item.title %>
+<% end %>

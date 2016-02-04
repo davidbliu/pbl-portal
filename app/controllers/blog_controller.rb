@@ -60,5 +60,28 @@ class BlogController < ApplicationController
 
 	def email
 		@post = Post.find(params[:id])
+		@channels = Post.channels
+		@notifications = Notification.where(
+			notification_type: 'blog',
+			object_id: params[:id]
+		)
+
+	end
+
+	def send_email
+		post = Post.find(params[:id])
+		puts 'sending blog email from controller'
+		BlogMailer.send_blog_email(['davidbliu@gmail.com'], post)
+
+		Notification.create(
+			notification_type: 'blog', 
+			object_id: params[:id],
+			channels: params[:channels],
+			sender: current_member.email
+		)
+		render nothing: true, status: 200
+	end
+
+	def send_push
 	end
 end

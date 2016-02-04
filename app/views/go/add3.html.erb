@@ -1,0 +1,69 @@
+<body ng-app = 'goApp'>
+<div ng-controller = 'AddCtrl'>
+
+<!-- <ul class="nav nav-tabs">
+  <li role="presentation"><a href="/go/menu">Home</a></li>
+  <li role="presentation" class = 'active'><a href="/go/add">Add</a></li>
+</ul>
+<div style = 'clear:both; height:25px'></div> -->
+
+
+<div class="input-group">
+  <span class="input-group-addon" id="key-addon1">pbl.link/</span>
+  <input type="text" class="form-control" placeholder="example-key" aria-describedby="key-addon1" ng-model = 'key'>
+</div>
+
+<div class="input-group">
+  <span class="input-group-addon" id="url-addon1">URL</span>
+  <input type="text" class="form-control" placeholder="enter url with (ex: http://google.com)" aria-describedby="url-addon1" ng-model = 'url'>
+</div>
+
+<div class = 'btn btn-default' ng-click = 'addGolink()'>Add</div>
+
+
+<div ng-show = 'golinks != null && golinks.length > 0'>
+
+	<div ng-show = 'golinks.length > 1'>
+		<h2 style = 'color:red'>The key you chose conflicts with {{golinks.length - 1}} links</h2>
+		<p>Review links below with the same key. If there are multiple, users using your link will reach a landing page. If you would like to overwrite an old link, place the older link under a namespace. ex fa15:mission instead of mission.</p>
+	</div>
+
+	<%= render partial: 'table' %>
+	<a href = '/go/menu'>
+		<div class = 'btn btn-default'>See your link on PBL Links Homepage</div>
+	</a>
+</div>
+<!-- end of golinks area -->
+
+</div>
+<!-- end of add ctrl -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+<script type = 'text/javascript'>
+var app = angular.module('goApp', []);
+app.controller('AddCtrl', function($scope){
+
+	$scope.key = '<%= @key ? @key : "" %>';
+	$scope.url = '<%= @url ? @url : "" %>';
+
+	$scope.addGolink = function(){
+		console.log('adding');	
+		$.ajax({
+			url: '/go/create',
+			type: 'POST',
+			data:{key: $scope.key, url: $scope.url},
+			success:function(data){
+				console.log(data);
+				$scope.golinks = data;
+				$scope.$digest();
+				//make the links deletable and editable
+				activateEditable();
+				activateDelete();
+			}
+		});
+	}
+});
+</script>
+
+</body>

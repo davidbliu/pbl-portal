@@ -1,0 +1,5 @@
+<% if Member.string_to_hex(@me.email) == @token %>
+<h1>Successfully linked chrome extension with portal account!</h1>
+<% else %>
+<h1>The token you entered on your extension does not match your portal token <a href = '/me'>here</a></h1>
+<% end %>

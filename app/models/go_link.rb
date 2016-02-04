@@ -19,6 +19,10 @@ class GoLink < ActiveRecord::Base
 	    }
 	end
 
+	def self.cleanup
+		GoLink.where(key: 'change-this-key').destroy_all
+	end
+
 
   	def self.url_matches(url)
   		direct_matches = GoLink.where('url=? OR url=?', url.gsub('https:', 'http:'), url.gsub('http:', 'https:')).to_a

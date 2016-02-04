@@ -58,6 +58,9 @@
 	<% else %>
 	<div>You are not registered for notifications from the portal. Register via the chrome extension</div>
 	<% end %>
+	<div>
+		Your portal token is <b><%= Member.string_to_hex(@me.email) %></b>
+	</div>
 </li>
 
 <li class = 'list-group-item'>

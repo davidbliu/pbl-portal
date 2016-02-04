@@ -9,6 +9,22 @@ class Member < ActiveRecord::Base
     self.position == 'chair' or self.position == 'exec'
   end
 
+  def self.hex_to_string(token)
+    if not token
+      return nil
+    end
+    s = token.scan(/../).map { |x| x.hex.chr }.join
+    return s
+  end
+
+  def self.string_to_hex(email)
+    hex_str = ''
+    email.each_byte do |c|
+      hex_str+=c.to_s(16)
+    end
+    return hex_str
+  end
+
   def semester_position(semester)
     if semester == nil
       return self.position

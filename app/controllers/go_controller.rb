@@ -18,18 +18,44 @@ class GoController < ApplicationController
   end
 
   def index
-    me = Member.where(email:'davidbliu@gmail.com').first
-  	@golinks = GoLink.order(:created_at).select{|x| x.can_view(me)}.reverse.map{|x| x.to_json}
+    # me = Member.where(email:'davidbliu@gmail.com').first
+    me = current_member
+  	@golinks = GoLink.order(:created_at)
+      .where.not(key: 'change-this-key')
+      .select{|x| x.can_view(me)}
+      .reverse.map{|x| x.to_json}
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
   end
 
-  def add
+  def add3
     @url = params[:url]
     @key = params[:key]
   end
 
+  def add
+    if params[:key]
+      @golink = GoLink.create(
+        key: params[:key],
+        description: params[:desc],
+        url: params[:url],
+        member_email: current_member.email,
+        permissions: 'Anyone'
+      )
+      @golinks = GoLink.where(key: @golink.key).map{|x| x.to_json}
+
+    else
+      @golink = GoLink.create(
+        member_email: current_member.email,
+        key: 'change-this-key',
+        url: 'http://change_this_url.com',
+        permissions: 'Anyone'
+      )
+      @golinks = [@golink]
+    end
+  end
+
   def create
-    if not params[:key] or not params[:url]
+    if not params[:key] or not params[:url] or params[:key] = '' or params[:url] = ''
       render json: []
     else
       GoLink.create(

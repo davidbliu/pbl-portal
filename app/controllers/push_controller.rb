@@ -4,10 +4,14 @@ class PushController < ApplicationController
 	end
 
 	def register
-		gcm_id  = params[:gcm_id]
-		me = Member.find(current_member.id)
-		me.gcm_id = gcm_id
-		me.save!
-		render nothing:true, status:200
+		@gcm_id  = params[:gcm_id]
+		@token = params[:token]
+		@me = Member.find(current_member.id)
+
+		if @gcm_id
+			@me.gcm_id = @gcm_id
+			@me.save!
+		end
+		
 	end
 end

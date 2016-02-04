@@ -11,10 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160202081450) do
+ActiveRecord::Schema.define(version: 20160204220440) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "feed_items", force: :cascade do |t|
+    t.string   "item_type"
+    t.string   "title"
+    t.string   "body"
+    t.datetime "timestamp"
+    t.string   "link"
+    t.string   "status"
+    t.text     "recipients"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "feed_responses", force: :cascade do |t|
+    t.integer "feed_item_id"
+    t.string  "member_email"
+    t.string  "response_type"
+  end
 
   create_table "go_links", force: :cascade do |t|
     t.string   "key"
@@ -46,13 +64,14 @@ ActiveRecord::Schema.define(version: 20160202081450) do
   end
 
   create_table "notifications", force: :cascade do |t|
-    t.string   "type"
+    t.string   "notification_type"
+    t.integer  "object_id"
     t.datetime "timestamp"
-    t.string   "dst"
-    t.string   "src"
+    t.text     "channels"
+    t.string   "sender"
     t.text     "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "positions", force: :cascade do |t|

@@ -1,10 +1,11 @@
 class CreateNotifications < ActiveRecord::Migration
   def change
     create_table :notifications do |t|
-    	t.string :type
+    	t.string :notification_type
+    	t.integer :object_id
     	t.datetime :timestamp
-    	t.string :dst
-    	t.string :src
+    	t.text :channels
+    	t.string :sender
     	t.text :content
       t.timestamps null: false
     end
