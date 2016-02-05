@@ -1,3 +1,18 @@
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Change Permissions</h4>
+      </div>
+      <div class="modal-body">
+        <div ng-repeat = 'permission in permissionsList' class = 'btn btn-default permission-btn'>{{permission}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <table class = 'table table-condensed'>
 	<thead>
 		<th></th>
@@ -21,10 +36,10 @@
 			<td class = 'editable' data-col = 'key'>{{golink.key}}</td>	
 			<td class = 'editable' data-col = 'description'>{{golink.description}}</td>
 			<td class = 'editable' data-col = 'url'><a href = '{{golink.url}}'>{{golink.url}}</a></td>
-			<td>{{golink.permissions}}</td>
+			<td class = 'permissions-edit'>{{golink.permissions}}</td>
 			<td>{{golink.member_email}}</td>
 			<td>{{golink.num_clicks ? golink.num_clicks : 0}}</td>
-			<td>{{golink.time_string}}</th>
+			<td>{{golink.time_string}} ({{golink.semester}})</th>
 			<td>
 				<a href = 'javascript:void(0)' class = 'delete-link' data-id = '{{golink.id}}'>x</a>
 			</td>
@@ -33,6 +48,9 @@
 
 <script type = 'text/javascript'>
 var editData;
+
+var permissionLinkId;
+var permissionTd;
 function activateEditable(){
 	$('.editable').attr('contenteditable', true);
 	$('.editable').focusin(function(){
@@ -55,6 +73,30 @@ function activateEditable(){
 				}
 			});
 		}
+	});
+
+
+	$('.permissions-edit').dblclick(function(){
+		permissionTd = $(this);
+		permissionLinkId = $(this).parent().attr('data-id');
+		console.log(permissionLinkId);
+		$('#myModal').modal('show');
+	});
+	$('.permission-btn').click(function(){
+		var that = $(this);
+		$.ajax({
+			url:'/go/update',
+			type:'POST',
+			data:{
+				id: permissionLinkId,
+				permissions: $(this).text()
+			},
+			success:function(data){
+				console.log('updated');
+				$(permissionTd).text($(that).text());
+				$('#myModal').modal('hide');
+			}
+		})
 	});
 }
 

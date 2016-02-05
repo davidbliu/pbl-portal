@@ -1,7 +1,8 @@
 class MembersController < ApplicationController
 
   def index
-    @members = Member.where(latest_semester: 'Fall 2015').sort_by{|x| x.committee}
+    @members = Member.where(latest_semester: Semester.current_semester)
+      .sort_by{|x| x.committee}
   end
 
   def update

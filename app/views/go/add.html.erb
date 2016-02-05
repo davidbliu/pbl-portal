@@ -27,6 +27,7 @@ var golinks = <%= raw(@golinks.to_json) %>;
 app.controller('AddCtrl', function($scope){
 	
 	//editable
+	$scope.permissionsList = <%= raw(@permissions_list) %>;
 	$scope.golinks = golinks;
 	setTimeout(function(){
 		activateEditable();

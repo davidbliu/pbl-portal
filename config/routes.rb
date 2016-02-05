@@ -47,8 +47,10 @@ Rails.application.routes.draw do
 
   # feed
   get 'feed' => 'feed#feed'
+  get 'feed/read' => 'feed#read'
   get 'view_feed' => 'feed#view_feed'
-  post 'feed/response' => 'feed#post_response'
+  post 'feed/mark_read' => 'feed#mark_read'
+  post 'feed/remove' => 'feed#remove'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

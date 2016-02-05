@@ -14,7 +14,7 @@ class FeedItem < ActiveRecord::Base
 	def to_json
 		{
 			title: self.title,
-			body: 'some post about '+self.title,
+			body: self.body,
 			timestamp: self.created_at,
 			link: self.link,
 			id: self.id

@@ -54,4 +54,36 @@ class Member < ActiveRecord::Base
       commitments: self.commitments
     }
   end
+
+  def self.sp16_import
+    Position.where(semester: 'Spring 2016').destroy_all
+    CSV.foreach("contact_sheets/sp16.csv") do |row|
+      member = Member.where(email: row[1]).first_or_create!
+      member.name = row[0]
+      member.latest_semester = "Spring 2016"
+      member.committee = row[2]
+      member.position = row[5].downcase
+      member.save
+
+      # create a position for them
+      pos = Position.where(member_email: row[1], 
+        semester:'Spring 2016').first_or_create
+      pos.committee = member.committee
+      pos.position = member.position
+      pos.save
+    end
+
+    Position.create(
+      member_email:'davidbliu@gmail.com',
+      committee:'GM',
+      position:'chair',
+      semester:'Spring 2016')
+
+    david = Member.david
+    david.latest_semester = 'Spring 2016'
+    david.committee = 'GM'
+    david.position = 'chair'
+    david.save
+
+  end
 end

@@ -18,13 +18,16 @@ class GoController < ApplicationController
   end
 
   def index
-    # me = Member.where(email:'davidbliu@gmail.com').first
     me = current_member
+    # me = Member.where(position: "chair").first
+    puts me.email
+    viewable = GoLink.can_view(me)
   	@golinks = GoLink.order(:created_at)
+      .where('id in (?)',viewable)
       .where.not(key: 'change-this-key')
-      .select{|x| x.can_view(me)}
       .reverse.map{|x| x.to_json}
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
+    @permissions_list = GoLink.permissions_list
   end
 
   def add3
@@ -33,13 +36,16 @@ class GoController < ApplicationController
   end
 
   def add
+
+
     if params[:key]
       @golink = GoLink.create(
         key: params[:key],
         description: params[:desc],
         url: params[:url],
         member_email: current_member.email,
-        permissions: 'Anyone'
+        permissions: 'Anyone',
+        semester: Semester.current_semester
       )
       @golinks = GoLink.where(key: @golink.key).map{|x| x.to_json}
 
@@ -48,10 +54,12 @@ class GoController < ApplicationController
         member_email: current_member.email,
         key: 'change-this-key',
         url: 'http://change_this_url.com',
-        permissions: 'Anyone'
+        permissions: 'Anyone',
+        semester: Semester.current_semester
       )
       @golinks = [@golink]
     end
+    @permissions_list = GoLink.permissions_list
   end
 
   def create
@@ -74,7 +82,7 @@ class GoController < ApplicationController
   end
 
   def search
-    golinks = GoLink.default_search(params[:q]).to_a
+    golinks = GoLink.member_search(params[:q], current_member)
     render json: golinks.map{|x| x.to_json}
   end
 
@@ -94,6 +102,9 @@ class GoController < ApplicationController
     end
     if params[:description]
       golink.description = params[:description]
+    end
+    if params[:permissions]
+      golink.permissions = params[:permissions]
     end
     golink.save!
     render json: golink.to_json

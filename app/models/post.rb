@@ -109,6 +109,9 @@ class Post < ActiveRecord::Base
 		'blog'
 	end
 
+	def words
+		ActionView::Base.full_sanitizer.sanitize(self.content)
+	end
 
 	def add_to_feed(members, body='')
 		emails = members.map{|x| x.email}
@@ -116,8 +119,8 @@ class Post < ActiveRecord::Base
 			recipients: emails,
 			item_type: Post.feed_type,
 			title: self.title,
-			body: body,
-			link: ENV['HOST']+'/blog/post/'+self.id.to_s,
+			body: self.words,
+			link: 'http://'+ENV['HOST']+'/blog/post/'+self.id.to_s,
 			timestamp: Time.now
 		)
 		# push this out to everyone

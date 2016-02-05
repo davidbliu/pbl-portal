@@ -13,7 +13,8 @@ namespace :parse do
         timestamp: pgl.createdAt,
         created_at: pgl.createdAt,
         title: pgl.title,
-        permissions: pgl.permissions
+        permissions: pgl.permissions,
+        semester: 'Fall 2015'
       )
       puts pgl.key
     end
