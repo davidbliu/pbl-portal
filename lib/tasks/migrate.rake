@@ -51,6 +51,7 @@ namespace :parse do
       )
     end
     Member.sp16_import
+    TablingManager.random_init
   end
 
   task :blog => :environment do
