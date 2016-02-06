@@ -22,7 +22,7 @@ class MembersController < ApplicationController
   end
 
   def me
-    if current_member
+    if current_member and current_member.email
       @me = current_member
     else
       redirect_to '/auth/google_oauth2'
