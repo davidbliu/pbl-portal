@@ -48,6 +48,7 @@ class BlogController < ApplicationController
 		post.edit_permissions = params[:edit_permissions]
 		post.view_permissions = params[:view_permissions]
 		post.content = params[:content]
+		post.semester = Semester.current_semester
 		post.last_editor = current_member.email
 		post.save!
 		render nothing: true, status: 200

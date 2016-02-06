@@ -9,6 +9,18 @@ class Post < ActiveRecord::Base
 	def self.channels
 		['Execs', 'Officers', 'CMs', 'GMs', 'Alumni', 'Opportunities']
 	end
+
+	def self.unpin_all
+		Post.all.each do |post|
+			if post.tags and post.tags.include?('Pin')
+				tags = post.tags
+				tags.delete('Pin')
+				post.tags = tags
+				post.save
+			end
+		end
+
+	end
 	def to_json
 		return {
 			title: self.title,
@@ -43,10 +55,11 @@ class Post < ActiveRecord::Base
 	def self.can_view(member)
 		semesters = Semester.past_semesters
 		viewable = []
-		viewable = Post.where('author = ? OR last_editor = ? OR semester = ?',
+		viewable = Post.where('author = ? OR last_editor = ? OR semester = ? OR view_permissions = ?',
 			member.email,
 			member.email,
-			nil
+			nil,
+			'Anyone'
 		).pluck(:id)
 		# semesters.each do |semester|
 		positions = Position.where(member_email: member.email)
