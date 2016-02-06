@@ -1,7 +1,6 @@
 class FeedController < ApplicationController
 	skip_before_filter :verify_authenticity_token
 
-
 	def feed
 		email = Member.hex_to_string(params[:token])
 		items = FeedItem.feed(email)
