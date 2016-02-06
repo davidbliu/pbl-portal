@@ -24,6 +24,8 @@ class MembersController < ApplicationController
   def me
     if current_member
       @me = current_member
+    else
+      redirect_to '/auth/google_oauth2'
     end
   end
 
