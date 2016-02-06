@@ -4,13 +4,8 @@ class FeedController < ApplicationController
 
 	def feed
 		email = Member.hex_to_string(params[:token])
-		read = FeedResponse.read(email)
-		removed = FeedResponse.read(email)
-		exclude = read+removed
-		items = FeedItem.order('created_at DESC')
-			.select{|x| not exclude.include?(x.id)}
-			.map{|x| x.to_json}
-		render json: items.first(10)
+		items = FeedItem.feed(email)
+		render json: items
 	end
 
 	def read
@@ -43,12 +38,13 @@ class FeedController < ApplicationController
 	end
 
 	def mark_read
+		email = Member.hex_to_string(params[:token])
 		response = FeedResponse.where(
 			feed_item_id: params[:id],
-			member_email: Member.hex_to_string(params[:token])
+			member_email: email
 		).first_or_create!
 		response.response_type  = 'read'
 		response.save!
-		render nothing: true, status: 200
+		render json: FeedItem.feed(email).length, status: 200
 	end
 end

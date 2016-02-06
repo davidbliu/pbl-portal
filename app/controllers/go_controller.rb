@@ -7,12 +7,19 @@ class GoController < ApplicationController
       term = params[:key].split(':')[1]
       render json: 'should search the drive for ' + term  
     else
+      viewable = GoLink.can_view(current_member)
       golink = GoLink.where(key: params[:key])
-      if golink.length > 0
+        .where('id in (?)', viewable)
+      if golink.length > 1
+        # redirect_to golink.first.url
+        @golinks = golink
+        @permissions_list = GoLink.permissions_list
+        render :template => "go/add"
+      elsif golink.length == 1
         redirect_to golink.first.url
       else
       	# do a search
-        render json: 'not a valid key'
+        redirect_to '/go?q='+params[:key]
       end
     end
   end
@@ -22,10 +29,14 @@ class GoController < ApplicationController
     # me = Member.where(position: "chair").first
     puts me.email
     viewable = GoLink.can_view(me)
-  	@golinks = GoLink.order(:created_at)
-      .where('id in (?)',viewable)
-      .where.not(key: 'change-this-key')
-      .reverse.map{|x| x.to_json}
+    if params[:q]
+      @golinks = GoLink.member_search(params[:q], current_member)
+    else
+    	@golinks = GoLink.order(:created_at)
+        .where('id in (?)',viewable)
+        .where.not(key: 'change-this-key')
+        .reverse.map{|x| x.to_json}
+    end
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
     @permissions_list = GoLink.permissions_list
   end

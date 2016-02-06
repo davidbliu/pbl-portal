@@ -1,5 +1,6 @@
 class MembersController < ApplicationController
 
+
   def index
     @members = Member.where(latest_semester: Semester.current_semester)
       .sort_by{|x| x.committee}
@@ -11,17 +12,10 @@ class MembersController < ApplicationController
 
   def update_commitments
     if current_member
-      default = Member.default_commitments
-      if params[:hours]
-        params[:hours].each do |hour|
-          default[hour.to_i] = 1
-        end
-      end
-      #TODO: current_member is cached?
       mem = Member.find(current_member.id)
-      mem.commitments = default
+      mem.commitments = params[:hours].map{|x| x.to_i}
       mem.save!
-      render json: default
+      render json: mem.commitments
     else
       redirect_to '/auth/google_oauth2'
     end
@@ -33,6 +27,6 @@ class MembersController < ApplicationController
     end
   end
 
-  
+
 
 end

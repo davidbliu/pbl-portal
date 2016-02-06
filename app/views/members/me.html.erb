@@ -47,8 +47,10 @@
 			</div>
 		</div>
 		<!-- end of chart -->
-		<div class = 'btn btn-default' ng-click = 'saveCommitments()'>Save Times</div>
-		<div class = 'btn btn-default' ng-click = 'clear()'>Clear</div>
+		<p>
+			<div class = 'btn btn-default' ng-click = 'saveCommitments()'>Save Times</div>
+			<div class = 'btn btn-default' ng-click = 'clear()'>Clear</div>
+		</p>
 	</div>
 </li>
 <li class = 'list-group-item'>
@@ -76,7 +78,7 @@
 <script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
 <script type = 'text/javascript'>
 var app = angular.module('meApp', []);
-var commitments = <%= @me.commitments.to_json %>;
+var commitments = <%= @me.get_commitments.to_json %>;
 app.controller('CommitmentsCtrl', function($scope){
 	$scope.msg = 'hi';
 	$scope.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -122,9 +124,9 @@ app.controller('CommitmentsCtrl', function($scope){
 		$('.selected').each(function(){
 			$(this).removeClass('selected');
 		});
-		_.each(_.range(commitments.length), function(x){
+		_.each(commitments, function(x){
 			selection = $('#hour-'+x);
-			if(selection.length > 0 && commitments[x] == 1){
+			if(selection.length > 0){
 				$('#hour-'+x).addClass('selected');
 			}
 		});

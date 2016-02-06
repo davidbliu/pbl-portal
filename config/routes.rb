@@ -37,6 +37,8 @@ Rails.application.routes.draw do
 
   #tabling
   get 'tabling' => 'tabling#index'
+  post 'tabling/switch' => 'tabling#switch'
+  get 'tabling/confirm_switch/:id' => 'tabling#confirm_switch'
 
   # push notifications
   get 'push' => 'push#index'
@@ -48,7 +50,8 @@ Rails.application.routes.draw do
   # feed
   get 'feed' => 'feed#feed'
   get 'feed/read' => 'feed#read'
-  get 'view_feed' => 'feed#view_feed'
+  get 'feed/view' => 'feed#view_feed'
+  get 'feed/new' => 'feed#new'
   post 'feed/mark_read' => 'feed#mark_read'
   post 'feed/remove' => 'feed#remove'
 

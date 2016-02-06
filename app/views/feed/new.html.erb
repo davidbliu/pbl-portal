@@ -1,0 +1,34 @@
+
+<body ng-app = 'feedApp'>
+<div ng-controller = 'NewCtrl'>
+
+<div class = 'col-md-3'></div>
+
+<div class = 'col-md-6'>
+<div class="input-group">
+  <span class="input-group-addon" id="title-addon1">Title</span>
+  <input type="text" class="form-control" placeholder="example-key" aria-describedby="title-addon1" ng-model = 'title'>
+</div>
+
+<div class="input-group">
+  <span class="input-group-addon" id="body-addon1">Body</span>
+  <input type="text" class="form-control" placeholder="enter url with (ex: http://google.com)" aria-describedby="body-addon1" ng-model = 'body'>
+</div>
+
+
+</div><!-- end of md 6 -->
+
+<div class = 'col-md-3'></div>
+</div><!-- end of ctrl -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+
+<script type = 'text/javascript'>
+var app = angular.module('feedApp', []);
+app.controller('NewCtrl', function($scope){
+	$scope.msg = 'asflskdjf';
+});
+</script>
+
+</body>

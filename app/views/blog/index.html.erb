@@ -16,6 +16,9 @@
 .tag-label{
 	margin:2px;
 }
+.black{
+	background-color:black !important;
+}
 </style>
 
 
@@ -31,7 +34,11 @@
 <div id = 'post-area' class = 'col-md-6'>
 	<div>
 		<% Post.tags.each do |tag| %>
+			<% if @tag == tag %>
+			<div class = 'tag-label label label-primary'>
+			<% else %>
 			<div class = 'tag-label label label-default'>
+			<% end %>
 				<a href = '/blog?tag=<%= tag %>'>
 					<%= tag %>
 				</a>

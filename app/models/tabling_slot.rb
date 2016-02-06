@@ -1,22 +1,37 @@
 class TablingSlot < ActiveRecord::Base
+	serialize :member_emails
 
-	def self.generate_tabling
-		TablingSlot.destroy_all
-
-		slots = []
-		slots << (10..10+4).to_a
-		slots << (34..34+4).to_a
-		slots << (58..58+4).to_a
-		slots << (82..82+4).to_a
-		slots << (106..106+4).to_a
-		slots = slots.flatten()
-
-		slots.each do |slot|
-			TablingSlot.create(
-				time: slot,
-				member_emails:[]
-			)
-		end
-
+	def time_string
+	  return TablingSlot.get_day(self.time) + ' at '+ TablingSlot.get_hour(self.time)
 	end
+
+	def get_day
+		return TablingSlot.get_day(self.time)
+	end
+	def get_hour
+		return TablingSlot.get_hour(self.time)
+	end
+	def self.get_day(time)
+	  day = time / 24
+	  day_strings = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+	  day_string = day_strings[day]
+	  return day_string
+	end
+
+	def self.get_hour(time)
+	  hour = time % 24
+	  h = hour % 12
+	  if h==0
+	    h=12
+	  end
+	  half = hour >= 12 ? 'pm': 'am'
+	  hour_string =  h.to_s+':00'+half
+	  return hour_string
+	end
+
+	def self.get_slot_by_email(email)
+		TablingSlot.all.select{|x| x.member_emails.include?(email)}.first
+	end
+	
 end
+

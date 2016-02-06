@@ -7,11 +7,10 @@ class PushController < ApplicationController
 		@gcm_id  = params[:gcm_id]
 		@token = params[:token]
 		@me = Member.find(current_member.id)
-
 		if @gcm_id
 			@me.gcm_id = @gcm_id
 			@me.save!
 		end
-		
 	end
+	
 end

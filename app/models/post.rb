@@ -127,6 +127,10 @@ class Post < ActiveRecord::Base
 		resp = Pusher.push_feed_item(item)
 	end
 
+	def self.feed_test
+		Post.all.sample.add_to_feed([Member.david])
+	end
+
 
 end
 

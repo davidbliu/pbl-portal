@@ -9,6 +9,10 @@ class Member < ActiveRecord::Base
     self.position == 'chair' or self.position == 'exec'
   end
 
+  def get_commitments
+    self.commitments ? self.commitments : []
+  end
+
   def self.hex_to_string(token)
     if not token
       return nil

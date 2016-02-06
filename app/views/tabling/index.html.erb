@@ -1,4 +1,60 @@
-<h1>Tabling Schedule</h1>
+<style style ='text/css'>
+.day{
+	float:left;
+	width:20%;
+}
+</style>
 
-<div class = 'btn btn-default'>Switch tabling</div>
-<div class = 'btn btn-default'>Sign in to tabling</div>
+<div>
+<% @switch_requests.each do |request| %>
+<div>Request to switch <%= request.email1 %> with <%= request.email2 %></div>
+	<% if request.email2 == @me.email %>
+		<a href = '/tabling/confirm_switch/<%= request.id %>'>Confirm Switch with <%= request.email1 %></a>
+	<% end %>
+<% end %>
+
+</div>
+<h1>Tabling Schedule</h1>
+<div id = 'switch-btn' class = 'btn btn-default'>Switch tabling</div>
+
+
+
+
+<div class = 'row'>
+<% @slot_hash.keys.each do |day| %>
+
+	<div class = 'day'>
+	<% @slot_hash[day].each do |slot| %>
+		<div class = 'label label-info'>
+			<%= slot.time_string %>
+		</div>
+		<% slot.member_emails.each do |email| %>
+			<div><%= email %></div>
+		<% end %>
+	<% end %>
+	</div>
+
+<% end %>
+</div>
+
+
+<script type = 'text/javascript'>
+$('#switch-btn').click(function(){
+	var x = prompt("Who do you want to switch with? (this will override any previous switch requests)");
+	if(x){
+		$.ajax({
+			url:'/tabling/switch',
+			type:'POST',
+			data:{
+				name: x,
+			},
+			success:function(data){
+				location.reload();
+			},
+			error:function(data){
+				alert('invalid switchee');
+			}
+		})
+	}
+});
+</script>

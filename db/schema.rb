@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160205181847) do
+ActiveRecord::Schema.define(version: 20160206033334) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,6 +102,14 @@ ActiveRecord::Schema.define(version: 20160205181847) do
   create_table "tabling_slots", force: :cascade do |t|
     t.integer  "time"
     t.text     "member_emails"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "tabling_switch_requests", force: :cascade do |t|
+    t.string   "email1"
+    t.string   "email2"
+    t.string   "switch_status"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end

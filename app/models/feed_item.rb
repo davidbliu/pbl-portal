@@ -11,6 +11,15 @@ class FeedItem < ActiveRecord::Base
 	# def push_item(members)
 	# end
 
+	def self.feed(email)
+		read = FeedResponse.read(email)
+		removed = FeedResponse.removed(email)
+		exclude = read+removed
+		items = FeedItem.order('created_at DESC')
+			.select{|x| not exclude.include?(x.id)}
+			.map{|x| x.to_json}
+		return items
+	end
 	def to_json
 		{
 			title: self.title,
