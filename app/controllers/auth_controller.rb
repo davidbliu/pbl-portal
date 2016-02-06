@@ -15,7 +15,7 @@ class AuthController < ApplicationController
     cookies[:email] = email
 
     # render json: 'logged in as ' + email
-    redirect_to 'me'
+    redirect_to '/me'
   end
 
   def email
