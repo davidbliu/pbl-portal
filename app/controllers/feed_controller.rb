@@ -34,7 +34,7 @@ class FeedController < ApplicationController
 	end
 
 	def view_feed
-		@feed = FeedItem.all
+		@feed = FeedItem.full_feed(current_member.email)
 	end
 
 	def mark_read
@@ -46,5 +46,29 @@ class FeedController < ApplicationController
 		response.response_type  = 'read'
 		response.save!
 		render json: FeedItem.feed(email).length, status: 200
+	end
+
+	def push 
+		response = FeedItem.find(params[:id]).push
+		render json: response
+	end
+	def details
+	end
+	def destroy
+		FeedItem.find(params[:id]).destroy
+		# redirect_to 'feed/view'
+		render nothing: true, status: 200
+	end
+	def create
+		item = FeedItem.create(
+			title: params[:title],
+			body: params[:body],
+			link: params[:link],
+			member_email: current_member.email)
+		item.push
+		render nothing: true, status: 200
+	end
+	def details
+		@responses = FeedResponse.where(feed_item_id: params[:id])
 	end
 end

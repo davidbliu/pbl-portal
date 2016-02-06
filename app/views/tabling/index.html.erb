@@ -5,11 +5,12 @@
 }
 </style>
 
+
 <div>
 <% @switch_requests.each do |request| %>
-<div>Request to switch <%= request.email1 %> with <%= request.email2 %></div>
+<div>Request to switch <%= @email_hash[request.email1].name %> with <%= @email_hash[request.email2].name %></div>
 	<% if request.email2 == @me.email %>
-		<a href = '/tabling/confirm_switch/<%= request.id %>'>Confirm Switch with <%= request.email1 %></a>
+		<a href = '/tabling/confirm_switch/<%= request.id %>'>Confirm Switch with <%= @email_hash[request.email1].name %></a>
 	<% end %>
 <% end %>
 
@@ -29,7 +30,7 @@
 			<%= slot.time_string %>
 		</div>
 		<% slot.member_emails.each do |email| %>
-			<div><%= email %></div>
+			<div><%= @email_hash[email].name %></div>
 		<% end %>
 	<% end %>
 	</div>

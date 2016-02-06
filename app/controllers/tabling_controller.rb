@@ -16,11 +16,13 @@ class TablingController < ApplicationController
 			@me.email,
 			@me.email
 		)
+		@email_hash = Member.email_hash
 	end
 
 	# post a switch request request
 	def switch
-		member2 = Member.where(email: params[:name]).first
+		member2 = Member.where('lower(name) = ?', params[:name].downcase)
+			.where(latest_semester: Semester.current_semester).first
 		if member2 == nil
 			render nothing: true, status: 500
 		else

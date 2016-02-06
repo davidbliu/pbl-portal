@@ -1,7 +1,7 @@
 maxint = 1000000
-
 namespace :parse do
   task :golinks => :environment do 
+    GoLink.destroy_all
     parseGolinks = ParseGoLink.limit(maxint).all
     parseGolinks.each do |pgl|
       golink = GoLink.create(
@@ -35,7 +35,8 @@ namespace :parse do
         committee: pm.committee,
         role: pm.role,
         commitments: pm.commitments,
-        latest_semester: pm.latest_semester
+        latest_semester: pm.latest_semester,
+        created_at: pm.createdAt
       )
     end
   end
@@ -53,7 +54,8 @@ namespace :parse do
         view_permissions: bp.view_permissions,
         folder: bp.folder,
         timestamp: bp.createdAt,
-        tags: bp.tags
+        tags: bp.tags,
+        created_at: bp.createdAt
       )
     end
     Post.all.each do |post|
@@ -61,4 +63,13 @@ namespace :parse do
       post.save
     end
   end
+
 end
+
+namespace :cleanup do 
+  task :feed => :environment do 
+    FeedItem.destroy_all
+    FeedItemResponse.destroy_all
+  end
+end
+

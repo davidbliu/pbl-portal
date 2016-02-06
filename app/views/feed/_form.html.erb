@@ -1,0 +1,21 @@
+<input id = 'title-input' type = 'text' class = 'form-control' placeholder = 'Title'>
+<input id='body-input' type = 'text' class = 'form-control' placeholder = 'Body'>
+<input id='link-input' type = 'text' class = 'form-control' placeholder = 'Link'>
+
+<div id = 'create-btn' class = 'btn btn-default'>Create</div>
+<script type = 'text/javascript'>
+$('#create-btn').click(function(){
+	$.ajax({
+		url:'/feed/create',
+		type:'POST',
+		data:{
+			title: $('#title-input').val(),
+			body: $('#body-input').val(),
+			link: $('#link-input').val()
+		},
+		success:function(data){
+			location.reload();
+		}
+	});
+});
+</script>

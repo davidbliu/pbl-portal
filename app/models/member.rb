@@ -1,6 +1,10 @@
 class Member < ActiveRecord::Base
   serialize :commitments
   
+  def self.email_hash
+    Member.all.index_by(&:email)
+  end
+
   def self.david
     Member.where(email:'davidbliu@gmail.com').first
   end

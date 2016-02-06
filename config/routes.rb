@@ -51,7 +51,11 @@ Rails.application.routes.draw do
   get 'feed' => 'feed#feed'
   get 'feed/read' => 'feed#read'
   get 'feed/view' => 'feed#view_feed'
-  get 'feed/new' => 'feed#new'
+  # get 'feed/new' => 'feed#new'
+  post 'feed/create' => 'feed#create'
+  post 'feed/destroy' => 'feed#destroy'
+  get 'feed/push/:id' => 'feed#push'
+  get 'feed/details/:id' => 'feed#details'
   post 'feed/mark_read' => 'feed#mark_read'
   post 'feed/remove' => 'feed#remove'
 

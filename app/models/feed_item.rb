@@ -11,6 +11,21 @@ class FeedItem < ActiveRecord::Base
 	# def push_item(members)
 	# end
 
+	def self.full_feed(email)
+		items = FeedItem.order('created_at DESC')
+		return items
+	end
+
+	def push
+		Pusher.push(
+			self.id,
+			self.title,
+			self.body,
+			self.link
+		)
+	end
+
+
 	def self.feed(email)
 		read = FeedResponse.read(email)
 		removed = FeedResponse.removed(email)

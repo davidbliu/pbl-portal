@@ -65,14 +65,8 @@ class GoLink < ActiveRecord::Base
 		}
 		results = GoLink.search(query: q, :size=>100).results
 		ids = results.map{|x| x._source.id}
-		# golinks = GoLink.where('id in (?)', ids)
-		# 	.where('id in (?)', GoLink.can_view(member))
-		# golinks_by_id = golinks.index_by(&:id)
-		# golinks = ids.map{|x| golinks_by_id[x]}
-		# return golinks
 		return ids
 	end
-
 
 
 	def self.search_my_links(search_term, email)
@@ -81,14 +75,14 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def get_permissions
-		(self.permissions and self.permissions != '') ? self.permissions : 'Only Officers'
+		(self.permissions and self.permissions != '') ? self.permissions : 'Anyone'
 	end
 
 	# get all links that a member can view
 	def self.can_view(member)
 		semesters = Semester.past_semesters
 		viewable = []
-		viewable = GoLink.where('member_email = ? OR semester = ? OR permissions = ?',
+		viewable = GoLink.where('member_email = ? OR semester = ? OR permissions = ? OR permissions IS NULL',
 			member.email,
 			nil,
 			'Anyone'

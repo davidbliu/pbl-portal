@@ -1,6 +1,50 @@
-<h2>feed here</h2>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">New Feed Item</h4>
+      </div>
+      <div class="modal-body">
+      	<%= render partial: 'form' %>
+      </div>
+    </div>
+  </div>
+</div>
 
-<p>there are <%= @feed.length %> items</p>
+<div class = 'col-md-3'>
+<a href = 'javascript:void(0)' id = 'new-btn'>Create new feed item</a>
+</div>
+
+<div class = 'col-md-6'>
 <% @feed.each do |feed_item| %>
-	<%= feed_item.title %>
+<li class = 'list-group-item'>
+	<h4><%= feed_item.title %></h4>
+	<%= feed_item.body %>
+	<div>
+		<a id = '<%= feed_item.id %>' class = 'destroy-btn' href = 'javascript:void(0)'>Destroy</a>
+		|&nbsp;<a href = '/feed/push/<%= feed_item.id %>'>Push</a>
+		|&nbsp;<a href = '/feed/details/<%= feed_item.id %>'>Details</a>
+	</div>
+</li>
 <% end %>
+</div>
+<div class = 'col-md-3'></div>
+
+<script type = 'text/javascript'>
+$('.destroy-btn').click(function(){
+	var that = $(this);
+	$.ajax({
+		url:'/feed/destroy',
+		type:'POST',
+		data:{id: $(this).attr('id')},
+		success:function(data){
+			$(that).parents('li')[0].remove();
+		}
+	});
+});
+$('#new-btn').click(function(){
+	$('#myModal').modal('show');
+});
+</script>

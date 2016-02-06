@@ -1,0 +1,9 @@
+<% if @responses.length  == 0 %>
+Nothing to show
+<% end %>
+
+<% @responses.each do |response| %>
+<div>
+	<%= response.member_email %>: <%= response.response_type %>
+</div>
+<% end %>
