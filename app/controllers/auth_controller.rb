@@ -13,8 +13,6 @@ class AuthController < ApplicationController
     cookies[:uid] = uid
     cookies[:provider] = provider
     cookies[:email] = email
-
-    # render json: 'logged in as ' + email
     redirect_to '/me'
   end
 

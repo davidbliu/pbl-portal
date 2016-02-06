@@ -41,8 +41,8 @@ class Member < ActiveRecord::Base
     return pos
   end
 
-  def self.current_members
-    Member.where(latest_semester: 'Fall 2015')
+  def self.current_members(semester = Semester.current_semester)
+    Member.where(latest_semester: semester)
   end
 
   def self.default_commitments
@@ -63,6 +63,16 @@ class Member < ActiveRecord::Base
     }
   end
 
+  def self.check_csv
+    names = []
+    CSV.foreach("contact_sheets/sp16.csv") do |row|
+      member = Member.where(email: row[1]).first
+      if member == nil
+        names << row[0]
+      end
+    end
+    puts names
+  end
   def self.sp16_import
     Position.where(semester: 'Spring 2016').destroy_all
     CSV.foreach("contact_sheets/sp16.csv") do |row|
@@ -71,6 +81,12 @@ class Member < ActiveRecord::Base
       member.latest_semester = "Spring 2016"
       member.committee = row[2]
       member.position = row[5].downcase
+      if row[3] and row[3] != ''
+        member.phone = row[3]
+      end
+      if row[4] and row[4] != ''
+        member.major = row[4]
+      end
       member.save
 
       # create a position for them
@@ -81,17 +97,18 @@ class Member < ActiveRecord::Base
       pos.save
     end
 
-    Position.create(
-      member_email:'davidbliu@gmail.com',
-      committee:'GM',
-      position:'chair',
-      semester:'Spring 2016')
+    # p = Position.where(
+    #   member_email: 'davidbliu@gmail.com',
+    #   semester: 'Spring 2016').first_or_create
+    # p.committee  = 'GM'
+    # p.position = 'chair'
+    # p.save
 
-    david = Member.david
-    david.latest_semester = 'Spring 2016'
-    david.committee = 'GM'
-    david.position = 'chair'
-    david.save
+    # david = Member.david
+    # david.latest_semester = 'Spring 2016'
+    # david.committee = 'GM'
+    # david.position = 'chair'
+    # david.save
 
   end
 end

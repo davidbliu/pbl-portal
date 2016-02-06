@@ -1,33 +1,33 @@
 Name,Email,Committee,Phone # (opt),Major (opt),Position
-Eric Park,ericpark1@berkeley.edu,EX,,,Exec
-JaeHoon Kim,jhjp0823@berkeley.edu,EX,,,Exec
-Emily Liu,emilyyliu96@gmail.com,EX,,,Exec
-Thomas Warloe,thomas.warloe@gmail.com,EX,,,Exec
-David Zhou,d.zhou.5521@berkeley.edu,EX,,,Exec
-Ranul Edirrisinghe,ranul.edirrisinghe@berkeley.edu,EX,,,Exec
-Haruko Ayabe,harukoayabe@gmail.com,EX,,,Exec
-Stephanie He,stephanie.he@berkeley.edu,CS,,,Chair
-Winky Wong,winkywong352@berkeley.edu,CS,,,Chair
-Joanna Chang,joanna_chang@berkeley.edu,CO,,,Chair
-Jerry Chen,jchen2714@berkeley.edu,CO,,,Chair
-Vanessa Lin,vanessalin@berkeley.edu,FI,,,Chair
-Michelle Ko,michelleko@berkeley.edu,FI,,,Chair
-Ben Lin,benjaminlin@berkeley.edu,HT,,,Chair
-Yusuke Maruo,maruoyusuke@gmail.com,HT,,,Chair
-Liz Gove,gove.elizabeth@berkeley.edu,IN,,,Chair
-Andrea Kwan,akwan726@gmail.com,IN,,,Chair
-Hammad Khan,hkhan9357@gmail.com,IN,,,Chair
-Cristal Banh,cristalbanh@berkeley.edu,MK,,,Chair
-Alex Park,alexparkap@berkeley.edu,MK,,,Chair
-Arnold Chan,achan6785@gmail.com,PD,,,Chair
-Cindy Kim,cindy96@berkeley.edu,PD,,,Chair
-Angela Wu,acwu15@berkeley.edu,PB,,,Chair
-Cindy Yuan,cyuan@berkeley.edu,PB,,,Chair
-Chris Huang,chuang22@berkeley.edu,SO,,,Chair
-Lulu Tao,lucinda.tao@hotmail.com,SO,,,Chair
-Kenny Yoo,kenny.hyun@berkeley.edu,SO,,,Chair
-Joseph Chiang,josephchiang28@gmail.com,WD,,,Chair
-Dake Ying,dakeying@gmail.com,WD,,,Chair
+Eric Park,ericpark1@berkeley.edu,EX,(213) 514-2505,Business Administration,Exec
+JaeHoon Kim,jhjp0823@berkeley.edu,EX,(510) 684-7094,Legal Studies,Exec
+Emily Liu,emilyyliu96@gmail.com,EX,(408) 387-4319,Pre-Haas & Sociology,Exec
+Thomas Warloe,thomas.warloe@gmail.com,EX,(714) 717-5955,EECS,Exec
+David Zhou,d.zhou.5521@berkeley.edu,EX,(510) 512-4928,Pre-Haas,Exec
+Ranul Edirrisinghe,ranul.edirrisinghe@berkeley.edu,EX,(510) 701-7572,Pre-Haas,Exec
+Haruko Ayabe,harukoayabe@gmail.com,EX,(510) 384-3941,Economics,Exec
+Stephanie He,stephanie.he@berkeley.edu,CS,(510) 396-0140,Pre-Haas & Computer Science,Chair
+Winky Wong,winkywong352@berkeley.edu,CS,(925) 487-7234,Economics,Chair
+Joanna Chang,joanna_chang@berkeley.edu,CO,(909) 319-4885,Economics,Chair
+Jerry Chen,jchen2714@berkeley.edu,CO,(858) 776-7508,Mechanical Engineering,Chair
+Vanessa Lin,vanessalin@berkeley.edu,FI,(510) 388-4948,Pre-Haas & Economics,Chair
+Michelle Ko,michelleko@berkeley.edu,FI,(510) 709-9113,Pre-Haas & Applied Math,Chair
+Ben Lin,benjaminlin@berkeley.edu,HT,(650) 387-0581,Environmental Economics and Policy,Chair
+Yusuke Maruo,maruoyusuke@gmail.com,HT,(858) 668-8496,Bioengineering,Chair
+Liz Gove,gove.elizabeth@berkeley.edu,IN,(805) 405-6158,Pre-Haas,Chair
+Andrea Kwan,akwan726@gmail.com,IN,(415) 867-0598,Economics & Operations Research and Management Science,Chair
+Hammad Khan,hkhan9357@gmail.com,IN,(916) 420-6157,Economics,Chair
+Cristal Banh,cristalbanh@berkeley.edu,MK,(510) 378-5984,Pre-Haas,Chair
+Alex Park,alexparkap@berkeley.edu,MK,(347) 260-4852,Pre-Haas,Chair
+Arnold Chan,achan6785@gmail.com,PD,(925) 789-0150,Chemistry,Chair
+Cindy Kim,cindy96@berkeley.edu,PD,(510) 701-9828,Economics & Pre-Haas,Chair
+Angela Wu,acwu15@berkeley.edu,PB,(317) 504-5506,Pre-Haas,Chair
+Cindy Yuan,cyuan@berkeley.edu,PB,(408) 966-2980,Pre-Haas,Chair
+Chris Huang,chuang22@berkeley.edu,SO,(307) 760-0390,Pre-Haas & Music Minor,Chair
+Lulu Tao,lucinda.tao@hotmail.com,SO,(510) 693-7017,Pre-Haas,Chair
+Kenny Yoo,kenny.hyun@berkeley.edu,SO,(626) 733-3324,Pre-Haas,Chair
+Joseph Chiang,josephchiang28@gmail.com,WD,(425) 658-6209,EECS,Chair
+Dake Ying,dakeying@gmail.com,WD,(832) 982-2766,Computer Science & Economics,Chair
 Aaron Chai,aaronchai@berkeley.edu,CS,,,CM
 Edward Choi,edchoi@berkeley.edu,CS,,,CM
 Wicia Fang,wfang@berkeley.edu,CS,,,CM
@@ -85,3 +85,70 @@ Brian Ho,hoping200100@berkeley.edu,WD,,,CM
 Yiming Jen,yjen@berkeley.edu,WD,,,CM
 Alison Tang,alisont777@gmail.com,WD,,,CM
 David Yan,david.yan@berkeley.edu,WD,,,CM
+Kevin Yin,kvyinn@gmail.com,AC,,,Chair
+Alice Sun,alice.sun94@gmail.com,AC,,,Chair
+Aditya Subbarao,adityasubbarao@gmail.com,AC,,,Chair
+Evelyn Wang,evelynwangyen@gmail.com,AC,,,Chair
+Albert Lin,aldec777@gmail.com,AC,,,Chair
+Anthony Leung,anthonycleung415@gmail.com,AC,,,Chair
+David Liu,davidbliu@gmail.com,AC,,,Chair
+Chengyu Si,chengyu.si@berkeley.edu,GM,,,CM
+Arynn Kwan,arynnkwan@berkeley.edu,GM,,,CM
+Raja Deshpande,raja.deshpande@berkeley.edu ,GM,,,CM
+Alex Qian,alexqtama@gmail.com,GM,,,CM
+Alex Wang,alexwang395@gmail.com,GM,,,CM
+Allan Chin,allanchin@berkeley.edu,GM,,,CM
+Ally Gao,allygao@berkeley.edu,GM,,,CM
+Amy Vatcha,vatcha.amy@berkeley.edu,GM,,,CM
+Amy Zhu,azhu19@berkeley.edu,GM,,,CM
+Annie Giang,annieg4123@berkeley.edu,GM,,,CM
+Avery Kan,akan96@berkeley.edu,GM,,,CM
+Bertha Chui,bchui@berkeley.edu,GM,,,CM
+Bryannie Bach,bbach@berkeley.edu,GM,,,CM
+Cassandra Clay,cassandraclay@berkeley.edu,GM,,,CM
+Cheng-Fang Hsieh (Vivian),vivianhsieh@berkeley.edu,GM,,,CM
+Chi-Yang (William) Shia,cy.shia@berkeley.edu,GM,,,CM
+Christo Wang,yuan.wang@berkeley.edu,GM,,,CM
+Christopher Fong,cfong@berkeley.edu,GM,,,CM
+Christopher Lau,chrislaustopher@berkeley.edu,GM,,,CM
+Eric Lee,elee585@berkeley.edu,GM,,,CM
+Freya Chun,freyachun@berkeley.edu,GM,,,CM
+Fucong (Alan) Deng,alan.deng@berkeley.edu,GM,,,CM
+Gaurav Garg,garggaurav@berkeley.edu,GM,,,CM
+Gavin Li,gavin.li@berkeley.edu,GM,,,CM
+Gloria Wang,wangmengyi@berkeley.edu,GM,,,CM
+Hansmeet Singh,hansmeet@berkeley.edu,GM,,,CM
+Henry Chen,chen.henry@berkeley.edu,GM,,,CM
+James Chen,james_h_chen@berkeley.edu,GM,,,CM
+Jasmine Zhao,yuanqi@berkeley.edu,GM,,,CM
+Jason Shan,shanjas@berkeley.edu,GM,,,CM
+Jenny Huang,danwei.huang@berkeley.edu,GM,,,CM
+Jim Xu,zijingxu@berkeley.edu,GM,,,CM
+Juexiao Wang,jxwang@berkeley.edu,GM,,,CM
+Juliana Zhao,zhao.juliana@berkeley.edu,GM,,,CM
+JunSeob Lee,junlee1204@berkeley.edu,GM,,,CM
+Lei Chen,lei.chen@berkeley.edu,GM,,,CM
+Leona Chen,leona.chen@berkeley.edu,GM,,,CM
+Lillian Dong,lilliandong@berkeley.edu,GM,,,CM
+Lily He,qqh528@berkeley.edu,GM,,,CM
+Maggie Chen,mxinchen24@gmail.com,GM,,,CM
+Margaret Chen,mchen19@berkeley.edu,GM,,,CM
+Peiwen Luan,parvinl@berkeley.edu,GM,,,CM
+Peter Wang,peter.wang@berkeley.edu,GM,,,CM
+Rajan Dutta,rdutta@berkeley.edu,GM,,,CM
+Qizhuang Huang,qhuang@berkeley.edu,GM,,,CM
+Rebecca Zheng ,rzhengsj@berkeley.edu,GM,,,CM
+Rupert Kay,rkay@berkeley.edu,GM,,,CM
+Samantha Faxon,sfaxon@berkeley.edu,GM,,,CM
+Sarah Medeiros,smedeiros@berkeley.edu,GM,,,CM
+Scott Chen,scott.chen@berkeley.edu,GM,,,CM
+Shihao Xue,shxue@berkeley.edu,GM,,,CM
+Sue Kim,hyesoo.kim@berkeley.edu,GM,,,CM
+Tony Choi,wchoi@berkeley.edu,GM,,,CM
+Tue Luu,tue.luu@berkeley.edu,GM,,,CM
+Xinyi (Cynthia) Luan,cynthialuan@berkeley.edu,GM,,,CM
+YeonJun Kim,yjkim719@berkeley.edu,GM,,,CM
+Yijun Xu,xuyijun@berkeley.edu,GM,,,CM
+Zhemin Liu,liuzmin@berkeley.edu,GM,,,CM
+Nicholas Jiang,ziyangjiang@berkeley.edu,GM,,,CM
+Yeying Xiao,yeyingxiao@berkeley.edu,GM,,,CM

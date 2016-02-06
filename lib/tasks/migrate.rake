@@ -23,6 +23,7 @@ namespace :parse do
   end
 
   task :members => :environment do
+    Member.destroy_all
     parseMembers = ParseMember.limit(maxint).all
     puts parseMembers.length.to_s + ' members pulled from parse'
     parseMembers.each do |pm|
@@ -39,6 +40,17 @@ namespace :parse do
         created_at: pm.createdAt
       )
     end
+
+    Position.where(semester: 'Fall 2015').destroy_all
+    Member.where(latest_semester: 'Fall 2015').each do |m|
+      Position.create(
+        semester: 'Fall 2015',
+        member_email: m.email,
+        position: m.position,
+        committee: m.committee
+      )
+    end
+    Member.sp16_import
   end
 
   task :blog => :environment do

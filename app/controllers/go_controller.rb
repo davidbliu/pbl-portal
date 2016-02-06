@@ -26,8 +26,7 @@ class GoController < ApplicationController
 
   def index
     me = current_member
-    # me = Member.where(position: "chair").first
-    puts me.email
+
     viewable = GoLink.can_view(me)
     if params[:q]
       @golinks = GoLink.member_search(params[:q], current_member)
