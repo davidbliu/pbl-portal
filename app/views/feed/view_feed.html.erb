@@ -11,6 +11,7 @@
 .removed-item{
 	background-color:white;
 	opacity:0.3;
+	display:none;
 }
 .unread-item{
 	background-color:rgba(100,0,0,0.1);
@@ -18,10 +19,20 @@
 .glyphicon.glyphicon-ok:hover{
 	color:green;
 	cursor:pointer;
-}
+}	
 .glyphicon.glyphicon-remove:hover{
 	color:red;
 	cursor:pointer;
+}
+.card{
+	margin-top:5px;
+	margin-bottom:5px;
+	padding:5px;
+	border:1px solid rgba(0,0,0,0.1);
+	border-radius:5px;
+}
+.btn{
+	margin-bottom:3px !important;
 }
 </style>
 
@@ -41,10 +52,33 @@
 </div>
 
 <div class = 'col-md-3'>
-<div class = 'btn btn-default' id = 'new-btn'>Create new feed item</div>
+	<div class = 'trending-container card'>
+		<h4>Trending Links</h4>
+		<% @trending.each do |golink| %>
+		<div>
+			<a href = '<%= golink.link %>'>pbl.link/<%= golink.key %></a>
+			<div class = 'text-muted smalltext indented'><%= golink.get_num_clicks %> Clicks, <%= golink.time_string %></div>
+		</div>
+		<% end %>
+	</div>
+
+	<div class = 'pinned-container card'>
+		<h4>Pinned Blogposts</h4>
+		<% @pinned.each do |post| %>
+		<div><a href = '/blog/post/<%= post.id %>'><%= post.title %></a></div>
+		<% end %>
+	</div>
 </div>
 
 <div class = 'col-md-6'>
+<li class = 'list-group-item'>
+	<h3>Feed Items</h3>
+	<p>
+		<div><%= @feed.length - @read.length - @removed.length %> new</div>
+		<div><%= @read.length %> read</div>
+		<div><%= @removed.length %> removed</div>
+	</p>
+</li>
 <% @feed.each do |feed_item| %>
 <% if @read.include?(feed_item.id) %>
 <li class = 'list-group-item read-item'>
@@ -69,23 +103,37 @@
 <% end %>
 </div>
 <div class = 'col-md-3'>
+<div class = 'btn btn-primary' id = 'new-btn'>
+	<i class = 'glyphicon glyphicon-send'></i>
+	Create new feed item
+</div>
+<div class = 'btn btn-primary' id = 'toggle-removed'>
+	<i class = 'glyphicon glyphicon-eye-open'></i>
+	Toggle Removed Items
+</div>
+
+<div class = 'card' id= 'feed-guide'>
 <ul>
-<li>
-	This is a global list of feed items. Deleting an item here (clicking "Destroy") will delete it on everyone's feed. 
-</li>
-<li>
-	Feed items can be re-pushed by clicking "Push" (push notification re-sent). 
-</li>
-<li>
-	Clicking destroy will remove them on everyone's feed. 
-</li>
-<li>
-	Track responses by clicking "Details". You can see who's viewed your feed item.
-</li>
-<li><b>Unread</b> show up in red. <b>Read</b> items show up in white, and <b>Removed</b> items show up but in lower opacity.</li>
+	<li>
+		This is a global list of feed items. Deleting an item here (clicking "Destroy") will delete it on everyone's feed. 
+	</li>
+	<li>
+		Feed items can be re-pushed by clicking "Push" (push notification re-sent). 
+	</li>
+	<li>
+		Clicking destroy will remove them on everyone's feed. 
+	</li>
+	<li>
+		Track responses by clicking "Details". You can see who's viewed your feed item.
+	</li>
+	<li><b>Unread</b> show up in red. <b>Read</b> items show up in white, and <b>Removed</b> items show up but in lower opacity.</li>
+</ul>
 </div>
 
 <script type = 'text/javascript'>
+$('#toggle-removed').click(function(){
+	$('.removed-item').toggle();
+});
 $('.glyphicon-ok').click(function(){
 	$.ajax({
       url: '/feed/mark_read',

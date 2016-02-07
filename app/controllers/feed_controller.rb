@@ -24,11 +24,24 @@ class FeedController < ApplicationController
 	end
 
 	def view_feed
-		@email = current_member.email
-		@token = Member.string_to_hex(@email)
-		@feed = FeedItem.full_feed(@email)
-		@read = FeedResponse.read(@email)
-		@removed = FeedResponse.removed(@email)
+		if myEmail == nil or myEmail == ''
+			cookies[:auth_redirect] = '/feed/view'
+			redirect_to '/auth/google_oauth2'
+		else
+			@me = current_member
+			@email = @me.email
+			@token = Member.string_to_hex(@email)
+			@feed = FeedItem.full_feed(@email)
+			@feed_ids = @feed.map{|x| x.id}
+			@read = FeedResponse.read(@email).select{|x| @feed_ids.include?(x)}
+			@removed = FeedResponse.removed(@email).select{|x| @feed_ids.include?(x)}
+
+			# other trending stuff
+			@trending = GoLink.trending(@me).first(15)
+
+			# pinned blogposts
+			@pinned = Post.pinned(@me)
+		end
 	end
 
 	# hit this route from chrome extension

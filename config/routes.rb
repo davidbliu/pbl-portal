@@ -55,7 +55,6 @@ Rails.application.routes.draw do
   get 'feed' => 'feed#feed'
   get 'feed/read' => 'feed#read'
   get 'feed/view' => 'feed#view_feed'
-  # get 'feed/new' => 'feed#new'
   post 'feed/create' => 'feed#create'
   post 'feed/destroy' => 'feed#destroy'
   get 'feed/push/:id' => 'feed#push'
@@ -63,6 +62,9 @@ Rails.application.routes.draw do
   post 'feed/mark_read' => 'feed#mark_read'
   post 'feed/remove' => 'feed#remove'
   get 'feed/view_push/:id' => 'feed#view_push'
+
+  # precompute stuff
+  get 'c/trending_links' => 'compute#trending_links'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

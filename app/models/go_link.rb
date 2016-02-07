@@ -15,9 +15,21 @@ class GoLink < ActiveRecord::Base
 	      id: self.id,
 	      created_at: self.created_at,
 	      timestamp: self.timestamp,
-	      time_string: self.created_at.strftime('%m-%d-%Y'),
+	      time_string: self.time_string,
 	      semester:self.semester
 	    }
+	end
+
+	def time_string
+		self.created_at.strftime('%m-%d-%Y')
+	end
+
+	def get_num_clicks
+		self.num_clicks ? self.num_clicks : 0
+	end
+
+	def link
+		'http://pbl.link/'+self.key
 	end
 
 	def self.permissions_list
@@ -89,6 +101,12 @@ class GoLink < ActiveRecord::Base
 
 	def get_permissions
 		(self.permissions and self.permissions != '') ? self.permissions : 'Anyone'
+	end
+
+	def self.trending(member)
+		viewable = self.can_view(member)
+		return GoLink.where('id in (?)', viewable)
+			.order('created_at DESC')
 	end
 
 	# get all links that a member can view

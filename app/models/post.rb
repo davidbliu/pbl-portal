@@ -79,6 +79,17 @@ class Post < ActiveRecord::Base
 		return viewable.uniq
 	end
 
+	def self.pinned(member)
+		viewable = self.can_view(member)
+		return Post.order('created_at DESC')
+			.where('id in (?)', viewable)
+			.to_a
+			.select{|x| x.get_tags.include?('Pin')}
+	end
+
+	def get_tags
+		self.tags ? self.tags : []
+	end
 	def can_edit(member)
 		# if is admin, return true
 		if Post.is_admin(member)
