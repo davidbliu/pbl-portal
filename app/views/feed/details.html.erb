@@ -8,8 +8,19 @@
 Nobody responded to this feed item yet
 <% end %>
 
+<h2>Responses</h2>
 <% @responses.each do |response| %>
 <div>
 	<%= response.member_email %>: <%= response.response_type %>
+</div>
+<% end %>
+
+<h2>Pushes</h2>
+<% if @pushes.length == 0 %>
+No pushes to show 
+<% end %>
+<% @pushes.each do |push| %>
+<div>
+	<a href = '/feed/view_push/<%= push.id %>'><%= push.created_at %></a>
 </div>
 <% end %>

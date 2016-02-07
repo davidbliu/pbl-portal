@@ -73,5 +73,11 @@ class FeedController < ApplicationController
 	def details
 		@responses = FeedResponse.where(feed_item_id: params[:id])
 		@members = FeedItem.find(params[:id]).get_members.where.not(gcm_id: nil)
+		@pushes = FeedPush.where(feed_item_id: params[:id])
+	end
+
+	def view_push
+		push = FeedPush.find(params[:id])
+		render json: push.response
 	end
 end

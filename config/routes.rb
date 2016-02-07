@@ -59,6 +59,7 @@ Rails.application.routes.draw do
   get 'feed/details/:id' => 'feed#details'
   post 'feed/mark_read' => 'feed#mark_read'
   post 'feed/remove' => 'feed#remove'
+  get 'feed/view_push/:id' => 'feed#view_push'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

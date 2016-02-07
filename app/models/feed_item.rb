@@ -36,16 +36,21 @@ class FeedItem < ActiveRecord::Base
 			return Member.current_members.where(committee: self.permissions)
 		end
 	end
-	
+
 	def push
 
-		Pusher.push(
+		response = Pusher.push(
 			self.id,
 			self.title,
 			self.body,
 			self.link,
 			self.get_members
 		)
+		FeedPush.create(
+			feed_item_id: self.id,
+			response: response
+		)
+		return response
 	end
 
 	def self.permissions_list
