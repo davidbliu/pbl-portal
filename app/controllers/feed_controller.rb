@@ -9,13 +9,10 @@ class FeedController < ApplicationController
 
 	def read
 		email = Member.hex_to_string(params[:token])
-		read = FeedResponse.read(email)
-		items = FeedItem.order('created_at DESC')
-			.where('id in (?)', read)
-			.map{|x| x.to_json}
-		render json: items
+		render json: FeedItem.read(email)
 	end
 
+	# hit this route from chrome extension
 	def remove
 		response = FeedResponse.where(
 			feed_item_id: params[:id],
@@ -33,9 +30,13 @@ class FeedController < ApplicationController
 	end
 
 	def view_feed
-		@feed = FeedItem.full_feed(current_member.email)
+		@email = current_member.email
+		@feed = FeedItem.full_feed(@email)
+		@read = FeedResponse.read(@email)
+		@removed = FeedResponse.removed(@email)
 	end
 
+	# hit this route from chrome extension
 	def mark_read
 		email = Member.hex_to_string(params[:token])
 		response = FeedResponse.where(
@@ -55,7 +56,6 @@ class FeedController < ApplicationController
 	end
 	def destroy
 		FeedItem.find(params[:id]).destroy
-		# redirect_to 'feed/view'
 		render nothing: true, status: 200
 	end
 	def create
@@ -63,11 +63,15 @@ class FeedController < ApplicationController
 			title: params[:title],
 			body: params[:body],
 			link: params[:link],
-			member_email: current_member.email)
+			member_email: current_member.email,
+			permissions: params[:permissions]
+		)
 		item.push
 		render nothing: true, status: 200
 	end
+
 	def details
 		@responses = FeedResponse.where(feed_item_id: params[:id])
+		@members = FeedItem.find(params[:id]).get_members.where.not(gcm_id: nil)
 	end
 end

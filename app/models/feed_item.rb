@@ -1,27 +1,50 @@
 class FeedItem < ActiveRecord::Base
 	serialize :recipients
-	# def self.push_feed(member)
-	# 	if not member.gcm_id
-	# 		puts 'no gcm id, could not push '+member.email+'\'s feed'
-	# 		return
-	# 	end
-	# 	Pusher.push
-	# end
 
-	# def push_item(members)
-	# end
-
-	def self.full_feed(email)
+	def self.read(email)
+		read = FeedResponse.read(email)
 		items = FeedItem.order('created_at DESC')
+			.where('id in (?)', read)
+			.map{|x| x.to_json}
 		return items
 	end
 
+	def self.can_access(email)
+		pos = Position.where('member_email = ? AND semester = ?',
+			email,
+			Semester.current_semester)
+		return Post.can_access(pos)
+	end
+
+	def self.full_feed(email)
+		FeedItem.order('created_at DESC')
+			.where('permissions in (?) OR permissions IS NULL OR member_email = ?',
+				self.can_access(email),
+				email)
+	end
+
+	def get_members
+		if self.get_permissions == 'Everyone'
+			return Member.current_members
+		elsif self.get_permissions == 'Only Me'
+			return Member.where(email: self.member_email)
+		elsif self.get_permissions == 'Only Execs'
+			return Member.execs
+		elsif self.get_permissions == 'Only Officers'
+			return Member.officers
+		else
+			return Member.current_members.where(committee: self.permissions)
+		end
+	end
+	
 	def push
+
 		Pusher.push(
 			self.id,
 			self.title,
 			self.body,
-			self.link
+			self.link,
+			self.get_members
 		)
 	end
 
@@ -34,18 +57,28 @@ class FeedItem < ActiveRecord::Base
 		read = FeedResponse.read(email)
 		removed = FeedResponse.removed(email)
 		exclude = read+removed
-		items = FeedItem.order('created_at DESC')
+		items = self.full_feed(email)
 			.select{|x| not exclude.include?(x.id)}
 			.map{|x| x.to_json}
 		return items
 	end
+
+	def get_permissions
+		self.permissions ? self.permissions : 'Everyone'
+	end
+
+	def get_link
+		self.link ? self.link : 'http://pbl.link/feed'
+	end
+
 	def to_json
 		{
 			title: self.title,
 			body: self.body,
 			timestamp: self.created_at,
-			link: self.link,
-			id: self.id
+			link: self.get_link,
+			id: self.id,
+			permissions: self.get_permissions
 		}
 	end
 

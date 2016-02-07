@@ -1,5 +1,11 @@
+<div>
+	Channel: <%= @members.map{|x| x.name}.join(',') %>
+	<p class = 'text-muted'>
+		feed item was pushed to these people
+	</p>
+</div>
 <% if @responses.length  == 0 %>
-Nothing to show
+Nobody responded to this feed item yet
 <% end %>
 
 <% @responses.each do |response| %>

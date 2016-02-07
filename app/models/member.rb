@@ -49,6 +49,14 @@ class Member < ActiveRecord::Base
     Member.where(latest_semester: semester)
   end
 
+  def self.execs
+    self.current_members.where(position: 'exec')
+  end
+  def self.officers
+    self.current_members.where('position = ? OR position = ?',
+      'exec','chair')
+  end
+
   def self.default_commitments
     default_com = Array.new(168)
     168.times{|i| default_com[i] = 0}
@@ -101,18 +109,6 @@ class Member < ActiveRecord::Base
       pos.save
     end
 
-    # p = Position.where(
-    #   member_email: 'davidbliu@gmail.com',
-    #   semester: 'Spring 2016').first_or_create
-    # p.committee  = 'GM'
-    # p.position = 'chair'
-    # p.save
-
-    # david = Member.david
-    # david.latest_semester = 'Spring 2016'
-    # david.committee = 'GM'
-    # david.position = 'chair'
-    # david.save
 
   end
 end

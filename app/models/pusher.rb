@@ -26,10 +26,12 @@ class Pusher
 		return response
 	end
 
-	def self.push(id, title, body, link)
+	def self.push(id, title, body, link, members = nil)
 		gcm = GCM.new(ENV["GOOGLE_PUSH_API_KEY"])
-		registration_ids = []
-		registration_ids = Member.where.not(gcm_id: nil).map{|x| x.gcm_id}
+		if members == nil
+			members = Member.all
+		end
+		registration_ids = members.select{|x| x.gcm_id != nil}.map{|x| x.gcm_id}
 		notification = Pusher.basic_notification(id, title, body, link)
 		response = gcm.send(registration_ids, notification)
 		return response

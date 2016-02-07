@@ -1,3 +1,9 @@
+<style type = 'text/css'>
+.not-registered{
+	background-color:rgba(200,0,0,0.1);
+}
+</style>
+
 <table class = 'table table-bordered table-condensed'>
 	<thead>
 		<th>Name</th>
@@ -10,13 +16,17 @@
 	</thead>
 	<tbody>
 	<% @members.each do |member| %>
+	<% if member.gcm_id %>
 	<tr>
+	<% else %>
+	<tr class = 'not-registered'>
+	<% end %>
+	
 		<td><%= member.name %></td>
 		<td><%= member.email %></td>
 		<td><%= member.committee %></td>
 		<td><%= member.position %></td>
 		<td><%= member.phone %></td>
-		<td><%= member.gcm_id %></td>	
 	</tr>
 	<% end %>
 	</tbody>

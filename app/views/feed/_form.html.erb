@@ -20,7 +20,8 @@ $('#create-btn').click(function(){
 		data:{
 			title: $('#title-input').val(),
 			body: $('#body-input').val(),
-			link: $('#link-input').val()
+			link: $('#link-input').val(),
+			permissions: $('#permissions-select option:selected').text()
 		},
 		success:function(data){
 			location.reload();

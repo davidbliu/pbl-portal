@@ -1,3 +1,19 @@
+<style type = 'text/css'>
+.item-meta{
+	font-size:10px;
+	color:rgba(0,0,0,0.5);
+}
+.read-item{
+	/*background-color:rgba(0,0,0,0.1);*/
+	margin-left:25%;
+}
+.removed-item{
+	/*background-color:rgba(200,0,0,0.1);*/
+
+	margin-left:50%;
+}
+</style>
+
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -14,23 +30,34 @@
 </div>
 
 <div class = 'col-md-3'>
-<a href = 'javascript:void(0)' id = 'new-btn'>Create new feed item</a>
+<div class = 'btn btn-default' id = 'new-btn'>Create new feed item</div>
 </div>
 
 <div class = 'col-md-6'>
 <% @feed.each do |feed_item| %>
+<% if @read.include?(feed_item.id) %>
+<li class = 'list-group-item read-item'>
+<% elsif @removed.include?(feed_item.id) %>
+<li class = 'list-group-item removed-item'>
+<% else %>
 <li class = 'list-group-item'>
-	<h4><%= feed_item.title %></h4>
+<% end %>
+	<div class = 'pull-left'>
+	</div>
+	<h4><a href = '<%= feed_item.link %>'><%= feed_item.title %></a></h4>
 	<%= feed_item.body %>
-	<div>
-		<a id = '<%= feed_item.id %>' class = 'destroy-btn' href = 'javascript:void(0)'>Destroy</a>
+	<div class = 'item-meta'>
+		<%= feed_item.get_permissions %> can view
+		|&nbsp;<a id = '<%= feed_item.id %>' class = 'destroy-btn' href = 'javascript:void(0)'>Destroy</a>
 		|&nbsp;<a href = '/feed/push/<%= feed_item.id %>'>Push</a>
 		|&nbsp;<a href = '/feed/details/<%= feed_item.id %>'>Details</a>
 	</div>
 </li>
 <% end %>
 </div>
-<div class = 'col-md-3'></div>
+<div class = 'col-md-3'>
+This is a global list of feed items. Deleting an item here will delete it on everyone's feed. Items that you have <b>read</b> (on your chrome extension) show up here as indented 25% and <b>removed</b> show up as indented 50%. Feed items can be re-pushed by clicking "Push" (push notification re-sent). Clicking destroy will remove them on everyone's feed. Track responses by clicking "Details"
+</div>
 
 <script type = 'text/javascript'>
 $('.destroy-btn').click(function(){
