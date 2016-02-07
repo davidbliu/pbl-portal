@@ -2,7 +2,8 @@ class MembersController < ApplicationController
 
 
   def index
-    @members = Member.where(latest_semester: Semester.current_semester)
+    @members = Member.current_members
+      .where.not(committee:'GM')
       .sort_by{|x| x.committee}
   end
 
