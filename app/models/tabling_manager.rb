@@ -27,6 +27,7 @@ class TablingManager
 
 		officers = Member.where(latest_semester: Semester.current_semester)
 			.where('position = ? OR  position = ?', 'chair', 'exec')
+			.where.not(committee: 'AC')
 			.to_a
 		cms = Member.where(latest_semester: Semester.current_semester)
 			.where('position = ? AND committee != ?',

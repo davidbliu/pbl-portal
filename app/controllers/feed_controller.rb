@@ -23,14 +23,9 @@ class FeedController < ApplicationController
 		render nothing: true, status:200
 	end
 
-	def new
-	end
-
-	def create
-	end
-
 	def view_feed
 		@email = current_member.email
+		@token = Member.string_to_hex(@email)
 		@feed = FeedItem.full_feed(@email)
 		@read = FeedResponse.read(@email)
 		@removed = FeedResponse.removed(@email)
@@ -52,6 +47,7 @@ class FeedController < ApplicationController
 		response = FeedItem.find(params[:id]).push
 		render json: response
 	end
+
 	def details
 	end
 	def destroy
