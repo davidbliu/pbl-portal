@@ -10,7 +10,7 @@
 		<tr>
 			<td><%= click.key %></td>
 			<td>
-				<%= @email_hash[click.member_email] ? @email_hash[click.member_email].name : 'no_email' %></td>
+				<%= @email_hash.keys.include?(click.member_email) ? @email_hash[click.member_email].name : click.member_email %></td>
 			<td>
 				<%= click.created_at %>
 			</td>
