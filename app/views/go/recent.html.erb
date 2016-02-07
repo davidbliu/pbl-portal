@@ -1,3 +1,21 @@
-<% @recent.each do |click| %>
-<div><%= click.key %> | <%= click.member_email %> | <%= click.created_at %></div>
-<% end %>
+
+<table class = 'table table-condensed table-bordered'>
+	<thead>
+		<th>Key</th>
+		<th>Name</th>
+		<th>Timestamp</th>
+	</thead>
+	<tbody>
+		<% @recent.each do |click| %>
+		<tr>
+			<td><%= click.key %></td>
+			<td>
+				<%= click.member_email ? @email_hash[click.member_email].name : 'no_email' %></td>
+			<td>
+				<%= click.created_at %>
+			</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+	

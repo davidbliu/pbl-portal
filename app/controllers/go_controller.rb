@@ -59,6 +59,7 @@ class GoController < ApplicationController
 
   def recent
     @recent = GoLinkClick.order('created_at DESC').first(1000)
+    @email_hash = Member.email_hash
   end
 
   def add
