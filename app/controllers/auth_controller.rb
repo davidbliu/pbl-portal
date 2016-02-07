@@ -13,17 +13,20 @@ class AuthController < ApplicationController
     cookies[:uid] = uid
     cookies[:provider] = provider
     cookies[:email] = email
-    # redirect_to '/me'
-    # redirect_to request.referer
-    # if cookies[:auth_redirect] != nil
-    #   redirect_to cookies[:auth_redirect]
-    # else
-    #   redirect_to '/me'
-    # end
-    redirect_to '/me'
+    if cookies[:auth_redirect] != nil
+      redirect_to cookies[:auth_redirect]
+    else
+      redirect_to '/me'
+    end
   end
 
   def email
     render json: myEmail
+  end
+
+  def logout
+    cookies[:remember_token] = nil
+    cookies[:email] = nil
+    redirect_to "https://accounts.google.com/logout"
   end
 end

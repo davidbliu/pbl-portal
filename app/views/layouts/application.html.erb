@@ -62,7 +62,9 @@
         <li><a href="/blog">Blog</a></li>
         <li><a href="/flickr/go">Gallery</a></li>
         <li><a href="/me">Me</a></li>
-
+        <% if myEmail != nil and myEmail != '' %>
+          <li><a href="/auth/logout">Logout (<%= myEmail %>)</a></li>
+        <% end %>
       </ul>
       <div id="p-search header-search" class="p-search pull-right" role="search">
         <form id="searchform" class="navbar-form navbar-right" action="http://wd.berkeley-pbl.com/wiki/index.php">

@@ -1,33 +1,38 @@
 class GoController < ApplicationController
   def redirect
-
-    if params[:key].include?('wiki:')
-      term = params[:key].split(':')[1]
-      redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term
-    elsif params[:key].include?('drive:')
-      term = params[:key].split(':')[1]
-      render json: 'should search the drive for ' + term  
+    # must have an email to use pbl links
+    if myEmail == nil or myEmail == ''
+      cookies[:auth_redirect] = '/'+params[:key]+'/go'
+      redirect_to '/auth/google_oauth2'
     else
-      viewable = GoLink.can_view(current_member)
-      golink = GoLink.where(key: params[:key])
-        .where('id in (?)', viewable)
-      if golink.length > 1
-        # redirect_to golink.first.url
-        @golinks = golink
-        @permissions_list = GoLink.permissions_list
-        render :template => "go/add"
-      elsif golink.length == 1
-        # redirect_to golink.first.url
-        golink = golink.first
-        # log this
-        Thread.new{
-          golink.log_click(myEmail)
-          ActiveRecord::Base.connection.close
-        }
-        redirect_to golink.url
+      if params[:key].include?('wiki:')
+        term = params[:key].split(':')[1]
+        redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term
+      elsif params[:key].include?('drive:')
+        term = params[:key].split(':')[1]
+        render json: 'should search the drive for ' + term  
       else
-      	# do a search
-        redirect_to '/go?q='+params[:key]
+        viewable = GoLink.can_view(current_member)
+        golink = GoLink.where(key: params[:key])
+          .where('id in (?)', viewable)
+        if golink.length > 1
+          # redirect_to golink.first.url
+          @golinks = golink
+          @permissions_list = GoLink.permissions_list
+          render :template => "go/add"
+        elsif golink.length == 1
+          # redirect_to golink.first.url
+          golink = golink.first
+          # log this
+          Thread.new{
+            golink.log_click(myEmail)
+            ActiveRecord::Base.connection.close
+          }
+          redirect_to golink.url
+        else
+        	# do a search
+          redirect_to '/go?q='+params[:key]
+        end
       end
     end
   end
