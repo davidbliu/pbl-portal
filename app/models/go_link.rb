@@ -29,12 +29,17 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def log_click(email)
-		self.num_clicks = self.num_clicks + 1
+		if self.num_clicks == nil
+			self.num_clicks = 1
+		else
+			self.num_clicks = self.num_clicks + 1
+		end
 		self.save
 		GoLinkClick.create(
-			member_email:email,
+			member_email: email,
 			key: self.key,
-			golink_id: self.id)
+			golink_id: self.id
+		)
 	end
 
   	def self.url_matches(url)
