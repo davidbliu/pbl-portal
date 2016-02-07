@@ -1,0 +1,68 @@
+<style type = 'text/css'>
+.post-content{
+	height:150px;
+	overflow:hidden;
+}
+.post-div{
+	border:1px solid rgba(0,0,0,0.1);
+	width:280px;
+	height:280px;
+	margin:2px;
+	padding:2px;
+	float:left;
+	border-radius:5px;
+}
+.title{
+	font-size:1.3em;
+	font-weight:bold;
+}
+</style>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Folders</h4>
+      </div>
+      <div class="modal-body">
+      	<a href = '/blog'>
+        		<div class = 'btn btn-default'>#NoFilter
+        		</div>
+        	</a>
+        <% @tags.each do |tag| %>
+        	<a href = '/blog?tag=<%= tag %>'>
+        		<div class = 'btn btn-default'><%= tag %>
+        		</div>
+        	</a>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+<div href = 'javascript:void(0)' class = 'btn btn-default' id = 'filter-btn'>Filter Posts</div>
+<% if @tag %>
+Current Filter is <%= @tag %>
+<% end %>
+</div>
+<%= will_paginate @posts %>
+
+<div class = 'row'>
+<% @posts.each do |post| %>
+<div class = 'post-div'>
+	<div class = 'title'><%= post.title %></div>
+	<div class = 'text-muted'><%= post.time_string %></div>
+	<div class = 'post-content'><%= raw(post.content)%></div>
+	<a href = '/blog/post/<%= post.id %>'>Read More</a>
+</div>
+<% end %>
+
+</div>
+<script type = 'text/javascript'>
+$('#filter-btn').click(function(){
+	$('#myModal').modal('show');
+})
+</script>

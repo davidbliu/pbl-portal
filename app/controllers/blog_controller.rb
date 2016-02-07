@@ -12,7 +12,9 @@ class BlogController < ApplicationController
 				.to_a
 				
 		end
-		@posts = @posts.paginate(:page => params[:page], :per_page => 15)
+		@tags = Post.tags
+		@posts = @posts.paginate(:page => params[:page], :per_page => 30)
+		render :template => 'blog/index2'
 	end
 
 	def edit

@@ -10,6 +10,10 @@ class Post < ActiveRecord::Base
 		['Execs', 'Officers', 'CMs', 'GMs', 'Alumni', 'Opportunities']
 	end
 
+	def time_string
+		self.created_at.strftime('%m-%d-%Y')
+	end
+
 	def self.unpin_all
 		Post.all.each do |post|
 			if post.tags and post.tags.include?('Pin')
