@@ -1,22 +1,5 @@
 class TablingManager
-	def self.random_init
-		slots = []
-		interval = 3
-		(0..5).each do |x|
-			start = 10+24*x
-			end_time = start + interval
-			slots << (start..end_time).to_a
-		end
-		slots = slots.flatten()
-
-		Member.all.each do |member|
-			member.commitments = slots.sample(5)
-			member.save
-		end
-	end
-
-	def self.gen_tabling
-		TablingSlot.destroy_all
+	def self.default_slots
 		slots = []
 		interval = 3
 		(0..4).each do |x|
@@ -25,12 +8,30 @@ class TablingManager
 			slots << (start..end_time).to_a
 		end
 		slots = slots.flatten()
+	end
+
+	def self.random_init
+		slots = self.default_slots
+
+		Member.all.each do |member|
+			if member.commitments == nil
+				member.commitments = slots.sample(5)
+				member.save
+			end
+		end
+	end
+
+	def self.gen_tabling
+		TablingSlot.destroy_all
+		slots = self.default_slots
 
 		officers = Member.where(latest_semester: Semester.current_semester)
 			.where('position = ? OR  position = ?', 'chair', 'exec')
 			.to_a
 		cms = Member.where(latest_semester: Semester.current_semester)
-			.where(position:'cm')
+			.where('position = ? AND committee != ?',
+				'cm',
+				'GM')
 			.to_a
 		officer_assignments = self.assign(officers, slots)
 		cm_assignments = self.assign(cms, slots, officer_assignments)

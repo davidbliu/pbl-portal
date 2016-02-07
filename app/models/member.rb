@@ -5,6 +5,10 @@ class Member < ActiveRecord::Base
     Member.all.index_by(&:email)
   end
 
+  def self.committees
+    ['CS', 'CO', 'FI', 'HT', 'MK', 'GM', 'PD', 'PB', 'SO', 'WD', 'IN']
+  end
+
   def self.david
     Member.where(email:'davidbliu@gmail.com').first
   end

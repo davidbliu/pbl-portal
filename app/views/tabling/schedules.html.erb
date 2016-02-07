@@ -1,0 +1,8 @@
+<% @free_hash.keys.each do |time| %>
+<div class = 'col-md-2'>
+<h4><%= TablingSlot.get_time_string(time) %></h4>
+<% @free_hash[time].each do |email| %>
+	<div><%= @email_hash[email].name %></div>
+<% end %>
+</div>
+<% end %>

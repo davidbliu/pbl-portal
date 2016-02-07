@@ -25,6 +25,10 @@ class FeedItem < ActiveRecord::Base
 		)
 	end
 
+	def self.permissions_list
+		['Everyone', 'Only Me', 'Only Execs', 'Only Officers'] + Member.committees
+	end
+
 
 	def self.feed(email)
 		read = FeedResponse.read(email)

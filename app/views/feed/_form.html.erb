@@ -1,9 +1,18 @@
+Title
 <input id = 'title-input' type = 'text' class = 'form-control' placeholder = 'Title'>
+Body
 <input id='body-input' type = 'text' class = 'form-control' placeholder = 'Body'>
-<input id='link-input' type = 'text' class = 'form-control' placeholder = 'Link'>
-
+Link (URL)
+<input id='link-input' type = 'text' class = 'form-control' placeholder = 'Link' value = 'http://'>
+Who can view?
+<select id = 'permissions-select' class = 'form-control'>
+<% FeedItem.permissions_list.each do |p| %>
+<option><%= p %></option>
+<% end %>
+</select>
 <div id = 'create-btn' class = 'btn btn-default'>Create</div>
 <script type = 'text/javascript'>
+
 $('#create-btn').click(function(){
 	$.ajax({
 		url:'/feed/create',

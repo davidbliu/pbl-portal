@@ -57,4 +57,29 @@ class TablingController < ApplicationController
 		request.destroy
 		redirect_to '/tabling'
 	end
+
+	def generate
+		if current_member.email == 'davidbliu@gmail.com'
+			TablingManager.gen_tabling
+			redirect_to '/tabling'
+		else
+			render :template => 'members/unauthorized'
+		end
+	end
+
+	def schedules
+		members = Member.where(latest_semester: Semester.current_semester)
+			.where.not(committee:'GM').to_a
+
+		slots = TablingManager.default_slots
+		@slots = slots
+		@free_hash = {}
+		slots.each do |slot|
+			free = members.select{|x| x.get_commitments.include?(slot)}.map{|x| x.email}
+			@free_hash[slot] = free
+		end			
+		@members = members
+		@email_hash = Member.email_hash
+
+	end
 end
