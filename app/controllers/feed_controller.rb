@@ -62,7 +62,6 @@ class FeedController < ApplicationController
 			member_email: current_member.email,
 			permissions: params[:permissions]
 		)
-		item.push
 		render nothing: true, status: 200
 	end
 
