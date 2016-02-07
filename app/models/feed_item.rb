@@ -13,7 +13,10 @@ class FeedItem < ActiveRecord::Base
 		pos = Position.where('member_email = ? AND semester = ?',
 			email,
 			Semester.current_semester)
-		return Post.can_access(pos)
+		list = Post.can_access(pos)
+		if list.include?('Anyone')
+			list << 'Everyone'
+		end
 	end
 
 	def self.full_feed(email)
