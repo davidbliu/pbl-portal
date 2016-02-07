@@ -58,7 +58,9 @@ class GoController < ApplicationController
   end
 
   def recent
-    @recent = GoLinkClick.order('created_at DESC').first(1000)
+    @recent = GoLinkClick.order('created_at DESC')
+      .where.not(member_email: 'davidbliu@gmail.com')
+      .first(1000)
     @email_hash = Member.email_hash
   end
 
