@@ -41,7 +41,6 @@ class FeedItem < ActiveRecord::Base
 	end
 
 	def push
-
 		response = Pusher.push(
 			self.id,
 			self.title,
