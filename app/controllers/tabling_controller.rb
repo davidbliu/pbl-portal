@@ -34,8 +34,8 @@ class TablingController < ApplicationController
 				member2.email
 			).destroy_all
 			switch_request = TablingSwitchRequest.where(
-				email1: member2.email,
-				email2: member1.email
+				email1: member1.email,
+				email2: member2.email
 			).first_or_create
 			render nothing: true, status: 200
 		end
