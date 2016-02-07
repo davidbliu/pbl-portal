@@ -53,7 +53,8 @@ class GoController < ApplicationController
   end
 
   def insights
-    @clicks = GoLinkClick.where(golink_id: params[:id]).to_a
+    @clicks = GoLinkClick.where(golink_id: params[:id])
+      .where.not(member_email:'davidbliu@gmail.com').to_a
     @members = Member.current_members.where.not(committee: 'GM').to_a
   end
 
