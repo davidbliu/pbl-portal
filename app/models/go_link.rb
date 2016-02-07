@@ -95,12 +95,13 @@ class GoLink < ActiveRecord::Base
 	def self.can_view(member)
 		semesters = Semester.past_semesters
 		viewable = []
+		email = member ? member.email : ''
 		viewable = GoLink.where('member_email = ? OR semester = ? OR permissions = ? OR permissions IS NULL',
-			member.email,
+			email,
 			nil,
 			'Anyone'
 		).pluck(:id)
-		positions = Position.where(member_email: member.email)
+		positions = Position.where(member_email: email)
 		positions.each do |position|
 			pos = position.position
 			golink_ids = GoLink.where(semester: position.semester)
