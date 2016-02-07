@@ -20,11 +20,13 @@ Rails.application.routes.draw do
   get 'go/search' => 'go#search'
   get 'go/lookup' => 'go#lookup'
   get 'go/insights/:id' => 'go#insights'
+  get 'go/recent' => 'go#recent'
   
   get 'go/add' => 'go#add'
   post 'go/create' => 'go#create'
   post 'go/update' => 'go#update'
   post 'go/destroy' => 'go#destroy'
+  get 'go/insights/:id' => 'go#insights'
 
   #blog
   get 'blog' => 'blog#index'

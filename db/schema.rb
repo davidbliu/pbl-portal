@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160207013650) do
+ActiveRecord::Schema.define(version: 20160207040907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,14 @@ ActiveRecord::Schema.define(version: 20160207013650) do
     t.integer "feed_item_id"
     t.string  "member_email"
     t.string  "response_type"
+  end
+
+  create_table "go_link_clicks", force: :cascade do |t|
+    t.string   "member_email"
+    t.string   "key"
+    t.string   "golink_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "go_links", force: :cascade do |t|

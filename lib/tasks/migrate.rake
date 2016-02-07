@@ -77,6 +77,10 @@ namespace :parse do
     end
   end
 
+  task :clicks => :environment do 
+  end
+
+
 end
 
 namespace :cleanup do 
@@ -85,4 +89,5 @@ namespace :cleanup do
     FeedItemResponse.destroy_all
   end
 end
+
 

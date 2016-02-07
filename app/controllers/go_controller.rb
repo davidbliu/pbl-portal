@@ -1,5 +1,6 @@
 class GoController < ApplicationController
   def redirect
+
     if params[:key].include?('wiki:')
       term = params[:key].split(':')[1]
       redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term
@@ -16,7 +17,14 @@ class GoController < ApplicationController
         @permissions_list = GoLink.permissions_list
         render :template => "go/add"
       elsif golink.length == 1
-        redirect_to golink.first.url
+        # redirect_to golink.first.url
+        golink = golink.first
+        # log this
+        Thread.new{
+          golink.log_click(myEmail)
+          ActiveRecord::Base.connection.close
+        }
+        redirect_to golink.url
       else
       	# do a search
         redirect_to '/go?q='+params[:key]
@@ -26,7 +34,6 @@ class GoController < ApplicationController
 
   def index
     me = current_member
-
     viewable = GoLink.can_view(me)
     if params[:q]
       @golinks = GoLink.member_search(params[:q], current_member)
@@ -40,9 +47,13 @@ class GoController < ApplicationController
     @permissions_list = GoLink.permissions_list
   end
 
-  def add3
-    @url = params[:url]
-    @key = params[:key]
+  def insights
+    @clicks = GoLinkClick.where(golink_id: params[:id]).to_a
+    @members = Member.current_members.where.not(committee: 'GM').to_a
+  end
+
+  def recent
+    @recent = GoLinkClick.order('created_at DESC').first(1000)
   end
 
   def add
@@ -96,8 +107,7 @@ class GoController < ApplicationController
     render json: golinks.map{|x| x.to_json}
   end
 
-  def insights
-  end
+
 
   def update
     golink = GoLink.find(params[:id])

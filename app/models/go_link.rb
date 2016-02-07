@@ -28,6 +28,14 @@ class GoLink < ActiveRecord::Base
 		GoLink.where(key: 'change-this-key').destroy_all
 	end
 
+	def log_click(email)
+		self.num_clicks = self.num_clicks + 1
+		self.save
+		GoLinkClick.create(
+			member_email:email,
+			key: self.key,
+			golink_id: self.id)
+	end
 
   	def self.url_matches(url)
   		direct_matches = GoLink.where('url=? OR url=?', url.gsub('https:', 'http:'), url.gsub('http:', 'https:')).to_a

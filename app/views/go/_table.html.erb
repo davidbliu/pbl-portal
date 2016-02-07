@@ -38,7 +38,9 @@
 			<td class = 'editable' data-col = 'url'><a href = '{{golink.url}}'>{{golink.url}}</a></td>
 			<td class = 'permissions-edit'>{{golink.permissions}}</td>
 			<td>{{golink.member_email}}</td>
-			<td>{{golink.num_clicks ? golink.num_clicks : 0}}</td>
+			<td>
+				<a href = '/go/insights/{{golink.id}}'>{{golink.num_clicks ? golink.num_clicks : 0}}</a>
+			</td>
 			<td>{{golink.time_string}} ({{golink.semester}})</th>
 			<td>
 				<a href = 'javascript:void(0)' class = 'delete-link' data-id = '{{golink.id}}'>x</a>
