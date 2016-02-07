@@ -106,6 +106,7 @@ class GoLink < ActiveRecord::Base
 	def self.trending(member)
 		viewable = self.can_view(member)
 		return GoLink.where('id in (?)', viewable)
+			.where.not(key:'change-this-key')
 			.order('created_at DESC')
 	end
 

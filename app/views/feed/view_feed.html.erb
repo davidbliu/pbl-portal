@@ -53,6 +53,16 @@
 
 <div class = 'col-md-3'>
 	<div class = 'trending-container card'>
+		<div class = 'pinned-container card'>
+			<h4>Pinned Blogposts</h4>
+			<% if @pinned.length == 0 %>
+			Nothing to show
+			<% end %>
+			<% @pinned.each do |post| %>
+			<div><a href = '/blog/post/<%= post.id %>'><%= post.title %></a></div>
+			<% end %>
+		</div>
+
 		<h4>Trending Links</h4>
 		<% @trending.each do |golink| %>
 		<div>
@@ -62,12 +72,7 @@
 		<% end %>
 	</div>
 
-	<div class = 'pinned-container card'>
-		<h4>Pinned Blogposts</h4>
-		<% @pinned.each do |post| %>
-		<div><a href = '/blog/post/<%= post.id %>'><%= post.title %></a></div>
-		<% end %>
-	</div>
+	
 </div>
 
 <div class = 'col-md-6'>
