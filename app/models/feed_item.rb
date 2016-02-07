@@ -41,12 +41,14 @@ class FeedItem < ActiveRecord::Base
 	end
 
 	def push
+		read_emails = FeedResponse.where(feed_item_id: self.id).pluck(:member_email)
+		members = self.get_members.select{|x| not read_emails.include?(x.email)}
 		response = Pusher.push(
 			self.id,
 			self.title,
 			self.body,
 			self.link,
-			self.get_members
+			members
 		)
 		FeedPush.create(
 			feed_item_id: self.id,

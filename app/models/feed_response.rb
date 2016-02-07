@@ -10,4 +10,5 @@ class FeedResponse < ActiveRecord::Base
 		removed = resp.select{|x| x.response_type == 'removed'}.map{|x| x.feed_item_id}
 		return removed
 	end
+
 end

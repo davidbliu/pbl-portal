@@ -1,19 +1,25 @@
-<div>
-	Channel: <%= @members.map{|x| x.name}.join(',') %>
-	<p class = 'text-muted'>
-		feed item was pushed to these people
-	</p>
-</div>
-<% if @responses.length  == 0 %>
-Nobody responded to this feed item yet
-<% end %>
-
-<h2>Responses</h2>
-<% @responses.each do |response| %>
-<div>
-	<%= response.member_email %>: <%= response.response_type %>
-</div>
-<% end %>
+<table class = 'table table-condensed table-bordered'>
+	<thead>
+		<th>Name</th>
+		<th>Status</th>
+	</thead>
+	<tbody>
+		<% @members.each do |member| %>
+		<% if not @response_hash.keys.include?(member.email) %>
+		<tr class = 'not-read'>
+		<% else %>
+		<tr>
+		<% end %>
+			<td><%= member.name %></td>
+			<td>
+				<% if @response_hash.keys.include?(member.email) %>
+				<%= @response_hash[member.email].response_type %>
+				<% end %>
+			</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
 
 <h2>Pushes</h2>
 <% if @pushes.length == 0 %>

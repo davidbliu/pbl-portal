@@ -67,6 +67,7 @@ class FeedController < ApplicationController
 
 	def details
 		@responses = FeedResponse.where(feed_item_id: params[:id])
+		@response_hash = @responses.index_by(&:member_email)
 		@members = FeedItem.find(params[:id]).get_members.where.not(gcm_id: nil)
 		@pushes = FeedPush.where(feed_item_id: params[:id])
 	end
