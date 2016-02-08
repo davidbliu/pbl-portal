@@ -37,10 +37,10 @@ class FeedController < ApplicationController
 			@removed = FeedResponse.removed(@email).select{|x| @feed_ids.include?(x)}
 
 			# other trending stuff
-			@trending = GoLink.trending(@me).first(15)
+			# @trending = GoLink.trending(@me).first(15)
 
 			# pinned blogposts
-			@pinned = Post.pinned(@me)
+			# @pinned = Post.pinned(@me)
 		end
 	end
 

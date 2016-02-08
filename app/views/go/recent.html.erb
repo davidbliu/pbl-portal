@@ -3,6 +3,7 @@
 	<thead>
 		<th>Key</th>
 		<th>Name</th>
+		<th>Committee</th>
 		<th>Timestamp</th>
 	</thead>
 	<tbody>
@@ -12,7 +13,10 @@
 			<td>
 				<%= @email_hash.keys.include?(click.member_email) ? @email_hash[click.member_email].name : click.member_email %></td>
 			<td>
-				<%= click.created_at %>
+				<%= @email_hash.keys.include?(click.member_email) ? @email_hash[click.member_email].committee : '' %></td>
+			</td>
+			<td>
+				<%= click.time_string %>
 			</td>
 		</tr>
 		<% end %>
