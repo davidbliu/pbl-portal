@@ -21,23 +21,27 @@ class TablingController < ApplicationController
 
 	# post a switch request request
 	def switch
-		member2 = Member.where('lower(name) = ?', params[:name].downcase)
-			.where(latest_semester: Semester.current_semester).first
-		if member2 == nil
+		if not current_member
 			render nothing: true, status: 500
 		else
-			member1 = current_member
-			TablingSwitchRequest.where('email1 = ? OR email2 = ? OR email1=? OR email2 = ?',
-				member1.email,
-				member1.email,
-				member2.email,
-				member2.email
-			).destroy_all
-			switch_request = TablingSwitchRequest.where(
-				email1: member1.email,
-				email2: member2.email
-			).first_or_create
-			render nothing: true, status: 200
+			member2 = Member.where('lower(name) = ?', params[:name].downcase)
+				.where(latest_semester: Semester.current_semester).first
+			if member2 == nil
+				render nothing: true, status: 500
+			else
+				member1 = current_member
+				TablingSwitchRequest.where('email1 = ? OR email2 = ? OR email1=? OR email2 = ?',
+					member1.email,
+					member1.email,
+					member2.email,
+					member2.email
+				).destroy_all
+				switch_request = TablingSwitchRequest.where(
+					email1: member1.email,
+					email2: member2.email
+				).first_or_create
+				render nothing: true, status: 200
+			end
 		end
 	end
 	def confirm_switch
