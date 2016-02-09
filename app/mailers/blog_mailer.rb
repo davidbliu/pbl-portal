@@ -19,7 +19,7 @@ class BlogMailer < ActionMailer::Base
   		mail(
   			:to=> email, 
   			:subject => @subject,
-  			:from => '[PBL][Blog]<berkeleypbl.webdev@gmail.com>'
+  			:from => 'PBL Blog <berkeleypbl.webdev@gmail.com>'
   		)
   	end
 end
