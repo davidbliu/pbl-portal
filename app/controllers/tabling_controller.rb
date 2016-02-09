@@ -17,6 +17,16 @@ class TablingController < ApplicationController
 			@me.email
 		)
 		@email_hash = Member.email_hash
+
+		# save it in clicks
+		Thread.new{
+			GoLinkClick.create(
+				key: '/tabling',
+				golink_id: 'tabling_id',
+				member_email: myEmail
+			)
+			ActiveRecord::Base.connection.close
+		}
 	end
 
 	# post a switch request request

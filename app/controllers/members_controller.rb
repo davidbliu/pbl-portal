@@ -25,6 +25,17 @@ class MembersController < ApplicationController
   def me
     if current_member and current_member.email
       @me = current_member
+
+      # save it in clicks
+      Thread.new{
+        GoLinkClick.create(
+          key: '/tabling',
+          golink_id: 'tabling_id',
+          member_email: myEmail
+        )
+        ActiveRecord::Base.connection.close
+      }
+    
     else
       redirect_to '/auth/google_oauth2'
     end

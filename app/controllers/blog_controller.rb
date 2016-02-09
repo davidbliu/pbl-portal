@@ -14,6 +14,15 @@ class BlogController < ApplicationController
 		end
 		@tags = Post.tags
 		@posts = @posts.paginate(:page => params[:page], :per_page => 30)
+		# save it in clicks
+		Thread.new{
+			GoLinkClick.create(
+				key: '/blog',
+				golink_id: 'blog_id',
+				member_email: myEmail
+			)
+			ActiveRecord::Base.connection.close
+		}
 		render :template => 'blog/index2'
 	end
 
@@ -34,7 +43,22 @@ class BlogController < ApplicationController
 
 	# view individual post
 	def post
-		@post = Post.find(params[:id])
+		if myEmail == nil or myEmail == ''
+			cookies[:auth_redirect] = '/blog/post/'+params[:id]
+			redirect_to '/auth/google_oauth2'
+		else
+			@post = Post.find(params[:id])
+
+			# save it in clicks
+			Thread.new{
+				GoLinkClick.create(
+					key: '/blog/post/'+params[:id]+':'+@post.title,
+					golink_id: 'post_id',
+					member_email: myEmail
+				)
+				ActiveRecord::Base.connection.close
+			}
+		end
 	end
 
 	def save

@@ -4,6 +4,16 @@ class FeedController < ApplicationController
 	def feed
 		email = Member.hex_to_string(params[:token])
 		items = FeedItem.feed(email)
+
+		# save it in clicks
+		Thread.new{
+			GoLinkClick.create(
+				key: '/feed',
+				golink_id: 'feed_id',
+				member_email: email
+			)
+			ActiveRecord::Base.connection.close
+		}
 		render json: items
 	end
 
@@ -36,11 +46,15 @@ class FeedController < ApplicationController
 			@read = FeedResponse.read(@email).select{|x| @feed_ids.include?(x)}
 			@removed = FeedResponse.removed(@email).select{|x| @feed_ids.include?(x)}
 
-			# other trending stuff
-			# @trending = GoLink.trending(@me).first(15)
-
-			# pinned blogposts
-			# @pinned = Post.pinned(@me)
+			# save it in clicks
+			Thread.new{
+				GoLinkClick.create(
+					key: '/feed/view',
+					golink_id: 'feed_view_id',
+					member_email: myEmail
+				)
+				ActiveRecord::Base.connection.close
+			}
 		end
 	end
 
