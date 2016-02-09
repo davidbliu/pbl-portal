@@ -44,6 +44,22 @@ class TablingManager
 		end
 
 	end
+
+	def self.switch_tabling(email1, email2)
+		slot1 = TablingSlot.get_slot_by_email(email1)
+		slot2 = TablingSlot.get_slot_by_email(email2)
+		emails1 = slot1.member_emails
+		emails1.delete(email1)
+		emails2 = slot2.member_emails
+		emails2.delete(email2)
+		emails2 << email1
+		emails1 << email2
+		slot1.member_emails = emails1
+		slot2.member_emails = emails2
+		slot1.save
+		slot2.save
+	end
+
 	def self.assign(members, slots, assignments = {})
 		slots.each do |slot|
 			if not assignments.keys.include?(slot)

@@ -46,18 +46,7 @@ class TablingController < ApplicationController
 	end
 	def confirm_switch
 		request = TablingSwitchRequest.find(params[:id])
-		slot1 = TablingSlot.get_slot_by_email(request.email1)
-		slot2 = TablingSlot.get_slot_by_email(request.email2)
-		emails1 = slot1.member_emails
-		emails1.delete(request.email1)
-		emails2 = slot2.member_emails
-		emails2.delete(request.email2)
-		emails2 << request.email1
-		emails1 << request.email2
-		slot1.member_emails = emails1
-		slot2.member_emails = emails2
-		slot1.save
-		slot2.save
+		TablingManager.switch_tabling(request.email1, request.email2)
 		request.destroy
 		redirect_to '/tabling'
 	end

@@ -14,9 +14,9 @@
 		<div>Semester: <%= post.semester ? post.semester : 'None' %></div>
 		<div>
 			<a href = '/blog/edit?id=<%= post.id %>'>Edit post</a> 
-			&nbsp;|&nbsp;<a href = '/blog/post/<%= post.id %>'>Link to post</a>
+			<!-- &nbsp;|&nbsp;<a href = '/blog/post/<%= post.id %>'>Link to post</a> -->
 			<% if current_member.is_officer? %>
-			&nbsp;|&nbsp;<a href = '/blog/email/<%= post.id %>'>Email post</a>
+			<!-- &nbsp;|&nbsp;<a href = '/blog/email/<%= post.id %>'>Email post</a> -->
 			<% end %>
 		</div>
 	</div>

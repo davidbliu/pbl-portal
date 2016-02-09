@@ -6,6 +6,10 @@ class Post < ActiveRecord::Base
  	include Elasticsearch::Model::Callbacks
  	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
+
+ 	def mail(emails)
+ 		BlogMailer.send_blog_email(emails, self)
+ 	end
 	def self.channels
 		['Execs', 'Officers', 'CMs', 'GMs', 'Alumni', 'Opportunities']
 	end

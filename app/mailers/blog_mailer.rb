@@ -1,13 +1,11 @@
 class BlogMailer < ApplicationMailer
 
-	default from: "berkeleypbl.webdev@gmail.com"
-
-	def send_blog_email(members, post)
-		puts 'sending blog emails	'
+	def send_blog_email(emails, post)
 	    @post = post
+	    @title = @post.title + ' [PBL][Blog'
 	    mail( 
-	    	:to => members.join(','),
-	    	:subject => '[PBL][BLOG]: ' + @post.title 
+	    	:to => emails.join(','),
+	    	:subject => @title 
 	    ).deliver
   	end
 end
