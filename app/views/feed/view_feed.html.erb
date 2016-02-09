@@ -14,7 +14,8 @@
 	display:none;
 }
 .unread-item{
-	background-color:rgba(100,0,0,0.1);
+	/*background-color:rgba(100,0,0,0.1);*/
+	background-color:yellow;
 }
 .glyphicon.glyphicon-ok:hover{
 	color:green;
@@ -78,7 +79,7 @@
 	<%= feed_item.body %>
 	<div class = 'item-meta'>
 		<%= feed_item.get_permissions %> can view
-		|&nbsp;<a id = '<%= feed_item.id %>' class = 'destroy-btn' href = 'javascript:void(0)'>Destroy</a>
+		<!-- |&nbsp;<a id = '<%= feed_item.id %>' class = 'destroy-btn' href = 'javascript:void(0)'>Destroy</a> -->
 		|&nbsp;<a href = '/feed/push/<%= feed_item.id %>'>Push</a>
 		|&nbsp;<a href = '/feed/details/<%= feed_item.id %>'>Details</a>
 	</div>

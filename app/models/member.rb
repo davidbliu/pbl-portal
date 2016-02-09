@@ -13,6 +13,10 @@ class Member < ActiveRecord::Base
     Member.where(email:'davidbliu@gmail.com').first
   end
 
+  def is_admin?
+    self.name == 'David Liu' or self.name == 'Haruko Ayabe'
+  end
+
   def is_officer?
     self.position == 'chair' or self.position == 'exec'
   end

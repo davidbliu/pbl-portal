@@ -44,6 +44,14 @@ class TablingController < ApplicationController
 			end
 		end
 	end
+
+	def admin_switch
+		m1 = Member.where('lower(name) = ?', params[:name1].downcase).first
+		m2 = Member.where('lower(name) = ?', params[:name2].downcase).first
+		TablingManager.switch_tabling(m1.email, m2.email)
+		render nothing: true, status: 200
+	end
+
 	def confirm_switch
 		request = TablingSwitchRequest.find(params[:id])
 		TablingManager.switch_tabling(request.email1, request.email2)

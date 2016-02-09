@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   get 'tabling/confirm_switch/:id' => 'tabling#confirm_switch'
   get 'tabling/generate' => 'tabling#generate'
   get 'tabling/schedules' => 'tabling#schedules'
+  post 'tabling/admin_switch' => 'tabling#admin_switch'
   # push notifications
   get 'push' => 'push#index'
   get 'push/register'  => 'push#register'

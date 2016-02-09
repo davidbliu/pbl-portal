@@ -14,6 +14,10 @@
 	<% end %>
 <% end %>
 
+<% if @me.is_admin? %>
+	<div class = 'btn btn-info' id = 'admin-switch-btn'>
+	Admin Switch Tabling</div>
+<% end %>
 </div>
 <h1>Tabling Schedule</h1>
 <div id = 'switch-btn' class = 'btn btn-default'>Switch tabling</div>
@@ -40,6 +44,26 @@
 
 
 <script type = 'text/javascript'>
+$('#admin-switch-btn').click(function(){
+	var x = prompt("Enter both names (comma separated)", 'Justin Bieber, Selena Gomez');
+	if(x){
+		x = x.split(',');
+		name1 = x[0].trim();
+		name2 = x[1].trim();
+		$.ajax({
+			url:'/tabling/admin_switch',
+			type:'POST',
+			data:{
+				name1: name1,
+				name2: name2
+			},
+			success:function(data){
+				location.reload();
+			}
+		})
+
+	}
+})
 $('#switch-btn').click(function(){
 	var x = prompt("Who do you want to switch with? (this will override any previous switch requests)");
 	if(x){
