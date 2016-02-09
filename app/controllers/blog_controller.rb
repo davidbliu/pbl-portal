@@ -99,12 +99,12 @@ class BlogController < ApplicationController
 		post = Post.find(params[:id])
 		post.mail(['davidbliu@gmail.com'])
 
-		Notification.create(
-			notification_type: 'blog', 
-			object_id: params[:id],
-			channels: params[:channels],
-			sender: current_member.email
-		)
+		# Notification.create(
+		# 	notification_type: 'blog', 
+		# 	object_id: params[:id],
+		# 	channels: params[:channels],
+		# 	sender: current_member.email
+		# )
 		render nothing: true, status: 200
 	end
 
