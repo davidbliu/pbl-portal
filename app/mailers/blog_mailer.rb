@@ -13,11 +13,11 @@ class BlogMailer < ActionMailer::Base
 	    ).deliver
   	end
 
-  	def mail_post(emails, post)
+  	def mail_post(email, post)
   		@post = post
   		@subject = post.title + '[PBL]'
   		mail(
-  			:to=> emails.join(','), 
+  			:to=> email, 
   			:subject => @subject
   		)
   	end
