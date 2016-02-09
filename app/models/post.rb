@@ -7,11 +7,23 @@ class Post < ActiveRecord::Base
  	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
 
- 	def mail(emails)
- 		BlogMailer.send_blog_email(emails, self)
+ 	def self.channel_to_emails(channel)
+ 		email_dict = {
+ 			GMs: 'berkeley-pbl-spring-2016-general-members@googlegroups.com',
+			CMs: 'berkeley-pbl-spring-2016-committee-members@googlegroups.com',
+			CMs_and_Officers: 'berkeleypblcommittees@lists.berkeley.edu',
+			Officers: 'berkeleypblofficers@lists.berkeley.edu',
+			Execs: 'berkeleypblexecs@lists.berkeley.edu',
+			David: 'davidbliu@gmail.com'
+ 		}
+ 		return email_dict[channel]
  	end
+ 	def send_mail(channel)
+ 		BlogMailer.mail_post(Post.channel_to_emails(channel), self)
+ 	end
+
 	def self.channels
-		['Execs', 'Officers', 'CMs', 'GMs', 'Alumni', 'Opportunities']
+		['CMs_and_Officers', 'Execs', 'Officers', 'CMs', 'GMs', 'David']
 	end
 
 	def time_string

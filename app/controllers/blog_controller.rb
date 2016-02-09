@@ -97,8 +97,8 @@ class BlogController < ApplicationController
 
 	def send_email
 		post = Post.find(params[:id])
-		post.mail(['davidbliu@gmail.com'])
-
+		post.send_mail(params[:channel])
+		BlogMailer.mail_post(['davidbliu@gmail.com'], post).deliver
 		# Notification.create(
 		# 	notification_type: 'blog', 
 		# 	object_id: params[:id],

@@ -79,10 +79,12 @@ Rails.application.configure do
 
   # email settings
   config.action_mailer.delivery_method = :smtp
-
-  # add for david
   config.action_mailer.perform_deliveries = true
+  # add for david
+  
   config.assets.compile = true
   config.assets.precompile = ['*.js', '*.css', '*.css.erb']
+
+  # serve stuff from /public folder
   config.serve_static_assets = true
 end
