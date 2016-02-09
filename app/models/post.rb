@@ -19,7 +19,13 @@ class Post < ActiveRecord::Base
  		return email_dict[channel]
  	end
  	def send_mail(channel)
+
  		BlogMailer.mail_post(Post.channel_to_emails(channel), self)
+ 		# add to feed
+ 		FeedItem.create(
+ 			title: self.title,
+ 			body: 'New post out on the blog!',
+ 			link: 'http://portal.berkeley-pbl.com/blog/post/'+self.id.to_s)
  	end
 
 	def self.channels
