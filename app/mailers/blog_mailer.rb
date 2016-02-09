@@ -15,10 +15,11 @@ class BlogMailer < ActionMailer::Base
 
   	def mail_post(email, post)
   		@post = post
-  		@subject = post.title + '[PBL]'
+  		@subject = post.title
   		mail(
   			:to=> email, 
-  			:subject => @subject
+  			:subject => @subject,
+  			:from => '[PBL][Blog]<berkeleypbl.webdev@gmail.com>'
   		)
   	end
 end
