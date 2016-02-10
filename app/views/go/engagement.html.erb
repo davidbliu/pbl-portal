@@ -1,9 +1,10 @@
 <style type = 'text/css'>
-.click-td{
-	max-height:250px;
+table>tbody>tr>td>.click-div{
+	max-height:250px !important;
 	overflow:auto;
 }
 </style>
+
 <table class = 'table table-condensed table-bordered'>
 <thead>
 	<th>Name</th>
@@ -15,12 +16,14 @@
 <tr>
 	<td><%= member.name %></td>
 	<td><%= member.committee %></td>
-	<td class = 'click-td'>
+	<td>
+		<div class = 'click-div'>
 		<% @click_hash[member.email].each do |click| %>
 		<div>
 			<%= click.time_string %> | <%= click.key %>
 		</div>
 		<% end %>
+		</div>
 	</td>
 </tr>
 <% end %>

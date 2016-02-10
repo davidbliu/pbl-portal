@@ -69,6 +69,7 @@ class GoController < ApplicationController
   def engagement
     @members = Member.current_members
       .where.not(committee:'GM')
+      .where.not(email:'davidbliu@gmail.com')
       .order('committee')
     @click_hash = {}
     seen = []
