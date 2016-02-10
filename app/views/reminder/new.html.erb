@@ -1,0 +1,28 @@
+<input type = 'text' class = 'form-control' placeholder = 'title' id = 'title-input'>
+
+<input type = 'text' class = 'form-control' placeholder = 'body' id = 'body-input'>
+
+<input type = 'text' class = 'form-control' placeholder = 'link' id = 'link-input'>
+
+<input type = 'text' class = 'form-control' placeholder = 'emails' id = 'emails-input'>
+
+<div class = 'btn btn-default' id = 'create-btn'>
+Create Reminder</div>
+
+<script type = 'text/javascript'>
+$('#create-btn').click(function(){
+	$.ajax({
+		url:'/reminders/create',
+		type:'POST',
+		data:{
+			title: $('#title-input').val(),
+			body: $('#body-input').val(),
+			link: $('#link-input').val(),
+			emails: $('#emails-input').val().split(','),
+		},
+		success:function(data){
+			window.location = '/reminders/admin'
+		}
+	});
+});	
+</script>

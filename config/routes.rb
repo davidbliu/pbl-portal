@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   get 'tabling/generate' => 'tabling#generate'
   get 'tabling/schedules' => 'tabling#schedules'
   post 'tabling/admin_switch' => 'tabling#admin_switch'
+  
   # push notifications
   get 'push' => 'push#index'
   get 'push/register'  => 'push#register'
@@ -68,6 +69,15 @@ Rails.application.routes.draw do
 
   # precompute stuff
   get 'c/trending_links' => 'compute#trending_links'
+
+  #reminders
+  get 'reminders' => 'reminder#index'
+  post 'reminders/delete' => 'reminder#delete'
+  get 'reminders/redirect/:id' => 'reminder#redirect'
+  get 'reminders/new' => 'reminder#new'
+  get 'reminders/admin' => 'reminder#admin'
+  get 'reminders/destroy_all' => 'reminder#destroy_all'
+  post 'reminders/create' => 'reminder#create'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

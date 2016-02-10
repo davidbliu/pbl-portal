@@ -1,0 +1,14 @@
+<a href = '/reminders/destroy_all'>
+	<div class = 'btn btn-default'>Destroy All Reminders</div>
+</div>
+<% @reminders.each do |reminder| %>
+<div>
+	<%= reminder.created_at %>
+	| <%= reminder.member_email %>
+	| <%= reminder.author %>
+	| <%= reminder.title %>
+	| <%= reminder.body %>
+	| <%= reminder.link %>
+	
+</div>
+<% end %>
