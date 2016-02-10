@@ -1,0 +1,11 @@
+<input id = 'keys-input' type = 'text' class = 'form-control' placeholder = 'keys'>
+<input id = 'time-input' type = 'text' class = 'form-control' placeholder = 'YY/MM/DD HH:MM (24 hour format)'>
+
+<btn class = 'btn btn-default' id = 'submit-btn'>Submit</btn>
+<script type = 'text/javascript'>
+$('#submit-btn').click(function(){
+	window.location.href = '/go/engagement?keys='+encodeURIComponent($('#keys-input').val())
+		+'&time='
+		+encodeURIComponent($('#time-input').val());
+});
+</script>

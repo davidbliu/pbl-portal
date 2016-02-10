@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   post 'go/destroy' => 'go#destroy'
   get 'go/insights/:id' => 'go#insights'
   get 'go/engagement' => 'go#engagement'
+  get 'go/admin' => 'go#admin'
 
   #blog
   get 'blog' => 'blog#index'

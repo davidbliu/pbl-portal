@@ -3,7 +3,21 @@ table>tbody>tr>td>.click-div{
 	max-height:250px !important;
 	overflow:auto;
 }
+.inactive{
+	background-color:rgba(100,0,0,0.1);
+}
 </style>
+
+<% if @keys and @keys != [] %>
+<h1>Engagement with <%= @keys.join(', ') %></h1>
+<% else %>
+<h1>Engagement with PBL Links</h1>
+<a href = '/go/admin'>Set filters here</a>
+<% end %>
+
+<% if @time %>
+<h2>Since <%= @time %></h2>
+	<% end %>
 
 <table class = 'table table-condensed table-bordered'>
 <thead>
@@ -13,7 +27,11 @@ table>tbody>tr>td>.click-div{
 </thead>
 <tbody>
 <% @members.each do |member| %>
+<% if @inactive.include?(member) %>
+<tr class = 'inactive'>
+<% else %>
 <tr>
+<% end %>
 	<td><%= member.name %></td>
 	<td><%= member.committee %></td>
 	<td>
@@ -29,3 +47,15 @@ table>tbody>tr>td>.click-div{
 <% end %>
 </tbody>
 </table>
+
+<div>Inactive members
+	<p>
+		<%= @inactive.map{|x| x.email}.join(', ') %>
+	</p>
+</div>
+
+<div>Active members
+	<p>
+		<%= @active.map{|x| x.email}.join(', ') %>
+	</p>
+</div>

@@ -1,4 +1,7 @@
 class GoController < ApplicationController
+
+
+
   def redirect
     # must have an email to use pbl links
     if myEmail == nil or myEmail == ''
@@ -74,18 +77,52 @@ class GoController < ApplicationController
     @email_hash = Member.email_hash
   end
 
+  def admin
+    # @members = Member.current_members
+    #   .where.not(committee:'GM')
+    #   .where.not(email:'davidbliu@gmail.com')
+    #   .order('committee')
+    # @click_hash = {}
+    # seen = []
+    # @members.each do |m|
+    #   @click_hash[m.email] = []
+    #   seen << m.email
+    # end
+    # clicks = GoLinkClick.order('created_at DESC').all.to_a
+    # clicks.each do |click|
+    #   if not seen.include?(click.member_email)
+    #     @click_hash[click.member_email] = []
+    #     seen << click.member_email
+    #   else
+    #     @click_hash[click.member_email] << click
+    #   end
+    # end
+  end
+
   def engagement
+    keys = params[:keys] ? params[:keys].split(',') : []
+    @keys = keys
+    clicks = GoLinkClick.order('created_at DESC')
+        .where.not(member_email:'davidbliu@gmail.com')
+    if keys != []
+      clicks = clicks.where('key in (?)', keys)
+    end
+    if params[:time] and params[:time] != ''
+      time = Time.parse(params[:time])
+      @time = time
+      clicks = clicks.where('created_at > ?', time)
+    end
     @members = Member.current_members
       .where.not(committee:'GM')
       .where.not(email:'davidbliu@gmail.com')
-      .order('committee')
+      .order(:committee)
+
     @click_hash = {}
     seen = []
     @members.each do |m|
       @click_hash[m.email] = []
       seen << m.email
     end
-    clicks = GoLinkClick.order('created_at DESC').all.to_a
     clicks.each do |click|
       if not seen.include?(click.member_email)
         @click_hash[click.member_email] = []
@@ -93,7 +130,18 @@ class GoController < ApplicationController
       else
         @click_hash[click.member_email] << click
       end
+    end  
+
+    @inactive = []
+    @active = []
+    @members.each do |m|
+      if not @click_hash[m.email] or @click_hash[m.email].length ==0
+        @inactive << m
+      else
+        @active << m
+      end
     end
+
   end
 
 
