@@ -90,8 +90,6 @@ class GoController < ApplicationController
 
 
   def add
-
-
     if params[:key]
       @golink = GoLink.create(
         key: params[:key],

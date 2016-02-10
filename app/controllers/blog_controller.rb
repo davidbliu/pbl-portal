@@ -14,6 +14,7 @@ class BlogController < ApplicationController
 		end
 		@tags = Post.tags
 		@posts = @posts.paginate(:page => params[:page], :per_page => 30)
+		
 		# save it in clicks
 		Thread.new{
 			GoLinkClick.create(
@@ -48,7 +49,8 @@ class BlogController < ApplicationController
 			redirect_to '/auth/google_oauth2'
 		else
 			@post = Post.find(params[:id])
-
+			@comments = PostComment.where(post_id: params[:id]).order('created_at DESC')
+			@email_hash = Member.email_hash
 			# save it in clicks
 			Thread.new{
 				GoLinkClick.create(
@@ -98,16 +100,16 @@ class BlogController < ApplicationController
 	def send_email
 		post = Post.find(params[:id])
 		post.send_mail(params[:channel])
-		BlogMailer.mail_post(['davidbliu@gmail.com'], post).deliver
-		# Notification.create(
-		# 	notification_type: 'blog', 
-		# 	object_id: params[:id],
-		# 	channels: params[:channels],
-		# 	sender: current_member.email
-		# )
 		render nothing: true, status: 200
 	end
 
-	def send_push
+	def post_comment
+		c = PostComment.new(
+			member_email: myEmail,
+			content: params[:comment],
+			post_id: params[:id]
+		)
+		c.save!
+		render nothing: true, status: 200
 	end
 end

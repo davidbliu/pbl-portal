@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   post 'blog/save' => 'blog#save'
   post 'blog/destroy/:id' => 'blog#destroy'
   post 'blog/send_email/:id' => 'blog#send_email'
+  post 'blog/post_comment/:id' => 'blog#post_comment'
 
   #tabling
   get 'tabling' => 'tabling#index'

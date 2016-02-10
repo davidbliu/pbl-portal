@@ -1,0 +1,19 @@
+<div class = 'post-meta'>
+	<div><%= email_hash[post.author].name %></div>
+	<div><%= post.view_permissions %> can view</div>
+	<div>Semester: <%= post.semester ? post.semester : 'None' %></div>
+	<div>
+		<a href = '/blog/edit?id=<%= post.id %>'>
+			<div class = 'btn btn-default'>
+				Edit post
+			</div>
+		</a> 
+		<% if current_member.is_officer? %>
+		<a href = '/blog/email/<%= post.id %>'>
+			<div class = 'btn btn-default'>
+				Email post
+			</div>
+		</a>
+		<% end %>
+	</div>
+</div>

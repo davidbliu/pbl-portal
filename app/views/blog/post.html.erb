@@ -6,7 +6,9 @@
 	width:300px;
 }
 .post-meta{
-	/*float:right;*/
+	border: 1px solid rgba(0,0,0,0.1);
+	padding:10px;
+	margin:5px;	
 }
 .tag-label>a{
 	color:white;
@@ -14,7 +16,12 @@
 </style>
 
 <div class = 'col-md-3'>
-<a href = '/blog'>Back to blog</a>
+	<a href = '/blog'>
+		<div class = 'btn btn-default'>
+			Back to blog
+		</div>
+	</a>
+	<%= render partial: 'meta', locals: {post: @post, email_hash: @email_hash} %>
 </div>
 
 <div id = 'post-area' class = 'col-md-6'>
@@ -22,4 +29,40 @@
 </div>
 
 
-<div class = 'col-md-3'></div>
+<div class = 'col-md-3'>
+	<textarea id = 'comment-textarea' class = 'form-control' placeholder = 'Let <%= @email_hash[@post.author].name %> know what you think'></textarea>
+	<div id = 'add-comment-btn' class = 'btn btn-default'>Add Comment</div>
+
+	<div class = 'comments-div'>
+		<% if @comments.length == 0 %>
+		No comments to show
+		<% else %>
+		<h4>Comments</h4>
+		<ul class = 'list-group'>
+			<% @comments.each do |comment| %>
+			<li class = 'list-group-item'>
+				<%= @email_hash[comment.member_email].name %>:
+				<%= comment.content %>
+				<div class = 'smalltext text-muted'><%= comment.created_at %></div>
+			</li>
+			<% end %>
+		</ul>
+		<% end %>
+	</div>
+</div>
+
+
+<script type = 'text/javascript'>
+$('#add-comment-btn').click(function(){
+	$.ajax({
+		url:'/blog/post_comment/<%= @post.id %>',
+		type:'POST',
+		data:{
+			comment:$('#comment-textarea').val()
+		},
+		success:function(data){
+			location.reload();
+		}
+	});
+});
+</script>
