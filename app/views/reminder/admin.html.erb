@@ -58,7 +58,7 @@ $('.delete-reminder').click(function(){
 			id: $(this).attr('id')
 		},
 		success:function(data){
-			$(that).parent().remove();
+			$(that).parent().parent().remove();
 		}
 	})
 });
