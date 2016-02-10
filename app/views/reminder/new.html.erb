@@ -6,6 +6,9 @@
 
 <input type = 'text' class = 'form-control' placeholder = 'emails' id = 'emails-input'>
 
+
+<input type = 'text' class = 'form-control' placeholder = 'reminder id' id = 'id-input'>
+
 <div class = 'btn btn-default' id = 'create-btn'>
 Create Reminder</div>
 
@@ -19,6 +22,7 @@ $('#create-btn').click(function(){
 			body: $('#body-input').val(),
 			link: $('#link-input').val(),
 			emails: $('#emails-input').val().split(','),
+			id: $('#id-input').val()
 		},
 		success:function(data){
 			window.location = '/reminders/admin'

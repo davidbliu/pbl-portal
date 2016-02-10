@@ -22,4 +22,8 @@ class BlogMailer < ActionMailer::Base
   			:from => 'PBL Blog <berkeleypbl.webdev@gmail.com>'
   		)
   	end
+
+  	# TODO notify the post author that someone commented on their post
+  	def comment_mail(post)
+  	end
 end

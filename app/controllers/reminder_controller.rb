@@ -37,6 +37,11 @@ class ReminderController < ApplicationController
 		redirect_to '/reminders/admin'
 	end
 
+	def destroy_id
+		Reminder.where(reminder_id: params[:id]).destroy_all
+		render nothing: true, status: 200
+	end
+
 
 	def admin
 		@reminders = Reminder.all.to_a
@@ -50,7 +55,8 @@ class ReminderController < ApplicationController
 				author: myEmail,
 				title: params[:title],
 				body: params[:body],
-				link: params[:link]
+				link: params[:link],
+				reminder_id: params[:id]
 			)
 			Rails.cache.write(email+':reminders', true)
 		end

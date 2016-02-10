@@ -1,22 +1,54 @@
 <a href = '/reminders/destroy_all'>
 	<div class = 'btn btn-default'>Destroy All Reminders</div>
 </a>
+
+	<div id = 'destroy-id-btn' class = 'btn btn-default'>Destroy by ID</div>
+
+
 <a href = '/reminders/new'>
 	<div class = 'btn btn-default'>New Reminder</div>
 </a>
+<table class = 'table table-condensed'>
+	<thead>
+		<th>time</th>
+		<th>recipient</th>
+		<th>author</th>
+		<th>title</th>
+		<th>body</th>
+		<th>link</th>
+		<th>id</th>
+		<th></th>
+	</thead>
+	<tbody>
 <% @reminders.each do |reminder| %>
-<div>
-	<%= reminder.created_at %>
-	| <%= reminder.member_email %>
-	| <%= reminder.author %>
-	| <%= reminder.title %>
-	| <%= reminder.body %>
-	| <%= reminder.link %>
-	<a href = 'javascript:void(0)' id = '<%= reminder.id %>' class = 'delete-reminder'>x</a>
-</div>
+<tr>
+	<td><%= reminder.created_at %></td>
+	<td><%= reminder.member_email %></td>
+	<td><%= reminder.author %></td>
+	<td><%= reminder.title %></td>
+	<td><%= reminder.body %></td>
+	<td><%= reminder.link %></td>
+	<td><%= reminder.reminder_id %></td>
+	<td>
+		<a href = 'javascript:void(0)' id = '<%= reminder.id %>' class = 'delete-reminder'>x</a>
+	</td>
+</tr>
 <% end %>
 
 <script type = 'text/javascript'>
+$('#destroy-id-btn').click(function(){
+	x = prompt('what id would you like to destroy?');
+	if(x){
+		$.ajax({
+			url:'/reminders/destroy_id',
+			type:'POST',
+			data:{id: x},
+			success:function(data){
+				location.reload();
+			}
+		});
+	}
+});
 $('.delete-reminder').click(function(){
 	var that = $(this);
 	$.ajax({
