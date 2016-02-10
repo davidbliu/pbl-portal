@@ -58,12 +58,35 @@ class GoController < ApplicationController
     @members = Member.current_members.where.not(committee: 'GM').to_a
   end
 
+
   def recent
     @recent = GoLinkClick.order('created_at DESC')
       .where.not(member_email: 'davidbliu@gmail.com')
       .first(1000)
     @email_hash = Member.email_hash
   end
+
+  def engagement
+    @members = Member.current_members
+      .where.not(committee:'GM')
+      .order('committee')
+    @click_hash = {}
+    seen = []
+    @members.each do |m|
+      @click_hash[m.email] = []
+      seen << m.email
+    end
+    clicks = GoLinkClick.order('created_at DESC').all.to_a
+    clicks.each do |click|
+      if not seen.include?(click.member_email)
+        @click_hash[click.member_email] = []
+        seen << click.member_email
+      else
+        @click_hash[click.member_email] << click
+      end
+    end
+  end
+
 
   def add
 

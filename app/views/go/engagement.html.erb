@@ -1,0 +1,28 @@
+<style type = 'text/css'>
+.click-td{
+	max-height:250px;
+	overflow:auto;
+}
+</style>
+<table class = 'table table-condensed table-bordered'>
+<thead>
+	<th>Name</th>
+	<th>Committee</th>
+	<th>Clicks</th>
+</thead>
+<tbody>
+<% @members.each do |member| %>
+<tr>
+	<td><%= member.name %></td>
+	<td><%= member.committee %></td>
+	<td class = 'click-td'>
+		<% @click_hash[member.email].each do |click| %>
+		<div>
+			<%= click.time_string %> | <%= click.key %>
+		</div>
+		<% end %>
+	</td>
+</tr>
+<% end %>
+</tbody>
+</table>
