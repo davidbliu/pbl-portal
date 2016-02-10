@@ -1,6 +1,9 @@
 <a href = '/reminders/destroy_all'>
 	<div class = 'btn btn-default'>Destroy All Reminders</div>
-</div>
+</a>
+<a href = '/reminders/new'>
+	<div class = 'btn btn-default'>New Reminder</div>
+</a>
 <% @reminders.each do |reminder| %>
 <div>
 	<%= reminder.created_at %>
@@ -9,6 +12,22 @@
 	| <%= reminder.title %>
 	| <%= reminder.body %>
 	| <%= reminder.link %>
-	
+	<a href = 'javascript:void(0)' id = '<%= reminder.id %>' class = 'delete-reminder'>x</a>
 </div>
 <% end %>
+
+<script type = 'text/javascript'>
+$('.delete-reminder').click(function(){
+	var that = $(this);
+	$.ajax({
+		url:'/reminders/delete',
+		type:'POST',
+		data:{
+			id: $(this).attr('id')
+		},
+		success:function(data){
+			$(that).parent().remove();
+		}
+	})
+});
+</script>

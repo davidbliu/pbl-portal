@@ -32,7 +32,7 @@ class ReminderController < ApplicationController
 	end
 
 	def destroy_all
-		Reminder.all.destroy
+		Reminder.destroy_all
 		Rails.cache.clear
 		redirect_to '/reminders/admin'
 	end
@@ -56,5 +56,5 @@ class ReminderController < ApplicationController
 		end
 		render nothing: true, status: 200
 	end
-	
+
 end
