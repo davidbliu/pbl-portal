@@ -81,6 +81,9 @@ Rails.application.routes.draw do
   post 'reminders/create' => 'reminder#create'
   post 'reminders/destroy_id' => 'reminder#destroy_id'
 
+
+  get 'courseware' => 'courseware#index'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
