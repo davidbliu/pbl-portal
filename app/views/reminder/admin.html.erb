@@ -3,6 +3,9 @@
 	max-height:250px !important;
 	overflow:auto;
 }
+.body-td{
+	width:20%;
+}
 </style>
 <a href = '/reminders/destroy_all'>
 	<div class = 'btn btn-default'>Destroy All Reminders</div>
@@ -28,16 +31,22 @@
 <% @reminder_hash.keys.each do |id| %>
 <tr>
 	<td><%= id %></td>
-	<td><%= @reminder_hash[id][0].author %></td>
+	<td>
+		<%= @email_hash.keys.include?(@reminder_hash[id][0].author) ? 
+			@email_hash[@reminder_hash[id][0].author].name : @reminder_hash[id][0].author %>
+
+	</td>
 	<td><%= @reminder_hash[id][0].title %></td>
-	<td><%= @reminder_hash[id][0].body %></td>
+	<td class = 'body-td'><%= @reminder_hash[id][0].body %></td>
 	<td><%= @reminder_hash[id][0].link %></td>
 
 	<td>
+		Count: <%= @reminder_hash[id].length %>
 		<div class = 'email-div'>
 		<% @reminder_hash[id].each do |r| %>
 		<div>
-			<%= r.member_email %>
+			<%= @email_hash.keys.include?(r.member_email) ? 
+			@email_hash[r.member_email].name : r.member_email %>
 			| <a href = 'javascript:void(0)' id = '<%= r.id %>' class = 'delete-reminder'>x</a>
 
 		</div>

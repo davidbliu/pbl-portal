@@ -52,23 +52,33 @@ class ReminderController < ApplicationController
 			end
 			@reminder_hash[r.reminder_id] << r
 		end
+		@email_hash = Member.email_hash
 	end
 
 	def create
-		emails = params[:emails]
-		emails.each do |email|
-			email = email.strip
-			Reminder.create(
-				member_email: email,
-				author: myEmail,
-				title: params[:title],
-				body: params[:body],
-				link: params[:link],
-				reminder_id: params[:id]
-			)
-			Rails.cache.write(email+':reminders', true)
+		past_reminders = Reminder.where(reminder_id: params[:id])
+		if past_reminders.length > 0
+			render json: 'that ID has been used already! pick a unique id or remove the old reminders', status:500
+		else
+			members = Member.current_members
+			rec = params[:emails]
+			rec.each do |str|
+				str = str.strip
+				emails = Reminder.get_recipients(str, members)
+				emails.each do |email|
+					Reminder.create(
+						member_email: email,
+						author: myEmail,
+						title: params[:title],
+						body: params[:body],
+						link: params[:link],
+						reminder_id: params[:id]
+					)
+					Rails.cache.write(email+':reminders', true)
+				end
+			end
+			render nothing: true, status: 200
 		end
-		render nothing: true, status: 200
 	end
 
 end

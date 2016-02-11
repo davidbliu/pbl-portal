@@ -10,4 +10,18 @@ class Reminder < ActiveRecord::Base
 		)
 	end
 
+	def self.get_recipients(str, members)
+		str = str.downcase.strip
+		committees = Member.committees.map{|x| x.downcase}
+		if committees.include?(str)
+			return members.select{|x| x.committee == str.upcase}.map{|x| x.email}
+		elsif str == 'all'
+			return Member.current_members.where.not(committee:'GM').map{|x| x.email}
+		else
+			
+			m = members.select{|x| x.name.downcase == str or x.email == str}
+			return m.map{|x| x.email}
+		end
+	end
+
 end

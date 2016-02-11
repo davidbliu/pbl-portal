@@ -26,6 +26,9 @@ $('#create-btn').click(function(){
 		},
 		success:function(data){
 			window.location = '/reminders/admin'
+		},
+		error:function(data){
+			alert(data.responseText);
 		}
 	});
 });	
