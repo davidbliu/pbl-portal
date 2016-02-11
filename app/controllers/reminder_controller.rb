@@ -45,6 +45,13 @@ class ReminderController < ApplicationController
 
 	def admin
 		@reminders = Reminder.all.to_a
+		@reminder_hash = {}
+		@reminders.each do |r|
+			if not @reminder_hash.keys.include?(r.reminder_id)
+				@reminder_hash[r.reminder_id] = []
+			end
+			@reminder_hash[r.reminder_id] << r
+		end
 	end
 
 	def create

@@ -1,3 +1,9 @@
+<style type = 'text/css'>
+.email-div{
+	max-height:250px !important;
+	overflow:auto;
+}
+</style>
 <a href = '/reminders/destroy_all'>
 	<div class = 'btn btn-default'>Destroy All Reminders</div>
 </a>
@@ -10,28 +16,35 @@
 </a>
 <table class = 'table table-condensed'>
 	<thead>
-		<th>time</th>
-		<th>recipient</th>
+		<th>reminder_id</th>
 		<th>author</th>
 		<th>title</th>
 		<th>body</th>
 		<th>link</th>
-		<th>id</th>
-		<th></th>
+		<th>recipients</th>
+
 	</thead>
 	<tbody>
-<% @reminders.each do |reminder| %>
+<% @reminder_hash.keys.each do |id| %>
 <tr>
-	<td><%= reminder.created_at %></td>
-	<td><%= reminder.member_email %></td>
-	<td><%= reminder.author %></td>
-	<td><%= reminder.title %></td>
-	<td><%= reminder.body %></td>
-	<td><%= reminder.link %></td>
-	<td><%= reminder.reminder_id %></td>
+	<td><%= id %></td>
+	<td><%= @reminder_hash[id][0].author %></td>
+	<td><%= @reminder_hash[id][0].title %></td>
+	<td><%= @reminder_hash[id][0].body %></td>
+	<td><%= @reminder_hash[id][0].link %></td>
+
 	<td>
-		<a href = 'javascript:void(0)' id = '<%= reminder.id %>' class = 'delete-reminder'>x</a>
+		<div class = 'email-div'>
+		<% @reminder_hash[id].each do |r| %>
+		<div>
+			<%= r.member_email %>
+			| <a href = 'javascript:void(0)' id = '<%= r.id %>' class = 'delete-reminder'>x</a>
+
+		</div>
+		<% end %>
+		</div>	
 	</td>
+
 </tr>
 <% end %>
 
@@ -58,7 +71,7 @@ $('.delete-reminder').click(function(){
 			id: $(this).attr('id')
 		},
 		success:function(data){
-			$(that).parent().parent().remove();
+			$(that).parent().remove();
 		}
 	})
 });

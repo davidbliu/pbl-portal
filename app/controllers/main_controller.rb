@@ -4,5 +4,6 @@ class MainController < ApplicationController
   end
 
   def home
+  	@referrer = request.referrer# request.env["HTTP_REFERER"]
   end
 end
