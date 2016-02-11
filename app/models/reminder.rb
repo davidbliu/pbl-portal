@@ -20,7 +20,11 @@ class Reminder < ActiveRecord::Base
 		else
 			
 			m = members.select{|x| x.name.downcase == str or x.email == str}
-			return m.map{|x| x.email}
+			if m.length > 0
+				return m.map{|x| x.email}
+			else
+				return str
+			end
 		end
 	end
 
