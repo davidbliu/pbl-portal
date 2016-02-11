@@ -112,15 +112,16 @@ function activateEditable(){
 				data: updateData,
 				success:function(data){
 					console.log('updated');
-					if($(that).hasClass('editable-toggle')){
-						$(this).unbind('focusin');
-						$(that).unbind('focusout');
-						$(that).attr('contenteditable', false);
-						activateEditableToggle();
-					}
+
 				}
 			});
 			
+		}
+		if($(that).hasClass('editable-toggle')){
+			$(this).unbind('focusin');
+			$(that).unbind('focusout');
+			$(that).attr('contenteditable', false);
+			activateEditableToggle();
 		}
 	});
 
