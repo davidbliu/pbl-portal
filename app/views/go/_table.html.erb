@@ -35,7 +35,13 @@
 
 			<td class = 'editable' data-col = 'key'>{{golink.key}}</td>	
 			<td class = 'editable' data-col = 'description'>{{golink.description}}</td>
-			<td class = 'editable' data-col = 'url'><a href = '{{golink.url}}'>{{golink.url}}</a></td>
+			<td data-col = 'url' id = '{{golink.id}}' data-id = '{{golink.id}}'>
+				<div class = 'editable-toggle url-div' data-col = 'url'>
+					<!-- <a href = '{{golink.url}}' > -->
+					{{golink.url}}
+					<!-- </a> -->
+				</div>
+			</td>
 			<td class = 'permissions-edit'>{{golink.permissions}}</td>
 			<td>{{golink.member_email}}</td>
 			<td>
@@ -53,12 +59,46 @@ var editData;
 
 var permissionLinkId;
 var permissionTd;
+var DELAY = 500, clicks = 0, timer = null;
+
+function activateEditableToggle(){
+
+	$('.editable-toggle').unbind('click').on('click',function(){
+		var that = $(this);
+		clicks++;
+		if(clicks == 1){
+			 timer = setTimeout(function() {
+                clicks = 0;
+                window.location = $(that).text();
+            }, DELAY);
+		}
+		else{
+			clearTimeout(timer);
+			clicks = 0;
+			if(!$(this).hasClass('editable')){
+				$(this).addClass('editable');
+				$(this).unbind('click');
+				activateEditable();
+				$(this).focus();
+			}
+			else{
+				$(this).removeClass('editable');
+				
+			}
+		}
+		
+	})
+	.on("dblclick", function(e){
+        e.preventDefault();//cancel system double-click event
+    });
+}
 function activateEditable(){
 	$('.editable').attr('contenteditable', true);
-	$('.editable').focusin(function(){
+	$('.editable').unbind('focusin').focusin(function(){
 		editData = $(this).text();
 	});
-	$('.editable').focusout(function(){
+	$('.editable').unbind('focusout').focusout(function(){
+		var that = $(this);
 		if(editData != $(this).text()){
 			var col = $(this).attr('data-col');
 			var val = $(this).text();
@@ -71,9 +111,16 @@ function activateEditable(){
 				type:'POST',
 				data: updateData,
 				success:function(data){
-					console.log('updated golinks');
+					console.log('updated');
+					if($(that).hasClass('editable-toggle')){
+						$(this).unbind('focusin');
+						$(that).unbind('focusout');
+						$(that).attr('contenteditable', false);
+						activateEditableToggle();
+					}
 				}
 			});
+			
 		}
 	});
 

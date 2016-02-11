@@ -6,6 +6,14 @@ td{
 #search-input{
 	width:300px;
 }
+.url-div{
+	max-height:100px !important;
+	overflow:auto;
+	color:#337ab7;
+}
+.url-div:hover{
+	cursor:pointer;
+}
 </style>
 <body ng-app = 'goApp'>
 <div ng-controller = 'GoCtrl'>
@@ -52,6 +60,7 @@ app.controller('GoCtrl', function($scope){
 	//editable
 	setTimeout(function(){
 		activateEditable();
+		activateEditableToggle();
 		activateDelete();
 	}, 500);
 	activateSearch();
