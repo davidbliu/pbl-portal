@@ -23,7 +23,7 @@ class Reminder < ActiveRecord::Base
 			if m.length > 0
 				return m.map{|x| x.email}
 			else
-				return str
+				return [str]
 			end
 		end
 	end
