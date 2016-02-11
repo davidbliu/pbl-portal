@@ -8,19 +8,17 @@ class Post < ActiveRecord::Base
 
 
  	def self.channel_to_emails(channel)
- 		email_dict = {
- 			GMs: 'berkeley-pbl-spring-2016-general-members@googlegroups.com',
-			CMs: 'berkeley-pbl-spring-2016-committee-members@googlegroups.com',
-			CMs_and_Officers: 'berkeleypblcommittees@lists.berkeley.edu',
-			Officers: 'berkeleypblofficers@lists.berkeley.edu',
-			Execs: 'berkeleypblexecs@lists.berkeley.edu',
-			David: 'davidbliu@gmail.com'
- 		}
+ 		email_dict = {}
+ 		email_dict['GMs'] = 'berkeley-pbl-spring-2016-general-members@googlegroups.com'
+ 		email_dict['CMs'] ='berkeley-pbl-spring-2016-committee-members@googlegroups.com'
+ 		email_dict['CMs_and_Officers'] = 'berkeleypblcommittees@lists.berkeley.edu'
+ 		email_dict['Officers'] = 'berkeleypblofficers@lists.berkeley.edu'
+ 		email_dict['Execs'] = 'berkeleypblexecs@lists.berkeley.edu'
+ 		email_dict['David'] =  'davidbliu@gmail.com'
  		return email_dict[channel]
  	end
  	def send_mail(channel)
-
- 		BlogMailer.mail_post(Post.channel_to_emails(channel), self)
+ 		BlogMailer.mail_post(Post.channel_to_emails(channel), self).deliver
  		# add to feed
  		FeedItem.create(
  			title: self.title,

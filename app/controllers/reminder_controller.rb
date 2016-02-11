@@ -50,6 +50,7 @@ class ReminderController < ApplicationController
 	def create
 		emails = params[:emails]
 		emails.each do |email|
+			email = email.strip
 			Reminder.create(
 				member_email: email,
 				author: myEmail,

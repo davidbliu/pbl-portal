@@ -98,7 +98,9 @@ class BlogController < ApplicationController
 	end
 
 	def send_email
+		puts 'SENDING BLOG EMAIL ABOUT THIS POST'
 		post = Post.find(params[:id])
+		puts post.content
 		post.send_mail(params[:channel])
 		render nothing: true, status: 200
 	end
