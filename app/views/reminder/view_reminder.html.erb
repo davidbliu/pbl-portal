@@ -1,0 +1,23 @@
+
+<table class = 'table table-condensed table-bordered'>
+	<thead>
+		<th>Name</th>
+		<th>Committee</th>
+		<th>Response</th>
+	</thead>
+	<tbody>
+		<% @responses.each do |response| %>
+		<tr>
+			<td>
+				<%= @email_hash[response.member_email] ? @email_hash[response.member_email].name : response.member_email %>
+			</td>
+			<td>
+				<%= @email_hash[response.member_email] ? @email_hash[response.member_email].committee : '' %>
+			</td>
+			<td>
+				<%= response.response %>
+			</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>

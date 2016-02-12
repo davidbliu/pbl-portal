@@ -27,15 +27,15 @@
 <div class = 'jumbotron'>
 	<div id = 'continue-link'>
 		<h3>
-		<a href = '<%= @url %>'>
-			Continue to pbl.link/<%= @key %>...
+		<a href = '<%= @golink.url %>'>
+			Continue to pbl.link/<%= @golink.key %>...
 		</a>
 		</h3>
 	</div>
 	<h2 style = 'text-align:center'>
-		Reminders
+		[PBL] Reminders
 	</h2>
-	<div class = 'small-div'>Click the links (or "x") to clear your reminders</div>
+	<div class = 'small-div'>Don't forget! Clear your reminders to avoid this message.</div>
 </div>
 
 
@@ -43,19 +43,30 @@
 
 <div class = 'col-md-4'></div>
 <div class = 'col-md-4'>
+	<ul class = 'list-group'>
 	<% @reminders.each do |reminder| %>
-	<div>
-	<a class = 'pull-right delete-reminder' href = 'javascript:void(0)' id = '<%= reminder.id %>'>
-		x
-	</a>
+	<li class = 'list-group-item' id = '<%= reminder.id %>'>
+
 	<h3>
-		<a href = '/reminders/redirect/<%= reminder.id %>' target = '_blank' class = 'redirect-link'>
-			<%= reminder.title %>
-		</a>
+		<%= reminder.title %>
 	</h3>
 	<p><%= reminder.body %></p>
-	</div>
+	<div class = 'btn-div'>
+		<% if reminder.buttons and reminder.buttons.length>0 %>
+			<% reminder.buttons.each do |btn| %>
+			<div class = 'btn btn-default reminder-btn' data-id = '<%= reminder.id %>'><%= btn %></div>
+			<% end %>
+		<% else %>
+			<div class = 'btn btn-default reminder-btn' data-id = '<%= reminder.id %>'>Done</div>
+		<% end %>
+			
+		<% if reminder.has_link %>
+			<div class = 'btn btn-default reminder-btn' data-link = '<%= reminder.link %>' data-id = '<%= reminder.id %>'>Visit Link</div>
+		<% end %>
+		</div>
+	</li>
 	<% end %>
+</ul>
 </div>
 
 
@@ -63,20 +74,26 @@
 <div class = 'col-md-4'></div>
 
 <script type = 'text/javascript'>
-$('.delete-reminder').click(function(){
+$('.reminder-btn').click(function(){
+	var reminder = $('#'+$(this).attr('data-id'));
+	var type = $(this).text();
 	var that = $(this);
 	$.ajax({
-		url:'/reminders/delete',
+		url:'/reminders/set_response',
 		type:'POST',
 		data:{
-			id: $(this).attr('id')
+			id: $(this).attr('data-id'),
+			response: $(this).text()
 		},
 		success:function(data){
-			$(that).parent().remove();
+			if(type == 'Visit Link'){
+				window.location.href = $(that).attr('data-link');
+			}
+			$(reminder).fadeOut();
+			
 		}
-	})
+	});
+
 });
-$('.redirect-link').click(function(){
-	$(this).parent().parent().remove();
-});
+
 </script>

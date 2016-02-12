@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210060234) do
+ActiveRecord::Schema.define(version: 20160212220056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,15 +136,24 @@ ActiveRecord::Schema.define(version: 20160210060234) do
     t.string   "link"
   end
 
+  create_table "reminder_responses", force: :cascade do |t|
+    t.integer  "reminder_id"
+    t.string   "member_email"
+    t.string   "response"
+    t.string   "other_content"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
   create_table "reminders", force: :cascade do |t|
     t.string   "title"
     t.string   "link"
     t.string   "body"
-    t.string   "member_email"
+    t.text     "buttons"
+    t.text     "reminder_status"
     t.string   "author"
-    t.string   "reminder_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "tabling_slots", force: :cascade do |t|

@@ -1,0 +1,89 @@
+<style type = 'text/css'>
+.email-div{
+	max-height:250px !important;
+	overflow:auto;
+}
+.body-td{
+	width:20%;
+}
+</style>
+
+
+<a href = '/reminders/new2'>
+	<div class = 'btn btn-default'>New Reminder</div>
+</a>
+
+<a href = '/reminders/refresh'>
+	<div class = 'btn btn-default'>Refresh</div>
+</a>
+<table class = 'table table-condensed table-bordered'>
+	<thead>
+		<th>Author</th>
+		<th>Title</th>
+		<th>Body</th>
+		<th>Buttons</th>
+		<th>Link</th>
+		<th>Status</th>
+		<th></th>
+
+	</thead>
+	<tbody>
+<% @reminders.each do |reminder| %>
+<tr>
+	<td>
+		<%= reminder.author %>
+
+	</td>
+	<td><%= reminder.title %></td>
+	<td class = 'body-td'><%= reminder.body %></td>
+	<td><%= reminder.buttons %></td>
+	<td><%= reminder.link %></td>
+
+	<td>
+		<%= reminder.reminder_status %>
+		<a href = '/reminders/reminder/<%= reminder.id %>'>Full Report</a>
+	</td>
+	<td>
+		<a href = '/reminders/destroy/<%= reminder.id %>'>Destroy</a>
+	</td>
+
+</tr>
+
+<% end %>
+</tbody>
+</table>
+
+<% if not @reminder_emails %>
+	No Reminder Emails
+<% else %>
+	Has Reminder: <%= @reminder_emails.join(', ') %>
+<% end %>
+
+<script type = 'text/javascript'>
+$('#destroy-id-btn').click(function(){
+	x = prompt('what id would you like to destroy?');
+	if(x){
+		$.ajax({
+			url:'/reminders/destroy_id',
+			type:'POST',
+			data:{id: x},
+			success:function(data){
+				location.reload();
+			}
+		});
+	}
+});
+$('.delete-reminder').click(function(){
+	var that = $(this);
+	$.ajax({
+		url:'/reminders/delete',
+		type:'POST',
+		data:{
+			id: $(this).attr('id')
+		},
+		success:function(data){
+			$(that).parent().remove();
+		}
+	})
+});
+</script>

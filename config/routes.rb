@@ -72,18 +72,26 @@ Rails.application.routes.draw do
   get 'c/trending_links' => 'compute#trending_links'
 
   #reminders
-  get 'reminders' => 'reminder#index'
-  post 'reminders/delete' => 'reminder#delete'
-  get 'reminders/redirect/:id' => 'reminder#redirect'
-  get 'reminders/new' => 'reminder#new'
-  get 'reminders/admin' => 'reminder#admin'
-  get 'reminders/destroy_all' => 'reminder#destroy_all'
+  # get 'reminders' => 'reminder#index'
+  # post 'reminders/delete' => 'reminder#delete'
+  # get 'reminders/redirect/:id' => 'reminder#redirect'
+  # get 'reminders/new' => 'reminder#new'
+  # get 'reminders/admin' => 'reminder#admin'
+  # get 'reminders/destroy_all' => 'reminder#destroy_all'
   post 'reminders/create' => 'reminder#create'
-  post 'reminders/destroy_id' => 'reminder#destroy_id'
+  # post 'reminders/destroy_id' => 'reminder#destroy_id'
+  
 
+  #iter2 of reminders
+  get 'reminders' => 'reminder#index'
+  get 'reminders/new2' => 'reminder#new2'
+  get 'reminders/admin2' => 'reminder#admin2'
+  post 'reminders/set_response' => 'reminder#set_response'
+  get 'reminders/reminder/:id' => 'reminder#view_reminder'
+  get 'reminders/destroy/:id' => 'reminder#destroy_id'
+  get 'reminders/refresh' => 'reminder#refresh'
 
   get 'courseware' => 'courseware#index'
-
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

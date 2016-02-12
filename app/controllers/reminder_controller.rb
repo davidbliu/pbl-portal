@@ -1,45 +1,18 @@
 class ReminderController < ApplicationController
 	skip_before_filter :verify_authenticity_token
-	def index
-		@key = session[:key] ? session[:key] : 'portal'
-		@url = session[:url] ? session[:url] : '/'
-		@reminders = Reminder.order('created_at DESC')
-			.where(member_email: myEmail)
-		render :layout => false
-	end
-
-	def redirect
-		r = Reminder.find(params[:id])
-		r.destroy
-		reminders = Reminder.where(member_email:myEmail).length
-		if reminders == 0
-			Rails.cache.write(myEmail+':reminders', nil)
-		end
-		redirect_to r.link
-	end
-
-	def delete
-		Reminder.find(params[:id]).destroy
-		reminders = Reminder.where(member_email:myEmail).length
-		if reminders == 0
-			Rails.cache.write(myEmail+':reminders', nil)
-		end
-		render nothing: true, status:200
-	end
-
-	def new
-
-	end
-
-	def destroy_all
-		Reminder.destroy_all
-		Rails.cache.clear
-		redirect_to '/reminders/admin'
-	end
+	
 
 	def destroy_id
-		Reminder.where(reminder_id: params[:id]).destroy_all
-		render nothing: true, status: 200
+		reminder = Reminder.find(params[:id])
+		if reminder.author == myEmail or myEmail == 'davidbliu@gmail.com'
+			reminder.destroy
+			ReminderResponse.where(reminder_id: params[:id]).destroy_all
+			Rails.cache.write('reminder_emails', Reminder.reminder_emails)
+			redirect_to '/reminders/admin2'
+		else
+			render :template => 'members/unauthorized'
+		end
+		
 	end
 
 
@@ -56,29 +29,71 @@ class ReminderController < ApplicationController
 	end
 
 	def create
-		past_reminders = Reminder.where(reminder_id: params[:id])
-		if past_reminders.length > 0
-			render json: 'that ID has been used already! pick a unique id or remove the old reminders', status:500
-		else
-			members = Member.current_members
-			rec = params[:emails]
-			rec.each do |str|
-				str = str.strip
-				emails = Reminder.get_recipients(str, members)
-				emails.each do |email|
-					Reminder.create(
-						member_email: email,
-						author: myEmail,
-						title: params[:title],
-						body: params[:body],
-						link: params[:link],
-						reminder_id: params[:id]
-					)
-					Rails.cache.write(email+':reminders', true)
-				end
+		buttons = params[:buttons].select{|x| x != ''}.map{|x| x.strip}
+		buttons = buttons.length > 0 ? buttons : nil
+		r = Reminder.create(
+			author: myEmail,
+			title: params[:title],
+			body: params[:body],
+			link: params[:link],
+			buttons: buttons
+		)
+		members = Member.current_members
+		# resolve str  --> email
+		rec = params[:recipients]
+		rec.each do |str|
+			str = str.strip
+			emails = Reminder.get_recipients(str, members)
+			emails.each do |email|
+				ReminderResponse.create(
+					member_email: email,
+					reminder_id: r.id
+				)
 			end
-			render nothing: true, status: 200
 		end
+
+		Rails.cache.write('reminder_emails', Reminder.reminder_emails)
+
+		render nothing: true, status: 200
+	end
+
+
+	def view_reminder
+		@reminder = Reminder.find(params[:id])
+		@responses = ReminderResponse.where(reminder_id: params[:id])
+		@email_hash = Member.email_hash
+
+	end
+
+	def new2
+	end
+
+	def admin2
+		@reminder_emails = Rails.cache.read('reminder_emails')
+		@reminders = Reminder.all
+	end
+
+	def set_response
+		response = ReminderResponse.where(
+			reminder_id: params[:id],
+			member_email: myEmail).first_or_create!
+		response.response = params[:response]
+		response.save
+		Rails.cache.write('reminder_emails', Reminder.reminder_emails)
+
+		render nothing:true, status:200
+	end
+	def index
+		key = params[:key] ? params[:key] : 'tabling'
+		@golink = GoLink.where(key: key).first
+		resp_id = ReminderResponse.where(member_email: myEmail).where(response: nil).pluck(:reminder_id)
+		@reminders = Reminder.order('created_at DESC').where('id in (?)', resp_id)
+		render :layout => false
+	end
+
+	def refresh
+		Rails.cache.write('reminder_emails', Reminder.reminder_emails)
+		redirect_to '/reminders/admin2'
 	end
 
 end

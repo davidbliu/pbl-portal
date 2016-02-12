@@ -1,0 +1,39 @@
+
+<h2>Create a new Reminder</h2>
+
+Title: <input type = 'text' class = 'form-control' placeholder = 'Title' id = 'title-input'>
+
+Body: <input type = 'text' class = 'form-control' placeholder = 'Body (further text) (Optional)' id = 'body-input'>
+
+Recipients: <input type = 'text' class = 'form-control' placeholder = 'Recipients' id = 'recipients-input'>
+
+
+Link: <input type = 'text' class = 'form-control' placeholder = 'Link (Optional) (ex: http://pbl.link/portal)' id = 'link-input'>
+Buttons: <input type = 'text' class = 'form-control' placeholder = 'Buttons. Comma-separated (Optional) (ex: "Yes,No")' id = 'buttons-input'>
+
+<div class = 'btn btn-default' id = 'create-btn'>
+Create</div>
+
+
+<script type = 'text/javascript'>
+$('#create-btn').click(function(){
+	$.ajax({
+		url:'/reminders/create',
+		type:'POST',
+		data:{
+			title: $('#title-input').val(),
+			body: $('#body-input').val(),
+			link: $('#link-input').val(),
+			recipients: $('#recipients-input').val().split(','),
+			buttons:$('#buttons-input').val().split(','),
+			id: $('#id-input').val()
+		},
+		success:function(data){
+			window.location = '/reminders/admin2'
+		},
+		error:function(data){
+			alert(data.responseText);
+		}
+	});
+});	
+</script>

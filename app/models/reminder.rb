@@ -1,5 +1,5 @@
 class Reminder < ActiveRecord::Base
-
+	serialize :buttons
 	def self.test
 		Reminder.create(
 			member_email:'davidbliu@gmail.com',
@@ -9,6 +9,20 @@ class Reminder < ActiveRecord::Base
 			link: 'http://pbl.link/parse'
 		)
 	end
+
+	def self.reminder_emails
+		ReminderResponse.where(response: nil).pluck(:member_email)
+	end
+
+	def has_link
+		self.link != nil and self.link.include?('http')
+	end
+
+	def self.cleanup
+		ids = Reminder.all.map{|x| x.id}
+		ReminderResponse.where('id NOT IN (?)', ids).destroy_all
+	end
+
 
 	def self.get_recipients(str, members)
 		str = str.downcase.strip

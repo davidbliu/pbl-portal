@@ -31,14 +31,11 @@ class GoController < ApplicationController
             golink.log_click(myEmail)
             ActiveRecord::Base.connection.close
           }
-          r = Rails.cache.read(myEmail+':reminders')
-          if r == nil or r != true
-            # no reminders, go to the golink
-            redirect_to golink.url
+          reminder_emails = Rails.cache.read('reminder_emails')
+          if reminder_emails != nil and reminder_emails.include?(myEmail)
+            redirect_to '/reminders?key='+golink.key
           else
-            session[:url] = golink.url
-            session[:key] = golink.key
-            redirect_to '/reminders'
+            redirect_to golink.url
           end
         else
         	# do a search
