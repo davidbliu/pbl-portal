@@ -1,14 +1,29 @@
 
+<style type = 'text/css'>
+.typeahead{
+	width:100% !important;
+}
+.tt-menu{
+	z-index:5000;
+	background-color:white;
+}
+</style>
+<script type = 'text/javascript' src = '/typeahead.bundle.js'></script>
 <h2>Create a new Reminder</h2>
 
 Title: <input type = 'text' class = 'form-control' placeholder = 'Title' id = 'title-input'>
 
 Body: <input type = 'text' class = 'form-control' placeholder = 'Body (further text) (Optional)' id = 'body-input'>
 
-Recipients: <input type = 'text' class = 'form-control' placeholder = 'Recipients' id = 'recipients-input'>
-
+Recipients: 
+<div class = 'the-basics'>
+<!-- <input type = 'text' id = 'recipients-typeahead' class = 'form-control'> -->
+<input type = 'text' class = 'form-control' id = 'recipients-input' placeholder = 'Recipients (ex: David Liu, HT, WD, all)'>
+</div>
+<div style = 'clear:both'></div>
 
 Link: <input type = 'text' class = 'form-control' placeholder = 'Link (Optional) (ex: http://pbl.link/portal)' id = 'link-input'>
+
 Buttons: <input type = 'text' class = 'form-control' placeholder = 'Buttons. Comma-separated (Optional) (ex: "Yes,No")' id = 'buttons-input'>
 
 <div class = 'btn btn-default' id = 'create-btn'>
@@ -16,6 +31,57 @@ Create</div>
 
 
 <script type = 'text/javascript'>
+var memberNames = <%= raw(@member_names) %>;
+console.log(memberNames);
+
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+    matches = [];
+    substrRegex = new RegExp(q, 'i');
+    $.each(strs, function(i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
+    });
+
+    cb(matches);
+  };
+};
+// $('#transfer-btn').click(function(){
+// 	$('#recipients-input').val($('.recipients-typeahead').val());
+// 	$('.recipients-input').val('');
+// });
+$('#recipients-typeahead').typeahead({
+  hint: true,
+  highlight: true,
+  minLength: 1,
+  select:function(item){
+  	console.log('seelceted');
+  	console.log(item);
+  }
+},
+{
+  name: 'Names',
+  source: substringMatcher(memberNames),
+});
+
+$('#recipients-typeahead').bind('typeahead:selected', function(obj, datum, name) {      
+        console.log(datum);
+        setTimeout(function(){
+        	$('#recipients-typeahead').val('');
+        }, 150);
+        var old = $('#recipients-input').val();
+        if(old == ''){
+        	old = [];
+        }
+        else{
+        	old = old.split(',');
+        }
+        old.push(datum);
+        $('#recipients-input').val(old.join(','));
+});
+
 $('#create-btn').click(function(){
 	$.ajax({
 		url:'/reminders/create',

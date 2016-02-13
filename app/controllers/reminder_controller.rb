@@ -66,11 +66,12 @@ class ReminderController < ApplicationController
 	end
 
 	def new2
+		@member_names = Member.current_members.map{|x| x.name}
 	end
 
 	def admin2
 		@reminder_emails = Rails.cache.read('reminder_emails')
-		@reminders = Reminder.all
+		@reminders = Reminder.order('created_at DESC').all
 	end
 
 	def set_response
