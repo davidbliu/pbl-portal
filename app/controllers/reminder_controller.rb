@@ -36,7 +36,8 @@ class ReminderController < ApplicationController
 			title: params[:title],
 			body: params[:body],
 			link: params[:link],
-			buttons: buttons
+			buttons: buttons,
+			reminder_type: params[:has_input] ? 'input' : nil
 		)
 		members = Member.current_members
 		# resolve str  --> email
@@ -63,6 +64,7 @@ class ReminderController < ApplicationController
 		@responses = ReminderResponse.where(reminder_id: params[:id])
 		@email_hash = Member.email_hash
 
+
 	end
 
 	def new2
@@ -79,6 +81,9 @@ class ReminderController < ApplicationController
 			reminder_id: params[:id],
 			member_email: myEmail).first_or_create!
 		response.response = params[:response]
+		if params[:text]
+			response.other_content = params[:text]
+		end
 		response.save
 		Rails.cache.write('reminder_emails', Reminder.reminder_emails)
 
@@ -100,9 +105,9 @@ class ReminderController < ApplicationController
 	def refresh_response
 		resp = ReminderResponse.find(params[:id])
 		resp.response = nil
+		resp.other_content = nil
 		resp.save
 		Rails.cache.write('reminder_emails', Reminder.reminder_emails)
-
 		redirect_to '/reminders/reminder/'+resp.reminder_id.to_s
 	end
 

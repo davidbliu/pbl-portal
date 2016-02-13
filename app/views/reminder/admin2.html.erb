@@ -36,7 +36,11 @@
 	</td>
 	<td><%= reminder.title %></td>
 	<td class = 'body-td'><%= reminder.body %></td>
-	<td><%= reminder.buttons ? reminder.buttons.join(', ') : '' %></td>
+	<td><%= reminder.buttons ? reminder.buttons.join(', ') : '' %>
+		<% if reminder.reminder_type == 'input' %>
+		<div>* Has input</div>
+		<% end %>
+	</td>
 	<td><%= reminder.link %></td>
 
 	<td>

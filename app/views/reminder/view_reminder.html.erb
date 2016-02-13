@@ -16,9 +16,12 @@
 			</td>
 			<td>
 				<%= response.response %>
-				<a href = '/reminders/refresh_response/<%= response.id %>'>
-					x
-				</a>
+				<a href = '/reminders/refresh_response/<%= response.id %>'>x</a>
+				<div>
+					<% if response.other_content %>
+					<%= response.other_content %>
+					<% end %>
+				</div>
 			</td>
 		</tr>
 		<% end %>

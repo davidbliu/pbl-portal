@@ -26,6 +26,11 @@ Link: <input type = 'text' class = 'form-control' placeholder = 'Link (Optional)
 
 Buttons: <input type = 'text' class = 'form-control' placeholder = 'Buttons. Comma-separated (Optional) (ex: "Yes,No")' id = 'buttons-input'>
 
+Other:
+<div class="checkbox">
+  <label><input id = 'input-checkbox' input type="checkbox" value="">Has Input?</label>
+</div>
+
 <div class = 'btn btn-default' id = 'create-btn'>
 Create</div>
 
@@ -92,7 +97,8 @@ $('#create-btn').click(function(){
 			link: $('#link-input').val(),
 			recipients: $('#recipients-input').val().split(','),
 			buttons:$('#buttons-input').val().split(','),
-			id: $('#id-input').val()
+			id: $('#id-input').val(),
+			has_input: $('#input-checkbox').prop('checked')
 		},
 		success:function(data){
 			window.location = '/reminders/admin2'

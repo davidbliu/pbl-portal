@@ -51,6 +51,12 @@
 		<%= reminder.title %>
 	</h3>
 	<p><%= reminder.body %></p>
+	<div class = 'input-div'>
+		<% if reminder.reminder_type == 'input' %>
+		<input type = 'text' class = 'form-control' placeholder = 'Enter your input here' data-id = '<%= reminder.id %>' id = '<%= reminder.id %>-text'>
+		<div style = 'clear:both;height:10px'></div>
+		<% end %>
+	</div>
 	<div class = 'btn-div'>
 		<% if reminder.buttons and reminder.buttons.length>0 %>
 			<% reminder.buttons.each do |btn| %>
@@ -78,12 +84,14 @@ $('.reminder-btn').click(function(){
 	var reminder = $('#'+$(this).attr('data-id'));
 	var type = $(this).text();
 	var that = $(this);
+	var reminderId = $(this).attr('data-id');
 	$.ajax({
 		url:'/reminders/set_response',
 		type:'POST',
 		data:{
-			id: $(this).attr('data-id'),
-			response: $(this).text()
+			id: reminderId,
+			response: $(this).text(),
+			text: $('#'+reminderId+'-text').val()
 		},
 		success:function(data){
 			if(type == 'Visit Link'){
