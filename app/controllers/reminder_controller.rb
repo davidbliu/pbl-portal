@@ -97,4 +97,13 @@ class ReminderController < ApplicationController
 		redirect_to '/reminders/admin2'
 	end
 
+	def refresh_response
+		resp = ReminderResponse.find(params[:id])
+		resp.response = nil
+		resp.save
+		Rails.cache.write('reminder_emails', Reminder.reminder_emails)
+
+		redirect_to '/reminders/reminder/'+resp.reminder_id.to_s
+	end
+
 end

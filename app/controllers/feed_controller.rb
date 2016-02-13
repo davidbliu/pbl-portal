@@ -56,6 +56,7 @@ class FeedController < ApplicationController
 				ActiveRecord::Base.connection.close
 			}
 		end
+		render json: 'Removed'
 	end
 
 	# hit this route from chrome extension

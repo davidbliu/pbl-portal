@@ -16,8 +16,16 @@
 			</td>
 			<td>
 				<%= response.response %>
+				<a href = '/reminders/refresh_response/<%= response.id %>'>
+					x
+				</a>
 			</td>
 		</tr>
 		<% end %>
 	</tbody>
 </table>
+
+
+<div>
+	<a href = '/reminders/destroy/<%= @reminder.id %>'>Destroy This Reminder</a>
+</div>

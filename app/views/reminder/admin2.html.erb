@@ -24,7 +24,7 @@
 		<th>Buttons</th>
 		<th>Link</th>
 		<th>Status</th>
-		<th></th>
+		<!-- <th></th> -->
 
 	</thead>
 	<tbody>
@@ -36,16 +36,14 @@
 	</td>
 	<td><%= reminder.title %></td>
 	<td class = 'body-td'><%= reminder.body %></td>
-	<td><%= reminder.buttons %></td>
+	<td><%= reminder.buttons ? reminder.buttons.join(', ') : '' %></td>
 	<td><%= reminder.link %></td>
 
 	<td>
 		<%= reminder.reminder_status %>
 		<a href = '/reminders/reminder/<%= reminder.id %>'>Full Report</a>
 	</td>
-	<td>
-		<a href = '/reminders/destroy/<%= reminder.id %>'>Destroy</a>
-	</td>
+	
 
 </tr>
 

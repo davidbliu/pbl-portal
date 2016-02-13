@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   # get and set member data
   get 'me' => 'members#me'
+  get 'officer' => 'members#officer'
   get 'members' => 'members#index'
   post 'me/update' => 'members#update'
   post 'me/update_commitments' => 'members#update_commitments'
@@ -90,6 +91,7 @@ Rails.application.routes.draw do
   get 'reminders/reminder/:id' => 'reminder#view_reminder'
   get 'reminders/destroy/:id' => 'reminder#destroy_id'
   get 'reminders/refresh' => 'reminder#refresh'
+  get 'reminders/refresh_response/:id' => 'reminder#refresh_response'
 
   get 'courseware' => 'courseware#index'
   # The priority is based upon order of creation: first created -> highest priority.

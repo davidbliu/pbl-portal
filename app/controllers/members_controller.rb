@@ -1,5 +1,8 @@
 class MembersController < ApplicationController
 
+  def officer
+    
+  end
 
   def index
     @members = Member.current_members
