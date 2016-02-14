@@ -75,7 +75,8 @@ class GoController < ApplicationController
   end
 
   def admin
-
+    @keys = GoLinkClick.all.pluck(:key).uniq
+    @groups = Member.groups
   end
 
   def engagement
@@ -91,10 +92,14 @@ class GoController < ApplicationController
       @time = time
       clicks = clicks.where('created_at > ?', time)
     end
-    @members = Member.current_members
-      .where.not(committee:'GM')
-      .where.not(email:'davidbliu@gmail.com')
-      .order(:committee)
+    if params[:group] and params[:group] != ''
+      @members = Member.get_group(params[:group]).order(:committee)
+    else
+      @members = Member.current_members
+        .where.not(committee:'GM')
+        .where.not(email:'davidbliu@gmail.com')
+        .order(:committee)
+    end
 
     @click_hash = {}
     seen = []
@@ -120,6 +125,7 @@ class GoController < ApplicationController
         @active << m
       end
     end
+
 
   end
 

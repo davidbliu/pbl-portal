@@ -50,12 +50,12 @@ table>tbody>tr>td>.click-div{
 
 <div>Inactive members
 	<p>
-		<%= @inactive.map{|x| x.email}.join(', ') %>
+		<%= @inactive.map{|x| x.name}.join(', ') %>
 	</p>
 </div>
 
 <div>Active members
 	<p>
-		<%= @active.map{|x| x.email}.join(', ') %>
+		<%= @active.map{|x| x.name}.join(', ') %>
 	</p>
 </div>

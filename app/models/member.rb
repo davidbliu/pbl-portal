@@ -1,6 +1,26 @@
 class Member < ActiveRecord::Base
   serialize :commitments
   
+  def self.get_group(group)
+    group = group.downcase
+    if group == 'all'
+      return Member.current_members
+    elsif self.committees.include?(group.upcase)
+      return Member.current_members
+        .where(committee: group.upcase)
+    elsif group == 'officers'
+      return Member.current_members.where('position = ? OR position = ?',
+          'chair', 'exec')
+    elsif group == 'cms'
+      return Member.current_members.where('position = ?', 'cm')
+    end
+  end
+
+  def self.groups
+    committees = self.committees
+    gps = ['All', 'Officers', 'CMs']
+    return gps+ committees
+  end
   def self.email_hash
     Member.all.index_by(&:email)
   end

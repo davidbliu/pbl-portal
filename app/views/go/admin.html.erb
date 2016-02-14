@@ -1,11 +1,93 @@
-<input id = 'keys-input' type = 'text' class = 'form-control' placeholder = 'keys'>
+<style type = 'text/css'>
+.key-typeahead{
+	width:100% !important;
+}
+.twitter-typeahead{
+	width:100%;
+}
+.tt-menu{
+	background-color:white;
+}
+#selected-keys{
+	color:gray;
+}
+</style>
+</div>
+<script type = 'text/javascript' src = '/typeahead.bundle.js'></script>
+
+<div class = 'col-md-3'></div>
+<div class = 'col-md-6'>
+Keys:</br>
+<input id = 'key-typeahead' class = 'form-control' placeholder = 'start typing here'>
+<div id = 'selected-keys'></div>
+<div id = 'keys-div'>
+</div>
+Start Time:
 <input id = 'time-input' type = 'text' class = 'form-control' placeholder = 'YY/MM/DD HH:MM (24 hour format)'>
 
-<btn class = 'btn btn-default' id = 'submit-btn'>Submit</btn>
+Who?
+<select class = 'form-control' id = 'group-select'>
+	<% @groups.each do |group| %>
+	<option><%= group %></option>
+	<% end %>
+</select>
+<!-- End Time: -->
+<!-- <input id = 'time-input' type = 'text' class = 'form-control' placeholder = 'YY/MM/DD HH:MM (24 hour format)'> -->
+
+<div style = 'height:10px;clear:both'></div>
+<btn class = 'btn btn-default' id = 'submit-btn'>Track!</btn>
+
+</div>
+
+<div class = 'col-md-3'>
+	<h3>Recently clicked</h3>
+	<%= @keys.join(', ') %>
+</div>
+
 <script type = 'text/javascript'>
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+    matches = [];
+    substrRegex = new RegExp(q, 'i');
+    $.each(strs, function(i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
+    });
+
+    cb(matches);
+  };
+};
+
+var keys = <%= raw(@keys) %>;
+$('#key-typeahead').typeahead({
+  hint: true,
+  highlight: true,
+  minLength: 1,
+  select:function(item){
+  	console.log('selected');
+  	console.log(item);
+  }
+},
+{
+  name: 'Keys',
+  source: substringMatcher(keys),
+});
+var selectedKeys = [];
+$('#key-typeahead').keypress(function(e) {
+    if(e.which == 13) {
+        var key = $(this).val();
+        selectedKeys.push(key);
+        $('#selected-keys').text(selectedKeys.join(','));
+        $(this).val('');
+    }
+});
 $('#submit-btn').click(function(){
-	window.location.href = '/go/engagement?keys='+encodeURIComponent($('#keys-input').val())
+	window.location.href = '/go/engagement?keys='+encodeURIComponent(selectedKeys.join(','))
 		+'&time='
-		+encodeURIComponent($('#time-input').val());
+		+encodeURIComponent($('#time-input').val())
+		+'&group='
+		+encodeURIComponent($('#group-select option:selected').text());
 });
 </script>

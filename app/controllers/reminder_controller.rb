@@ -37,7 +37,7 @@ class ReminderController < ApplicationController
 			body: params[:body],
 			link: params[:link],
 			buttons: buttons,
-			reminder_type: params[:has_input] ? 'input' : nil
+			reminder_type: params[:has_input] == 'true' ? 'input' : nil
 		)
 		members = Member.current_members
 		# resolve str  --> email
