@@ -16,10 +16,30 @@
 #notification-id-input{
 	width:300px;
 }
+.card{
+	border:1px solid rgba(0,0,0,0.1);
+	border-radius:5px;
+	padding:15px;
+}
 </style>
 <body ng-app = 'meApp'>
 
-<div class = 'col-md-3'></div>
+<div class = 'col-md-3'>
+<% if @me.is_officer? %>
+	<div class = 'card'>
+		<h3>Officer Tools</h3>
+		<div>
+			<a href = 'http://pbl.link/recent'>pbl.link/recent</a>
+		</div>
+		<div>
+			<a href = 'http://pbl.link/track'>pbl.link/track</a>
+		</div>
+		<div>
+			<a href = 'http://pbl.link/remind'>pbl.link/remind</a>
+		</div>
+	</div>
+<% end %>
+</div>
 <div class = 'col-md-6'>
 
 <ul class = 'list-group'>
