@@ -118,9 +118,7 @@ class ReminderController < ApplicationController
 	end
 
 	def export_csv
-		# resp = ReminderResponse.where(reminder_id: params[:id])
-		
-		send_data Reminder.find(params[:id]).as_csv
+		send_data Reminder.find(params[:id]).as_csv, filename: 'reminder_'+params[:id].to_s+'_data.csv'
 	end
 
 end
