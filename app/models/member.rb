@@ -16,6 +16,10 @@ class Member < ActiveRecord::Base
     end
   end
 
+  def self.officers
+    return self.get_group('officers')
+  end
+
   def self.groups
     committees = self.committees
     gps = ['All', 'Officers', 'CMs']
@@ -26,7 +30,7 @@ class Member < ActiveRecord::Base
   end
 
   def self.committees
-    ['CS', 'CO', 'FI', 'HT', 'MK', 'GM', 'PD', 'PB', 'SO', 'WD', 'IN']
+    ['CS', 'CO', 'FI', 'HT', 'MK', 'GM', 'PD', 'PB', 'SO', 'WD', 'IN', 'EX']
   end
 
   def self.david

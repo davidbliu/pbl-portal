@@ -1,0 +1,17 @@
+%table{:class => 'table table-bordered table-condensed'}
+	%thead
+		%th Name
+		%th Committee
+		%th Reminders
+	%tbody
+	- @members.each do |member|
+		%tr
+			%td= member.name
+			%td= member.committee
+			- if @email_hash.keys.include?(member.email)
+				%td 
+					- @email_hash[member.email].each do |r|
+						%div= @reminder_hash.keys.include?(r.reminder_id) ? @reminder_hash[r.reminder_id].title : ''
+						%span= r.response
+			- else
+				%td No reminders

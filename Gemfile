@@ -24,6 +24,8 @@ gem 'gcm'
 
 gem 'rack-timeout'
 
+gem 'haml'
+
 # google drive gem
 gem 'google_drive'
 

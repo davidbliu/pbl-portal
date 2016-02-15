@@ -92,6 +92,7 @@ Rails.application.routes.draw do
   get 'reminders/destroy/:id' => 'reminder#destroy_id'
   get 'reminders/refresh' => 'reminder#refresh'
   get 'reminders/refresh_response/:id' => 'reminder#refresh_response'
+  get 'reminders/admin3' => 'reminder#admin3'
 
   get 'courseware' => 'courseware#index'
   # The priority is based upon order of creation: first created -> highest priority.

@@ -31,6 +31,8 @@ class Reminder < ActiveRecord::Base
 			return members.select{|x| x.committee == str.upcase}.map{|x| x.email}
 		elsif str == 'all'
 			return Member.current_members.where.not(committee:'GM').map{|x| x.email}
+		elsif str == 'officers'
+			return Member.officers.map{|x| x.email}
 		else
 			
 			m = members.select{|x| x.name.downcase == str or x.email == str}

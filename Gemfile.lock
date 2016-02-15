@@ -125,6 +125,8 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
+    haml (4.0.7)
+      tilt
     hashie (3.4.3)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -273,6 +275,7 @@ DEPENDENCIES
   elasticsearch-rails
   gcm
   google_drive
+  haml
   jbuilder (~> 2.0)
   jquery-rails
   omniauth-google-oauth2!

@@ -75,12 +75,20 @@ $('#key-typeahead').typeahead({
   source: substringMatcher(keys),
 });
 var selectedKeys = [];
+
+$('#key-typeahead').bind('typeahead:selected', function(obj, datum, name) {      
+  transfer(datum);
+});
+
+function transfer(key){
+  selectedKeys.push(key);
+  $('#selected-keys').text(selectedKeys.join(','));
+  $('#key-typeahead').val('');
+  $('#key-typeahead').typeahead('val', '');
+}
 $('#key-typeahead').keypress(function(e) {
     if(e.which == 13) {
-        var key = $(this).val();
-        selectedKeys.push(key);
-        $('#selected-keys').text(selectedKeys.join(','));
-        $(this).val('');
+        transfer($(this).val());
     }
 });
 $('#submit-btn').click(function(){

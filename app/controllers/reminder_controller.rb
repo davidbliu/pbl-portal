@@ -76,6 +76,12 @@ class ReminderController < ApplicationController
 		@reminders = Reminder.order('created_at DESC').all
 	end
 
+	def admin3
+		@members = Member.current_members.where.not(committee:'GM')
+		@email_hash = ReminderResponse.email_hash
+		@reminder_hash = Reminder.all.index_by(&:id)
+	end
+
 	def set_response
 		response = ReminderResponse.where(
 			reminder_id: params[:id],
