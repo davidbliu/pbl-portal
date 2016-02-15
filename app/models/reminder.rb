@@ -1,5 +1,34 @@
+require 'csv'
 class Reminder < ActiveRecord::Base
 	serialize :buttons
+
+	def as_csv
+		resp = ReminderResponse.where(reminder_id: self.id)
+		email_hash = Member.email_hash
+		CSV.generate do |csv|
+			csv << [
+				'member_email', 
+				'name', 
+				'committee', 
+				'position', 
+				'response', 
+				'timestamp', 
+				'other_content']
+			resp.each do |response|
+				member = email_hash[response.member_email]
+				csv << [
+					member.email,
+					member.name,
+					member.committee,
+					member.position,
+					response.response, 
+					response.created_at,
+					response.other_content
+				]
+			end
+		end
+
+	end
 	def self.test
 		Reminder.create(
 			member_email:'davidbliu@gmail.com',
