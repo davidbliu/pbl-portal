@@ -49,6 +49,7 @@ Rails.application.routes.draw do
   get 'tabling/generate' => 'tabling#generate'
   get 'tabling/schedules' => 'tabling#schedules'
   post 'tabling/admin_switch' => 'tabling#admin_switch'
+  get 'tabling/slots_available' => 'tabling#slots_available'
   
   # push notifications
   get 'push' => 'push#index'

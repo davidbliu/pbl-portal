@@ -1,4 +1,7 @@
 class TablingController < ApplicationController
+	def slots_available
+		@members = Member.current_members.where.not(committee:'GM')
+	end
 	def index
 		@me = current_member
 		slots = TablingSlot

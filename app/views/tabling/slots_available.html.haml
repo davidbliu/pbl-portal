@@ -1,0 +1,11 @@
+%table{:class => 'table table-condensed table-bordered'}
+	%thead
+		%th Name
+		%th Committee
+		%th Slots available
+	%tbody
+	- @members.each do |member|
+		%tr
+			%td= member.name
+			%td= member.committee
+			%td= member.commitments
