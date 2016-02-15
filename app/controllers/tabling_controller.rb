@@ -1,6 +1,8 @@
 class TablingController < ApplicationController
 	def slots_available
-		@members = Member.current_members.where.not(committee:'GM')
+		@members = Member.current_members
+			.where.not(committee:'GM')
+			.order(:committee)
 	end
 	def index
 		@me = current_member

@@ -1,3 +1,11 @@
+:css
+	.commitments-div{
+		max-height:100px;
+		overflow:auto;
+	}
+	.hilite{
+		background-color:rgba(100,0,0,0.1);
+	}
 %table{:class => 'table table-condensed table-bordered'}
 	%thead
 		%th Name
@@ -5,7 +13,10 @@
 		%th Slots available
 	%tbody
 	- @members.each do |member|
-		%tr
+		%tr{:class => (member.commitments and member.commitments.length) <= 1 ? 'hilite' : ''}
 			%td= member.name
 			%td= member.committee
-			%td= member.commitments
+			%td
+				%div{:class => 'commitments-div'}
+					- member.commitments.each do |c|
+						%div= TablingSlot.get_time_string(c)
