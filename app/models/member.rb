@@ -4,7 +4,7 @@ class Member < ActiveRecord::Base
   def self.get_group(group)
     group = group.downcase
     if group == 'all'
-      return Member.current_members
+      return Member.current_members.where.not(committee:'GM')
     elsif self.committees.include?(group.upcase)
       return Member.current_members
         .where(committee: group.upcase)

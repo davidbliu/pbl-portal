@@ -34,7 +34,7 @@ class TablingController < ApplicationController
 		}
 	end
 
-	# post a switch request request
+	# post a switch request
 	def switch
 		if not current_member
 			render nothing: true, status: 500
