@@ -176,7 +176,7 @@ class Post < ActiveRecord::Base
 	end
 
 	def push(members)
-		Pusher.push_post(members, post)
+		Pusher.push_post(members, self)
 	end
 
 	def self.feed_test
