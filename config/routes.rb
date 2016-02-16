@@ -97,6 +97,11 @@ Rails.application.routes.draw do
   get 'reminders/export_csv/:id' => 'reminder#export_csv'
 
   get 'courseware' => 'courseware#index'
+
+  # points and events
+  get 'points/attendance' => 'points#attendance'
+  post 'points/mark_attendance' => 'points#mark_attendance'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

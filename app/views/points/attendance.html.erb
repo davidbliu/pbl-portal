@@ -1,0 +1,55 @@
+
+<p>Let us know what events you've attended </br>When point values are determined, you'll see your points here</p>
+<table class = 'table table-condensed table-bordered table-hover'>
+	<thead>
+		<th>Name</th>
+		<th>Date</th>
+		<th>Points</th>
+		<th>Attended?</th>
+	</thead>
+	<tbody>
+	<% @events.each do |event| %>
+	<tr>
+		<td>
+			<%= event.name %>
+		</td>
+		<td><%= event.time_string %></td>
+		<td><%= event.points %></td>
+		<td>
+			Yes: <input type = 'radio' class = 'yes-radio radio-btn' data-id = '<%= event.id %>'
+			<% if @attended.include?(event.id) %>checked<% end %>
+			>
+			No: <input type = 'radio'  class = 'no-radio radio-btn' data-id = '<%= event.id %>'
+			<% if @unattended.include?(event.id) %>checked<% end %>
+			>
+
+		</td>
+	</tr>
+	<% end %>
+</tbody>
+</table>
+
+<script type = 'text/javascript'>
+$('.radio-btn').click(function(){
+	$(getOther($(this))).attr('checked', false);
+	$.ajax({
+		url:'/points/mark_attendance',
+		data:{
+			id: $(this).attr('data-id'),
+			attended: $(this).hasClass('yes-radio')
+		},
+		type:'POST',
+		success:function(data){
+			console.log(data);
+		}
+	});
+});
+function getOther(elem){
+	if($(elem).hasClass('yes-radio')){
+		return $(elem).parent().children('.no-radio')[0];
+	}
+	else{
+		return $(elem).parent().children('.yes-radio')[0];
+	}
+}
+</script>
