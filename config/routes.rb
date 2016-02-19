@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   post 'blog/destroy/:id' => 'blog#destroy'
   post 'blog/send_email/:id' => 'blog#send_email'
   post 'blog/post_comment/:id' => 'blog#post_comment'
+  get 'blog/push_post/:id' => 'blog#push_post'
 
   #tabling
   get 'tabling' => 'tabling#index'

@@ -13,11 +13,17 @@ class Member < ActiveRecord::Base
           'chair', 'exec')
     elsif group == 'cms'
       return Member.current_members.where('position = ?', 'cm')
+    elsif group == 'execs'
+      return Member.current_members.where(committee:'EX')
     end
   end
 
   def self.officers
     return self.get_group('officers')
+  end
+
+  def self.execs
+    return self.get_group('execs')
   end
 
   def self.groups

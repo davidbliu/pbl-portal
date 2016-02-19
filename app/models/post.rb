@@ -175,8 +175,24 @@ class Post < ActiveRecord::Base
 		resp = Pusher.push_feed_item(item)
 	end
 
-	def push(members)
-		Pusher.push_post(members, self)
+	def push_list
+		p = self.get_view_permissions
+		if p == 'Anyone' or p == 'Only PBL'
+			return Member.current_members.to_a
+		elsif p == 'Only Me'
+			return Member.where('email = ? OR email = ?', 
+				self.author,
+				self.last_editor
+				)
+		elsif p == 'Only Execs'
+			return Member.execs
+		elsif p == 'Only Officers'
+			return Member.officers
+		end
+	end
+
+	def push(members = nil, author = nil)
+		Pusher.push_post(members, self, author)
 	end
 
 	def self.feed_test

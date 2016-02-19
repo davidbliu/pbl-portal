@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160216023054) do
+ActiveRecord::Schema.define(version: 20160219035323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,6 +136,18 @@ ActiveRecord::Schema.define(version: 20160216023054) do
     t.text     "tags"
     t.integer  "num_comments"
     t.string   "link"
+  end
+
+  create_table "pushes", force: :cascade do |t|
+    t.string   "title"
+    t.string   "body"
+    t.string   "push_id"
+    t.string   "author"
+    t.string   "push_type"
+    t.text     "response"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.text     "member_emails"
   end
 
   create_table "reminder_responses", force: :cascade do |t|

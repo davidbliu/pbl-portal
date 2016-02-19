@@ -3,6 +3,16 @@ class TablingController < ApplicationController
 		@members = Member.current_members
 			.where.not(committee:'GM')
 			.order(:committee)
+
+		# save it in clicks
+		Thread.new{
+			GoLinkClick.create(
+				key: '/tabling/slots_available',
+				golink_id: 'tabling_slots_id',
+				member_email: myEmail
+			)
+			ActiveRecord::Base.connection.close
+		}
 	end
 	def index
 		@me = current_member

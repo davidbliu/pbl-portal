@@ -1,30 +1,35 @@
 class BlogController < ApplicationController
 	def index
-		@tag = params[:tag]
-		if @tag
-			@posts = Post.order('created_at DESC')
-				.where('id in (?)', Post.can_view(current_member))
-				.to_a
-				.select{|x| x.tags and x.tags.include?(@tag)}
-		else
-			@posts = Post.order('created_at DESC')
-				.where('id in (?)', Post.can_view(current_member))
-				.to_a
-				
+		if myEmail == nil or myEmail == ''
+	      cookies[:auth_redirect] = '/blog'
+	      redirect_to '/auth/google_oauth2'
+	    else
+			@tag = params[:tag]
+			if @tag
+				@posts = Post.order('created_at DESC')
+					.where('id in (?)', Post.can_view(current_member))
+					.to_a
+					.select{|x| x.tags and x.tags.include?(@tag)}
+			else
+				@posts = Post.order('created_at DESC')
+					.where('id in (?)', Post.can_view(current_member))
+					.to_a
+					
+			end
+			@tags = Post.tags
+			@posts = @posts.paginate(:page => params[:page], :per_page => 30)
+			
+			# save it in clicks
+			Thread.new{
+				GoLinkClick.create(
+					key: '/blog',
+					golink_id: 'blog_id',
+					member_email: myEmail
+				)
+				ActiveRecord::Base.connection.close
+			}
+			render :template => 'blog/index2'
 		end
-		@tags = Post.tags
-		@posts = @posts.paginate(:page => params[:page], :per_page => 30)
-		
-		# save it in clicks
-		Thread.new{
-			GoLinkClick.create(
-				key: '/blog',
-				golink_id: 'blog_id',
-				member_email: myEmail
-			)
-			ActiveRecord::Base.connection.close
-		}
-		render :template => 'blog/index2'
 	end
 
 	def edit
@@ -79,7 +84,17 @@ class BlogController < ApplicationController
 		post.semester = Semester.current_semester
 		post.last_editor = current_member.email
 		post.save!
+
+		# push out post to those who can view
+		post.push(post.push_list, myEmail)
+
 		render nothing: true, status: 200
+	end
+
+	def push_post
+		post = Post.find(params[:id])
+		post.push(post.push_list, myEmail)
+		redirect_to :back
 	end
 
 	def destroy
