@@ -110,11 +110,16 @@ class ReminderController < ApplicationController
 
 	def refresh_response
 		resp = ReminderResponse.find(params[:id])
-		resp.response = nil
-		resp.other_content = nil
-		resp.save
-		Rails.cache.write('reminder_emails', Reminder.reminder_emails)
-		redirect_to '/reminders/reminder/'+resp.reminder_id.to_s
+		reminder = Reminder.find(resp.reminder_id)
+		if reminder.author == myEmail
+			resp.response = nil
+			resp.other_content = nil
+			resp.save
+			Rails.cache.write('reminder_emails', Reminder.reminder_emails)
+			redirect_to '/reminders/reminder/'+resp.reminder_id.to_s
+		else
+			render :template => 'members/unauthorized'
+		end
 	end
 
 	def export_csv

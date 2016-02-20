@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   get 'go/insights/:id' => 'go#insights'
   get 'go/engagement' => 'go#engagement'
   get 'go/admin' => 'go#admin'
+  get 'go/three_days' => 'go#three_days'
 
   #blog
   get 'blog' => 'blog#index'

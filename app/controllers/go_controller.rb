@@ -207,4 +207,9 @@ class GoController < ApplicationController
     render nothing: true, status: 200
   end
 
+  def three_days
+    @three_past = 3.days.ago
+    @clicks = GoLinkClick.where('created_at > ?', @three_past)
+  end
+
 end
