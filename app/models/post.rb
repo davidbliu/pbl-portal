@@ -20,10 +20,6 @@ class Post < ActiveRecord::Base
  	def send_mail(channel)
  		BlogMailer.mail_post(Post.channel_to_emails(channel), self).deliver
  		# add to feed
- 		FeedItem.create(
- 			title: self.title,
- 			body: 'New post out on the blog!',
- 			link: 'http://portal.berkeley-pbl.com/blog/post/'+self.id.to_s)
  	end
 
 	def self.channels
@@ -161,19 +157,18 @@ class Post < ActiveRecord::Base
 		ActionView::Base.full_sanitizer.sanitize(self.content)
 	end
 
-	def add_to_feed(members, body='')
-		emails = members.map{|x| x.email}
-		item = FeedItem.create(
-			recipients: emails,
-			item_type: Post.feed_type,
-			title: self.title,
-			body: self.words,
-			link: 'http://'+ENV['HOST']+'/blog/post/'+self.id.to_s,
-			timestamp: Time.now
-		)
-		# push this out to everyone
-		resp = Pusher.push_feed_item(item)
-	end
+	# def add_to_feed(members, body='')
+	# 	emails = members.map{|x| x.email}
+	# 	item = FeedItem.create(
+	# 		recipients: emails,
+	# 		item_type: Post.feed_type,
+	# 		title: self.title,
+	# 		body: self.words,
+	# 		link: 'http://'+ENV['HOST']+'/blog/post/'+self.id.to_s,
+	# 		timestamp: Time.now
+	# 	)
+	# 	resp = Pusher.push_feed_item(item)
+	# end
 
 	def push_list
 		p = self.get_view_permissions

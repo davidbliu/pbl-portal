@@ -1,0 +1,58 @@
+
+<style type = 'text/css'>
+.typeahead{
+	width:100% !important;
+}
+.tt-menu{
+	z-index:5000;
+	background-color:white;
+}
+</style>
+
+<div class = 'col-md-3'>
+
+<!-- <a href = '/reminders/admin2'>Back to Reminder Panel</a> -->
+</div>
+<div class = 'col-md-6'>
+<h2>Create a new Push</h2>
+
+Title: <input type = 'text' class = 'form-control' placeholder = 'Title' id = 'title-input'>
+
+Body: <input type = 'text' class = 'form-control' placeholder = 'Body (further text) (Optional)' id = 'body-input'>
+
+Recipients: 
+<div class = 'smalltext text-muted'>
+Examples: All, Officers, HT, WD, EX, or names like Justin Bieber. Use commas to separate multiple entries.
+</div>
+<div class = 'the-basics'>
+  <input type = 'text' class = 'form-control' id = 'recipients-input' placeholder = 'Recipients (ex: David Liu, HT, WD, all)'>
+</div>
+<div style = 'clear:both'></div>
+
+Link: <input type = 'text' class = 'form-control' placeholder = 'Link (Optional) (ex: http://pbl.link/portal)' id = 'link-input'>
+
+
+<div class = 'btn btn-default' id = 'push-btn'>
+Push</div>
+</div>
+<div class = 'col-md-3'></div>
+
+
+<script type = 'text/javascript'>
+$('#push-btn').click(function(){
+  $.ajax({
+    url:'/push/create',
+    type:'POST',
+    data:{
+      title: $('#title-input').val(),
+      body: $('#body-input').val(),
+      link: $('#link-input').val(),
+      recipients: $('#recipients-input').val().split(',')
+    },
+    success:function(data){
+      console.log(data);
+      location.reload();
+    }
+  })
+})
+</script>

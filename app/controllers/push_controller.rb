@@ -12,5 +12,11 @@ class PushController < ApplicationController
 			@me.save!
 		end
 	end
+
+	def new
+	end
+
+	def create
+	end
 	
 end

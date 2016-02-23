@@ -56,6 +56,8 @@ Rails.application.routes.draw do
   # push notifications
   get 'push' => 'push#index'
   get 'push/register'  => 'push#register'
+  get 'push/new' => 'push#new'
+  post 'push/create' => 'push#create'
 
   # points
   get 'points' => 'points#index'

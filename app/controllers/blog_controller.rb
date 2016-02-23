@@ -69,12 +69,15 @@ class BlogController < ApplicationController
 	end
 
 	def save
+
+		is_new = false
 		if params[:id] and params[:id] != ''
 			post = Post.find(params[:id])
 		else
 			post = Post.new
 			post.author = current_member.email
 			post.semester = Semester.current_semester
+			is_new = true
 		end
 		post.title = params[:title]
 		post.tags = params[:tags]
@@ -86,7 +89,9 @@ class BlogController < ApplicationController
 		post.save!
 
 		# push out post to those who can view
-		post.push(post.push_list, myEmail)
+		if is_new
+			post.push(post.push_list, myEmail)
+		end
 
 		render nothing: true, status: 200
 	end
@@ -113,7 +118,6 @@ class BlogController < ApplicationController
 	end
 
 	def send_email
-		puts 'SENDING BLOG EMAIL ABOUT THIS POST'
 		post = Post.find(params[:id])
 		puts post.content
 		post.send_mail(params[:channel])
