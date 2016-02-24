@@ -5,11 +5,13 @@ class PointsController < ApplicationController
 
 	def attendance
 		@events = Event.this_semester
+			.where('time < ?', Time.now)
 		@attended = @events.select{|x| x.get_attended.include?(myEmail)}
 			.map{|x| x.id}
 		@unattended = @events.select{|x| x.get_unattended.include?(myEmail)}
 			.map{|x| x.id}
-
+		@points = @events.select{|x| @attended.include?(x.id)}.map{|x| x.points}
+		@points = @points.sum
 	end
 
 	def mark_attendance
