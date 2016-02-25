@@ -3,6 +3,16 @@ class PointsController < ApplicationController
 		redirect_to '/points/attendance'
 	end
 
+	def scoreboard
+		@cm_scoreboard = Event.cm_scoreboard.first(10)
+		@officer_scoreboard = Event.officer_scoreboard.first(10)	
+		@email_hash = Member.email_hash
+
+		@committee_rates = Event.committee_attendance_rates
+		@committees = @committee_rates.keys
+		@committees = @committees.sort_by{|x| -@committee_rates[x]}
+	end
+
 	def attendance
 		@events = Event.this_semester
 			.where('time < ?', Time.now)

@@ -61,6 +61,7 @@ Rails.application.routes.draw do
 
   # points
   get 'points' => 'points#index'
+  get 'points/scoreboard' => 'points#scoreboard'
 
   # feed
   get 'feed' => 'feed#feed'

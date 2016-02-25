@@ -40,4 +40,59 @@ class Event < ActiveRecord::Base
 	def get_unattended
 		self.unattended ? self.unattended : []
 	end
+
+	def self.score_hash(members)
+		h = {}
+		members.each do |m|
+			h[m.email] = 0
+		end
+		this_semester_events = Event.this_semester
+		this_semester_events.each do |event|
+			event.get_attended.each do |email|
+				if not h.keys.include?(email)
+					h[email] = 0
+				end
+				h[email] += event.points
+			end
+		end
+		return h
+	end
+
+	def self.scoreboard(members)
+		score_hash = self.score_hash(members)
+		score_list = members.map{|x| x.email}
+		score_list = score_list.sort_by{|x| - score_hash[x]}.map{|x| [x, score_hash[x]]}
+	end
+
+	def self.cm_scoreboard
+		cms = Member.get_group('cms')
+		return self.scoreboard(cms).uniq
+	end
+
+	def self.officer_scoreboard
+		officers = Member.get_group('officers')
+		return self.scoreboard(officers).uniq
+	end
+
+	def self.committee_attendance_rates
+		committees = Member.committees.select{|x| x != 'GM'}
+		current_members = Member.current_members.where.not(committee:'GM')
+		h = {}
+		committees.each do |c|
+			h[c] = 0
+		end
+		score_hash = self.score_hash(current_members)
+		current_members.each do |m|
+			if committees.include?(m.committee)
+				h[m.committee] += score_hash[m.email]
+			end
+		end
+		committees.each do |c|
+			committee_size = current_members.select{|x| x.committee == c}.length
+			h[c] /= committee_size
+		end
+		return h
+	end
+
+
 end

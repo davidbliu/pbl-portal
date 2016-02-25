@@ -1,0 +1,35 @@
+<h2>PBL Scoreboard</h2>
+
+<div class = 'col-md-4'>
+<h2>Top CMs</h2>
+<ul>
+<% @cm_scoreboard.each do |entry| %>
+<li class = 'list-group-item'>
+	<%= entry[1] %>: <%= @email_hash[entry[0]].name %> (<%= @email_hash[entry[0]].committee %>)
+</li>
+<% end %>
+</ul>
+</div>
+<div class = 'col-md-4'>
+<h2>Top Officers</h2>
+<ol>
+<% @officer_scoreboard.each do |entry| %>
+<li class = 'list-group-item'>
+<%= entry[1] %>: <%= @email_hash[entry[0]].name %> (<%= @email_hash[entry[0]].committee %>)
+</li>
+<% end %>
+</ol>
+</div>
+
+
+<div class = 'col-md-4'>
+	<h2>Committee Scorecard</h2>
+	<ul class = 'list-group'>
+		<% @committees.each do |committee| %>
+			<li class = 'list-group-item'>
+				<%= committee %> (<%= @committee_rates[committee] %>)
+			</li>
+		<% end %>
+	</ul>
+</div>
+
