@@ -94,5 +94,31 @@ class Event < ActiveRecord::Base
 		return h
 	end
 
+	def self.clean?
+		Event.all.each do |event|
+			a = event.get_attended
+			b = event.get_unattended
+			a.each do |email|
+				if b.include?(email)
+					return false
+				end
+			end
+			b.each do |email|
+				if a.include?(email)
+					return false
+				end
+			end
+		end
+		return true
+	end
+
+	def self.clean
+		Event.all.each do |event|
+			event.attended = event.get_attended.uniq
+			event.unattended = event.get_unattended.uniq
+			event.save
+		end
+	end
+
 
 end
