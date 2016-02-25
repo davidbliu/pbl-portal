@@ -11,6 +11,17 @@ class PointsController < ApplicationController
 		@committee_rates = Event.committee_attendance_rates
 		@committees = @committee_rates.keys
 		@committees = @committees.sort_by{|x| -@committee_rates[x]}
+
+		# save it in clicks
+		Thread.new{
+			GoLinkClick.create(
+				key: '/points/scoreboard',
+				golink_id: 'scoreboard_id',
+				member_email: myEmail
+			)
+			ActiveRecord::Base.connection.close
+		}
+
 	end
 
 	def attendance
