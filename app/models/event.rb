@@ -48,7 +48,7 @@ class Event < ActiveRecord::Base
 		end
 		this_semester_events = Event.this_semester
 		this_semester_events.each do |event|
-			event.get_attended.each do |email|
+			event.get_attended.uniq.each do |email|
 				if not h.keys.include?(email)
 					h[email] = 0
 				end

@@ -1,4 +1,5 @@
 class PointsController < ApplicationController
+	
 	def index
 		redirect_to '/points/attendance'
 	end
@@ -21,7 +22,6 @@ class PointsController < ApplicationController
 			)
 			ActiveRecord::Base.connection.close
 		}
-
 	end
 
 	def attendance
