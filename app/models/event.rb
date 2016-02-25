@@ -89,7 +89,7 @@ class Event < ActiveRecord::Base
 		end
 		committees.each do |c|
 			committee_size = current_members.select{|x| x.committee == c}.length
-			h[c] /= committee_size
+			h[c] /= committee_size.to_f
 		end
 		return h
 	end

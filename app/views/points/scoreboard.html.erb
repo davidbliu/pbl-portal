@@ -27,7 +27,7 @@
 	<ul class = 'list-group'>
 		<% @committees.each do |committee| %>
 			<li class = 'list-group-item'>
-				<%= committee %> (<%= @committee_rates[committee] %>)
+				<%= committee %> (<%= @committee_rates[committee].round(2) %>)
 			</li>
 		<% end %>
 	</ul>
