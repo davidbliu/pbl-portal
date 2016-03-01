@@ -17,7 +17,8 @@
 
 
 <h1>PBL Points Distribution</h1>
-<div>
+
+<div class = 'card'>
 	<div>Your score: <%= @myScore %></div>
 	<div>Mean: <%= @mean %></div>
 	<div>STD: <%= @std %></div>
@@ -27,15 +28,16 @@
 
 
 <script>
-var scoreboard = <%= raw(@scoreboard) %>;
-var data = _.map(scoreboard, function(x){
-	return x[1];
-});
+// var scoreboard = <%= raw(@scoreboard) %>;
+// var data = _.map(scoreboard, function(x){
+// 	return x[1];
+// });
+var data = <%= raw(@bins) %>;
 console.log(data);
 // simple array
 // var data = [8, 12, 15, 30, 43];
 // variables for chart width and height
-var w = 10,
+var w = 30,
     h = 300;
 
 var chart = d3.select(".charts").append("svg")

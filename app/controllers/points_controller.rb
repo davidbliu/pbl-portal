@@ -31,6 +31,19 @@ class PointsController < ApplicationController
 		@scoreboard = @cm_scoreboard + @officer_scoreboard
 		@scoreboard = @scoreboard.sort_by{|x| -x[1]}
 		@scores = @scoreboard.map{|x| x[1]}
+		@bins = []
+		@ranges = []
+		num_bins = 15
+		step = @scores.max/num_bins.to_f
+		min = 0
+		(0..num_bins+1).each do |i|
+
+			max = min+step
+			@ranges << [min,max]
+			s = @scores.select{|x| x >= min and x < max}.length
+			@bins << s
+			min = max
+		end
 		sum = @scores.sum
 		@mean = @scores.mean
 		@std = @scores.standard_deviation
