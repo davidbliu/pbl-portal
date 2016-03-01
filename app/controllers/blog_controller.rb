@@ -1,4 +1,6 @@
 class BlogController < ApplicationController
+
+	before_filter :is_logged_in
 	def index
 		if myEmail == nil or myEmail == ''
 	      cookies[:auth_redirect] = '/blog'
