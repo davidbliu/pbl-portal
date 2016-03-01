@@ -30,7 +30,7 @@ class PointsController < ApplicationController
 		@officer_scoreboard = Event.officer_scoreboard
 		@scoreboard = @cm_scoreboard + @officer_scoreboard
 		@scoreboard = @scoreboard.sort_by{|x| -x[1]}
-		@scores = @scoreboard.map{|x| x[1]}
+		@scores = @scoreboard.map{|x| x[1]}.select{|x| x != 0}
 		@bins = []
 		@ranges = []
 		num_bins = 15
@@ -39,7 +39,7 @@ class PointsController < ApplicationController
 		(0..num_bins+1).each do |i|
 
 			max = min+step
-			@ranges << [min,max]
+			@ranges << min.to_i
 			s = @scores.select{|x| x >= min and x < max}.length
 			@bins << s
 			min = max

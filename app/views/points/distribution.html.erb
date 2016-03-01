@@ -1,7 +1,9 @@
 <script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
  <style>
-
+ svg{
+ 	/*border:1px solid black;*/
+ }
  .axis {
    font: 10px sans-serif;
  }
@@ -33,24 +35,29 @@
 // 	return x[1];
 // });
 var data = <%= raw(@bins) %>;
+var ranges = <%= raw(@ranges) %>;
+console.log('data max was '+_.max(data));
 console.log(data);
 // simple array
 // var data = [8, 12, 15, 30, 43];
 // variables for chart width and height
-var w = 30,
-    h = 300;
 
+var width = 500;
+var height = 300;
+var yshift = 15;
+var w = width/data.length,
+    h = height - yshift;
 var chart = d3.select(".charts").append("svg")
     .attr("class", "chart")
-    .attr("width", w * data.length)
-    .attr("height", h);
+    .attr("width", width)
+    .attr("height", height);
 
 var x = d3.scale.linear()
     .domain([0, 1])
     .range([0, w]);
      
 var y = d3.scale.linear()
-    .domain([0, 50])
+    .domain([0, _.max(data)+5])
     .rangeRound([0, h]); //rangeRound is used for antialiasing
 // x and y are the lower-left position of the bar
 // width is the width of the bar
@@ -58,11 +65,41 @@ var y = d3.scale.linear()
 // for crisp edges use -.5 (antialiasing)
 chart.selectAll("rect")
     .data(data)
-  .enter().append("rect")
+  	.enter().append("rect")
     .attr("x", function(d, i) { return x(i) - .5; })
     .attr("y", function(d) { return h - y(d) - .5; })
-    .attr("width", w)
-    .attr("height", function(d) { return y(d); } );
+    .attr("width", w*0.95)
+    .attr("height", function(d) { return y(d); } )
+    .attr('fill', 'black');
+
+chart.selectAll("text")
+   .data(data)
+   .enter()
+   .append("text")
+   .text(function(d,i){	
+   		return d;
+   })
+   .attr("x", function(d, i) {
+        return x(i)-.5 + w/2-3;
+   })
+   .attr("y", function(d) {
+        return h - y(d) +15;
+   })
+   .attr('fill', 'white');
+chart.selectAll("text2")
+   .data(data)
+   .enter()
+   .append("text")
+   .text(function(d,i){
+   		return ranges[i];
+   })
+   .attr("x", function(d, i) {
+        return x(i)-.5 + w/2-3;
+   })
+   .attr("y", function(d) {
+        return h+15;
+   })
+   .attr('fill', 'black');
 // horizontal line for the x-axis
 chart.append("line")
      .attr("x1", 0)
