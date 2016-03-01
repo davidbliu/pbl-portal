@@ -31,18 +31,29 @@ class PointsController < ApplicationController
 		@scoreboard = @cm_scoreboard + @officer_scoreboard
 		@scoreboard = @scoreboard.sort_by{|x| -x[1]}
 		@scores = @scoreboard.map{|x| x[1]}.select{|x| x != 0}
-		@bins = []
+		
 		@ranges = []
-		num_bins = 15
-		step = @scores.max/num_bins.to_f
-		min = 0
-		(0..num_bins+1).each do |i|
-
-			max = min+step
-			@ranges << min.to_i
-			s = @scores.select{|x| x >= min and x < max}.length
-			@bins << s
-			min = max
+		num_bins = 10
+		@bins = Array.new(num_bins, 0)
+		@max = @scores.max
+		@min = @scores.min
+		@median = @scores.median
+		# step = @scores.max/num_bins.to_f
+		# min = 0
+		# (0..num_bins+1).each do |i|
+		step = @max/num_bins.to_f
+		(0..num_bins).each do |i|
+			@ranges << (step*i).to_i
+		end
+		@scores.each do |score|
+			bin_i = (score/@max.to_f * num_bins).to_i
+			puts bin_i
+			@bins[bin_i] = @bins[bin_i] ? @bins[bin_i] + 1 : 1
+			# max = min+step
+			# @ranges << min.to_i
+			# s = @scores.select{|x| x >= min and x < max}.length
+			# @bins << s
+			# min = max
 		end
 		sum = @scores.sum
 		@mean = @scores.mean
@@ -100,6 +111,10 @@ module Enumerable
 
     def standard_deviation
       return Math.sqrt(self.sample_variance)
+    end
+    def median
+    	s = self.sort
+    	return s[(self.length/2).ceil]
     end
 
 end 
