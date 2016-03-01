@@ -1,0 +1,39 @@
+
+<style type = 'text/css'>
+.project-img{
+	height:150px;
+}
+</style>
+<% if @project == nil %>
+<h1>That project was not found</h1>
+<% else %>
+<div class = 'col-md-3'>
+<%= link_to 'Back to profiles', '/profile/all' %>
+</div>
+<div class = 'col-md-6'>
+<h1><%= @project.name %></h1>
+<div>
+	<b>Description:</b> <%= @project.description %>
+</div>
+<div>
+	<% @project.get_images.each do |img| %>
+	<img src = '<%= img %>' class = 'project-img'>
+	<% end %>
+</div>
+<div><b>Members:</b>
+	<% @project.emails.each do |email| %>
+	<a href = '#'>
+		<%= @email_hash[email].name %>
+	</a>
+	<% end %>
+</div>
+<div>
+	<b>Links:</b> 
+	<% @project.get_links.each do |link| %>
+	<a href = '<%= link %>'><%= link %></a>
+	<% end %>
+</div>
+</div>
+<!-- end of col -->
+<div class = 'col-md-3'></div>
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160219035323) do
+ActiveRecord::Schema.define(version: 20160301101623) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,6 +136,38 @@ ActiveRecord::Schema.define(version: 20160219035323) do
     t.text     "tags"
     t.integer  "num_comments"
     t.string   "link"
+  end
+
+  create_table "profiles", force: :cascade do |t|
+    t.string   "email"
+    t.string   "grad"
+    t.string   "phone"
+    t.text     "positions"
+    t.text     "projects"
+    t.text     "jobs"
+    t.text     "extracurriculuars"
+    t.text     "awards"
+    t.text     "state_awards"
+    t.text     "case_comps"
+    t.text     "description"
+    t.text     "gallery"
+    t.text     "images"
+    t.text     "nicknames"
+    t.string   "hometown"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.string   "name"
+    t.text     "emails"
+    t.datetime "time"
+    t.string   "semester"
+    t.text     "description"
+    t.text     "links"
+    t.text     "images"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "pushes", force: :cascade do |t|

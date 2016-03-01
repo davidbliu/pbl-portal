@@ -108,6 +108,14 @@ Rails.application.routes.draw do
   get 'points/attendance' => 'points#attendance'
   post 'points/mark_attendance' => 'points#mark_attendance'
 
+
+  # profile stuff
+  get 'profile/edit'=> 'members#edit_profile'
+  get 'profile'=> 'members#profile'
+  post 'profile/update' => 'members#update_profile'
+  get 'profile/all' => 'members#all_profiles'
+  get 'get_project' => 'members#get_project'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
