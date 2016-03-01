@@ -94,6 +94,12 @@ class Event < ActiveRecord::Base
 		return h
 	end
 
+	def self.get_score(email)
+		attended = Event.all.select{|x| x.attended.include?(email)}
+		pts = attended.map{|x| x.points}
+		return pts.sum
+	end
+
 	def self.clean?
 		Event.all.each do |event|
 			a = event.get_attended

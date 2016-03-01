@@ -59,9 +59,7 @@ Rails.application.routes.draw do
   get 'push/new' => 'push#new'
   post 'push/create' => 'push#create'
 
-  # points
-  get 'points' => 'points#index'
-  get 'points/scoreboard' => 'points#scoreboard'
+  
 
   # feed
   get 'feed' => 'feed#feed'
@@ -104,6 +102,9 @@ Rails.application.routes.draw do
   get 'courseware' => 'courseware#index'
 
   # points and events
+  get 'points' => 'points#index'
+  get 'points/scoreboard' => 'points#scoreboard'
+  get 'points/distribution' => 'points#distribution'
   get 'points/attendance' => 'points#attendance'
   post 'points/mark_attendance' => 'points#mark_attendance'
 
