@@ -31,6 +31,14 @@
 </div>
 <div class = 'charts'></div>
 
+<div>
+<h2>Zeros</h2>
+<p>Wall of shame, 0 pts: </p>
+<!-- <img src = 'https://media2.giphy.com/media/mcH0upG1TeEak/200_s.gif' height = 100> -->
+<% @zeros.each do |email| %>
+<div><%= @email_hash[email].committee %>: <%= @email_hash[email].name %></div>
+<% end %>
+</div>
 
 
 <script>

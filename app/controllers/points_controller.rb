@@ -38,9 +38,6 @@ class PointsController < ApplicationController
 		@max = @scores.max
 		@min = @scores.min
 		@median = @scores.median
-		# step = @scores.max/num_bins.to_f
-		# min = 0
-		# (0..num_bins+1).each do |i|
 		step = @max/num_bins.to_f
 		(0..num_bins).each do |i|
 			@ranges << (step*i).to_i
@@ -49,16 +46,16 @@ class PointsController < ApplicationController
 			bin_i = (score/@max.to_f * num_bins).to_i
 			puts bin_i
 			@bins[bin_i] = @bins[bin_i] ? @bins[bin_i] + 1 : 1
-			# max = min+step
-			# @ranges << min.to_i
-			# s = @scores.select{|x| x >= min and x < max}.length
-			# @bins << s
-			# min = max
 		end
 		sum = @scores.sum
 		@mean = @scores.mean
 		@std = @scores.standard_deviation
 		@myScore = Event.get_score(myEmail)
+		@email_hash = Member.email_hash
+		@zeros = @scoreboard.select{|x| x[1] == 0}.map{|x| x[0]}
+		@zeros = @zeros.select{|x| @email_hash[x].committee != 'AC' and @email_hash[x].committee != 'GM'}
+		@zeros = @zeros.sort_by{|x| @email_hash[x].committee}
+
 
 		Thread.new{
 			GoLinkClick.create(
