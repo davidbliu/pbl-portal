@@ -1,24 +1,34 @@
 <style type = 'text/css'>
+.post-content:hover{
+  opacity:1;
+}
 .post-content{
 	height:200px;
 	overflow:hidden;
   /*overflow:auto;*/
-  border-top:1px solid rgba(50,50,50,0.1);
+  /*border-top:1px solid rgba(50,50,50,0.1);*/
+  opacity:0.3;
+   transition: opacity .25s ease-in-out;
+   -moz-transition: opacity .25s ease-in-out;
+   -webkit-transition: opacity .25s ease-in-out;
 }
 .post-div{
 	border:1px solid rgba(0,0,0,0.1);
 	/*width:280px;*/
 	/*height:280px;*/
-  width:300px;
+  /*width:300px;*/
+  width:30%;
   height:310px;
 	margin:5px;
-	padding:2px;
+	padding:15px;
 	float:left;
 	border-radius:5px;
 }
 .title{
 	font-size:1.3em;
 	font-weight:bold;
+}
+.timestring{
 }
 </style>
 
@@ -63,7 +73,11 @@ Current Filter is <%= @tag %>
 <% @posts.each do |post| %>
 <div class = 'post-div'>
 	<div class = 'title'><%= post.title %></div>
-	<div class = 'text-muted'><%= post.time_string %></div>
+	
+  <div class = 'text-muted author'>
+    By <%= @email_hash[post.author].name %>,
+    <span class = 'text-muted timestring'><%= post.time_string %></span>
+  </div>
 	<div class = 'post-content'><%= raw(post.content)%></div>
 	<a href = '/blog/post/<%= post.id %>'>Read More</a>
 </div>

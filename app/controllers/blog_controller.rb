@@ -30,6 +30,8 @@ class BlogController < ApplicationController
 				)
 				ActiveRecord::Base.connection.close
 			}
+
+			@email_hash = Member.email_hash
 			render :template => 'blog/index2'
 		end
 	end
