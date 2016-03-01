@@ -59,6 +59,15 @@ class PointsController < ApplicationController
 		@mean = @scores.mean
 		@std = @scores.standard_deviation
 		@myScore = Event.get_score(myEmail)
+
+		Thread.new{
+			GoLinkClick.create(
+				key: '/points/distribution',
+				golink_id: 'distribution_id',
+				member_email: myEmail
+			)
+			ActiveRecord::Base.connection.close
+		}
 	end
 
 	def attendance
