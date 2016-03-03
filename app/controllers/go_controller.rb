@@ -212,4 +212,16 @@ class GoController < ApplicationController
     @clicks = GoLinkClick.where('created_at > ?', @three_past)
   end
 
+  def time_distribution
+    @clicks = GoLinkClick.all
+    @bins = Array.new(24, 0)
+    @hours = (0..24).to_a
+    @num = 0
+    @clicks.each do |click|
+      hour = click.created_at.in_time_zone("Pacific Time (US & Canada)").hour
+      @bins[hour] = @bins[hour]+1
+    end
+
+  end
+
 end

@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   get 'go/engagement' => 'go#engagement'
   get 'go/admin' => 'go#admin'
   get 'go/three_days' => 'go#three_days'
+  get 'go/time_distribution' => 'go#time_distribution'
 
   #blog
   get 'blog' => 'blog#index'
