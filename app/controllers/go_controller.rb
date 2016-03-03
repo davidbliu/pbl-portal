@@ -221,7 +221,13 @@ class GoController < ApplicationController
       hour = click.created_at.in_time_zone("Pacific Time (US & Canada)").hour
       @bins[hour] = @bins[hour]+1
     end
-
+    @golinks = GoLink.where(semester: Semester.current_semester)
+    @num_clicks = @golinks.map{|x| x.get_num_clicks}
+    @max = @num_clicks.max 
+    @min = @num_clicks.min
+    @avg = @num_clicks.mean
+    @std = @num_clicks.standard_deviation
+    @click_bins = Array.new(15, 0)
   end
 
 end
