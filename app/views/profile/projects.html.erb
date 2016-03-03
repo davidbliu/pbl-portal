@@ -1,0 +1,31 @@
+<style>
+.proj-img{
+height:150px;
+}
+</style>
+<h1>PBL Project Portal</h1>
+<% @projects.each do |project| %>
+<h3><%= project.name %></h3>
+<div>
+	<b>Semester: </b> <%= project.semester %>
+</div>
+<div>
+	<b>Description:</b>
+	<span><%= project.description %></span>
+</div>
+<div>
+	<b>Members:</b>
+	<span><%= project.get_members.join(', ') %></span>
+</div>
+
+<div>
+	<% project.get_images.each do |img| %>
+	<img src = '<%= img %>' class = 'proj-img'/>
+	<% end %>
+</div>
+<div>
+	<% if project.embed? %>
+	<%= raw(project.embed) %>
+	<% end %>
+</div>
+<% end %>

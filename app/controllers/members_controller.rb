@@ -45,37 +45,6 @@ class MembersController < ApplicationController
     end
   end
 
-  def edit_profile
-    # @member = Member.where(email: params[:email]).first
-    @member = current_member
-  end
-
-  def all_profiles
-    @profiles = Profile.all
-    @email_hash = Member.all.index_by(&:email)
-  end
-
-  def update_profile
-    # TODO: validate data
-    @member = Member.where(email: params[:email]).first
-    puts @member.name
-    puts 'that was the member'
-    puts params
-    puts 'those were the params'
-    render nothing: true, status: 200
-  end
-
-  def profile
-  end
-
-  def get_project
-    @project = Project.where(name: params[:name]).first
-    if @project == nil
-      redirect_to :back
-    else
-      @email_hash = Member.all.index_by(&:email)
-      render :template => 'members/get_project'
-    end
-  end
+  
 
 end

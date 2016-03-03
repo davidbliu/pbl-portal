@@ -1,6 +1,6 @@
 class BlogMailer < ActionMailer::Base
 
-	default from: "berkeleypbl.webdev@gmail.com"
+	default from: "berkeleypbl.vpoperations@gmail.com"
 
 	def send_blog_email(emails, post)
 	    puts 'ABOUT TO SEND BLOG EMAAIL, EMAILS ARE'
@@ -19,7 +19,7 @@ class BlogMailer < ActionMailer::Base
   		mail(
   			:to=> email, 
   			:subject => @subject,
-  			:from => 'PBL Blog <berkeleypbl.webdev@gmail.com>'
+  			:from => 'PBL Blog <berkeleypbl.vpoperations@gmail.com>'
   		)
   	end
 end

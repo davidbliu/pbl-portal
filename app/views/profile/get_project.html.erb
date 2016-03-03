@@ -8,22 +8,24 @@
 <h1>That project was not found</h1>
 <% else %>
 <div class = 'col-md-3'>
-<%= link_to 'Back to profiles', '/profile/all' %>
+<%= link_to 'Back to profiles', profiles_path %>
 </div>
 <div class = 'col-md-6'>
 <h1><%= @project.name %></h1>
-<div>
-	<b>Description:</b> <%= @project.description %>
-</div>
-<div>
+<p>
 	<% @project.get_images.each do |img| %>
 	<img src = '<%= img %>' class = 'project-img'>
 	<% end %>
+</p>
+
+<div>
+	<b>Description:</b> <%= @project.description %>
 </div>
+
 <div><b>Members:</b>
-	<% @project.emails.each do |email| %>
+	<% @project.members.each do |member| %>
 	<a href = '#'>
-		<%= @email_hash[email].name %>
+		<%= member %>
 	</a>
 	<% end %>
 </div>
@@ -33,6 +35,13 @@
 	<a href = '<%= link %>'><%= link %></a>
 	<% end %>
 </div>
+
+<% if @project.embed? %>
+<div>
+	<%= raw(@project.embed) %>
+</div>
+<% end %>
+
 </div>
 <!-- end of col -->
 <div class = 'col-md-3'></div>
