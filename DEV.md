@@ -112,7 +112,7 @@ lets display it in the view in the most ugly, jank way possible. edit `/app/view
 <% end %>
 ```
 
-__ 5) done __
+__5) done__
 
 some good next steps are
 * try more reports
