@@ -44,12 +44,12 @@ class PointsController < ApplicationController
 		end
 		@scores.each do |score|
 			bin_i = (score/@max.to_f * num_bins).to_i
-			puts bin_i
 			@bins[bin_i] = @bins[bin_i] ? @bins[bin_i] + 1 : 1
 		end
 		sum = @scores.sum
 		@mean = @scores.mean
 		@std = @scores.standard_deviation
+		
 		@myScore = Event.get_score(myEmail)
 		@email_hash = Member.email_hash
 		@zeros = @scoreboard.select{|x| x[1] == 0}.map{|x| x[0]}
@@ -84,11 +84,9 @@ class PointsController < ApplicationController
 		att = event.get_attended
 		unatt = event.get_unattended
 		if attended
-			puts 'TRUE'
 			att << myEmail
 			unatt.delete(myEmail)
 		else
-			puts 'FALSE'
 			unatt << myEmail
 			att.delete(myEmail)
 		end
@@ -99,6 +97,7 @@ class PointsController < ApplicationController
 	end
 
 end
+
 module Enumerable
 
     def sum
@@ -119,8 +118,8 @@ module Enumerable
       return Math.sqrt(self.sample_variance)
     end
     def median
-    	s = self.sort
-    	return s[(self.length/2).ceil]
+      s = self.sort
+      return s[(self.length/2).ceil]
     end
 
 end 

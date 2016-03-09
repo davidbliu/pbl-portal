@@ -231,3 +231,7 @@ class GoController < ApplicationController
   end
 
 end
+
+
+
+
