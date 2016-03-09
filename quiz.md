@@ -30,6 +30,9 @@ class TestModel
     def self.most_active_committee(time_since)
       # return committee that has clicked on the most links links since time_since
     end
+    def self.get_permitted_golinks(member)
+      # return a list of all the golinks this member is allowed to view
+    end
     
     #
     # Posts
@@ -46,6 +49,9 @@ class TestModel
     #
     def self.get_committee_and_position(member, semester_name)
       # ex: ['HT', 'chair']
+    end
+    def is_officer?(member)
+      # return true if this member is currently an officer
     end
     
     #
