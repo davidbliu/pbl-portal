@@ -18,7 +18,7 @@ __1) add a new route__
 * add a line to accept get requests
   * `get '/some_path' => 'test#action_name'`
   * this will let you handle requests to `/some_path` in the file `/app/controllers/test_controller.rb` through the `action_name` method
-__ 2) add code to handle the route in a controller__
+__2) add code to handle the route in a controller__
 * open `/app/controllers/test_controller.rb`
 * create a new method
 ```ruby
@@ -26,7 +26,7 @@ def action_name
   # do something here
 end
 ```
-__ 3) create a view __
+__3) create a view__
 * add a file to `/app/views/test` with the same name as your action_name
   * ex: `/app/views/test/action_name.html.erb`
 * add some html to this file
@@ -34,7 +34,7 @@ __ 3) create a view __
 <h1>New Page</h1>
 <div>hi</div>
 ```
-__ 4) do some reporting __
+__4) do some reporting__
 
 some things you could consider creating reports for are
 
