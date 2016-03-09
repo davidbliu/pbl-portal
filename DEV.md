@@ -100,7 +100,7 @@ def action_name
 end
 ```
 
-__4) make it pretty in the view __
+__4) make it pretty in the view__
 
 lets display it in the view in the most ugly, jank way possible. edit `/app/views/test/some_action.html.erb`
 ```html
