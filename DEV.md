@@ -9,6 +9,18 @@ normal version:
 * TODO finish this
 
 # Models
+see `/db/schema.rb`
+
+# How to play around with stuff
+* before doing anything, you must run `source setenv.sh`. this sets environment variables
+* running `rails console` lets you test out commands in a REPL
+* try `rails s` and visiting localhost:3000
+
+## making changes
+when you're ready to make changes (ie starting the sample project) __dont do it on the master branch__
+* `git checkout -b name_of_branch`
+* make your changes
+
 
 # Sample Project
 create a new reports page
