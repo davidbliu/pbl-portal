@@ -89,6 +89,36 @@ def self.top_viewed_posts(time_since)
 end
 ```
 __3) expose these results to your view__
+
+lets go back to the `action_name` method we created in `/app/controllers/test_controller.rb`. we want to bind the results of top_viewed_posts to a variable our view can use
+
+```ruby
+def action_name
+  @time_since = Time.now - 1.week
+  @top_posts = Post.top_viewed_posts(@time_since)
+  @posts = Post.where('id in (?)', @top_posts.keys)
+end
+```
+
+__4) make it pretty in the view __
+
+lets display it in the view in the most ugly, jank way possible. edit `/app/views/test/some_action.html.erb`
+```html
+<h1>Top Viewed Blogposts since <%= @time_since %></h1>
+<% @posts.each do |post| %>
+  <div>
+    <%= post.title %>: <%= @top_posts[post.id] %> clicks
+  </div>
+<% end %>
+```
+
+__ 5) done __
+
+some good next steps are
+* try more reports
+* make them prettier (graphs, d3, etc)
+
+when you are comfortable with grabbing data and displaying it, move on to creating new models/features on the website.
   
 
 
