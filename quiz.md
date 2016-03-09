@@ -44,7 +44,7 @@ class TestModel
     #
     # Members
     #
-    self.get_committee_and_position(member, semester_name)
+    def self.get_committee_and_position(member, semester_name)
       # ex: ['HT', 'chair']
     end
     
