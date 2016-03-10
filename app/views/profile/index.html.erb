@@ -54,12 +54,7 @@
 				<a href = '/profiles/get_project?name=<%= project %>'><%= project %></a>&nbsp;
 			<% end %>
 	</div>
-	<div>
-		<% if profile.get_awards.length > 0 %>
-		<b>PBL Awards:</b> 
-			<%= profile.get_awards.join(', ') %>
-			<% end %>
-	</div>
+
 	<div>
 		<b>Jobs:</b> 
 			<%= profile.get_jobs.join(', ') %>
