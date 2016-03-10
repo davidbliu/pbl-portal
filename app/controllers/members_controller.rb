@@ -6,9 +6,14 @@ class MembersController < ApplicationController
   end
 
   def index
-    @members = Member.current_members
-      .where.not(committee:'GM')
-      .sort_by{|x| x.committee}
+    if not myEmail
+      cookies[:auth_redirect] = '/members'
+      redirect_to '/auth/google_oauth2'
+    else
+      @members = Member.current_members
+        .where.not(committee:'GM')
+        .sort_by{|x| x.committee}
+    end
   end
 
   def update
