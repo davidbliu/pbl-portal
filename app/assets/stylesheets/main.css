@@ -10,3 +10,9 @@ h1, h2, h3, h4, h5, h6 {
 p, div {
     font-family: 'Open Sans', sans-serif;
 }
+a{
+	color: #4285f4 !important;
+}
+.navbar-inverse .navbar-nav>li>a{
+	color:#9d9d9d !important;
+}

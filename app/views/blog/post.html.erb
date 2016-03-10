@@ -6,12 +6,16 @@
 	width:300px;
 }
 .post-meta{
-	border: 1px solid rgba(0,0,0,0.1);
+	/*border: 1px solid rgba(0,0,0,0.1);*/
+	background-color:#F3F3FD;
 	padding:10px;
 	margin:5px;	
 }
 .tag-label>a{
 	color:white;
+}
+#comment-group{
+	margin-top:20px;
 }
 </style>
 
@@ -31,10 +35,12 @@
 
 	<div class = 'comments-div'>
 		<% if @comments.length == 0 %>
-		No comments to show
+		<div id = 'comment-group'>
+			No comments to show
+		</div>
 		<% else %>
 		<h4>Comments</h4>
-		<ul class = 'list-group'>
+		<ul class = 'list-group' id = 'comment-group'>
 			<% @comments.each do |comment| %>
 			<li class = 'list-group-item'>
 				<%= @email_hash[comment.member_email].name %>:
