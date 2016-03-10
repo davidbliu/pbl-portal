@@ -52,9 +52,9 @@ class PointsController < ApplicationController
 		
 		@myScore = Event.get_score(myEmail)
 		@email_hash = Member.email_hash
-		@zeros = @scoreboard.select{|x| x[1] == 0}.map{|x| x[0]}
-		@zeros = @zeros.select{|x| @email_hash[x].committee != 'AC' and @email_hash[x].committee != 'GM'}
-		@zeros = @zeros.sort_by{|x| @email_hash[x].committee}
+		# @zeros = @scoreboard.select{|x| x[1] == 0}.map{|x| x[0]}
+		# @zeros = @zeros.select{|x| @email_hash[x].committee != 'AC' and @email_hash[x].committee != 'GM'}
+		# @zeros = @zeros.sort_by{|x| @email_hash[x].committee}
 
 
 		Thread.new{
