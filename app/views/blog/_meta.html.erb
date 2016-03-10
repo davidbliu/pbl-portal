@@ -3,22 +3,16 @@
 	<div><%= post.view_permissions %> can view</div>
 	<div>Semester: <%= post.semester ? post.semester : 'None' %></div>
 	<div>
-		<a href = '/blog/edit?id=<%= post.id %>'>
-			<div class = 'btn btn-default'>
-				Edit post
-			</div>
-		</a> 
+		<div>
+			<%= link_to 'Edit Post', "/blog/edit?id=#{post.id}" %>
+		</div>
 		<% if current_member.is_officer? %>
-		<a href = '/blog/email/<%= post.id %>'>
-			<div class = 'btn btn-default'>
-				Email post
+			<div>
+				<%= link_to 'Email Post', "/blog/email/#{post.id}" %>
 			</div>
-		</a>
 		<% end %>
-		<a href = '/blog/push_post/<%= post.id %>'>
-			<div class = 'btn btn-default'>
-				Push post
-			</div>
-		</a>
+		<div>
+			<%= link_to 'Push Post', "/blog/push_post/#{post.id}" %>
+		</div>
 	</div>
 </div>

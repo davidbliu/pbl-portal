@@ -16,11 +16,7 @@
 </style>
 
 <div class = 'col-md-3'>
-	<a href = '/blog'>
-		<div class = 'btn btn-default'>
-			Back to blog
-		</div>
-	</a>
+	<%= link_to 'Back to Blog', blog_path %>
 	<%= render partial: 'meta', locals: {post: @post, email_hash: @email_hash} %>
 </div>
 
