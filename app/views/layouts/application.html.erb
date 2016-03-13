@@ -30,15 +30,21 @@
   margin-right:25px;
 }
 #searchInput{
-  border-radius:3px;
+  /*border-radius:3px;*/
+  border:none;
+  border-radius:0px;
 }
 #header-search{
   display:block;
 }
 .ng-cloak { display:none; }
+#logo-img{
+  height: 35px;
+    margin-top: 7px;
+}
 </style>
 
-<nav style = 'border-radius:0px; margin-bottom:15px; padding:10px; ' class="navbar navbar-default navbar-inverse">
+<nav style = 'border-radius:0px; margin-bottom:15px; padding:0px; ' class="navbar navbar-default navbar-inverse">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -48,7 +54,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <img src = '/logo-135.png' height = 45/>
+      <img id = 'logo-img' src = '/logo-135.png' />
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
