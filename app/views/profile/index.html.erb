@@ -1,63 +1,54 @@
-<style class = 'text/css'>
-.card{
-	padding:15px;
-	border:1px solid rgba(0,0,0,0.1);
-	width: 30%;
-	/*width:45%;*/
-	height:500px;
-	border-radius:5px;
-	margin:15px;
-	float:left;
+<style>
+.profile-select{
+	padding:10px;
+	margin:10px;
+	/*border:1px solid black;*/
+	/*text-align:center;*/
+	margin-left:20%;
+	font-size:1.1em;
+	height:100%;
+	overflow:auto;
 }
-.profile-img{
-	border-radius:10000px;
-	height: 150px;
+.profile-select:hover{
+	cursor:pointer;
+	background-color:yellow;
+}
+#profiles-menu{
+	border-right:1px solid black;
+	/*color:white !important;*/
+	/*background-color:blue;*/
 }
 </style>
-<h1>PBL Profiles</h1>
-<p>PBL's past, present, and future! Come and see for yourself!</p>
-<% @profiles.each do |profile| %>
-<div class = 'card'>
-	<h4><%= @email_hash[profile.email].name %></h4>
-	<% if profile.get_nicknames.length > 0 %>
-		<p>
-			<b>AKA: </b>
-			<%= profile.get_nicknames.join(', ') %>
-		</p>
-	<% end %>
-	<% profile.get_images.each do |img| %>
-		<img src = '<%= img %>' class = 'profile-img'>
-		</img>
-	<% end %>
+<div class = 'row'>
 
-	<div>
-		<b>Major:</b> <%= profile.major %>
-	</div>
-	<div>
-		<b>Graduation Date:</b> <%= profile.grad %>
-	</div>
-	<div>
-		<b>Hometown:</b> <%= profile.hometown %>
-	</div>
-	<div>
-		<b>Phone:</b> <%= @email_hash[profile.email].phone %>
-	</div>
-	<div>
-		<b>Past positions:</b> 
-		<% profile.get_positions.each do |position| %>
-		<a href = '/position?position=<%= position %>'><%= position %></a>&nbsp;
+<div class = 'col-md-4'>
+	<div id = 'profiles-menu'>
+		<% @profiles.each do |profile| %>
+		<div class = 'profile-select' data-id = '<%= profile.id %>'>
+			<%= @email_hash[profile.email].name %>
+		</div>
 		<% end %>
 	</div>
-	<div>
-		<b>Projects:</b> 
-			<% profile.get_projects.each do |project| %>
-				<a href = '/profiles/get_project?name=<%= project %>'><%= project %></a>&nbsp;
-			<% end %>
-	</div>
+</div>
 
-	<div>
-		<b>Jobs:</b> 
-			<%= profile.get_jobs.join(', ') %>
+<div class = 'col-md-8'>
+	<div id = 'profile-container'>
+		<h2>Click on a profile to see</h2>
 	</div>
 </div>
-<% end %>
+
+</div>
+
+<script>
+var selectedProfile = '';
+$('.profile-select').click(function(){
+	selectedProfile = $(this).attr('data-id');
+	$.ajax({
+		url:'/profiles/show/'+$(this).attr('data-id'),
+		type:'GET',
+		success:function(data){
+			$('#profile-container').html(data);
+		}
+	})
+})
+</script>

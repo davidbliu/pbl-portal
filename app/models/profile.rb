@@ -8,6 +8,7 @@ class Profile < ActiveRecord::Base
 	serialize :images
 	serialize :nicknames
 	serialize :awards
+	
 	def get_images
 		self.images ? self.images : []
 	end

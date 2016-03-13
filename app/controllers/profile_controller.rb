@@ -9,14 +9,28 @@ class ProfileController < ApplicationController
     @email_hash = Member.all.index_by(&:email)
   end
 
-  def update_profile
-    # TODO: validate data
-    @member = Member.where(email: params[:email]).first
-    puts @member.name
-    puts 'that was the member'
-    puts params
-    puts 'those were the params'
+  def update
+    if params[:id]
+      @profile = Profile.find(params[:id])
+    else
+      @profile = Profile.new
+    end
+    @profile.name = params[:name]
     render nothing: true, status: 200
+  end
+
+  def edit
+    @profile = Profile.find(params[:id])
+  end
+
+  def new
+    @profile = Profile.new
+    render :edit
+  end
+
+  def show
+    @profile = Profile.find(params[:id])
+    render :show, layout: false
   end
 
   def profile

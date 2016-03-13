@@ -1,9 +1,48 @@
 <style type = 'text/css'>
-#iframe-main{
-	width:100%;
-	min-height:700px;
-	border:none;
+#main-row{
+}
+#main-row:after {
+	height:1000px;
+    content : "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: url("/home_img.jpg");
+    width: 100%;
+    height:1200px;
+    top:-300px;
+    opacity : 0.2;
+    z-index: -1;
+}
+.photo{
+	height:150px;
+	margin:20px;
+}
+#action-buttons{
+	margin-top:20px;
+}
+.action-btn{
+	padding:15px;
+	background-color:rgba(255,255,255,0.3);
+}
+#welcome-div{
+	text-align:center;
+	background-color:rgba(100,100,100,0.1);
+	padding:25px;
+	font-family: 'Source Sans Pro';
+
 }
 </style>
-
-<iframe id = 'iframe-main' src="https://docs.google.com/document/d/1xA7gMs8maupWqZ-jCewh7s0a8ovhLJTOtmxvBSAMyz0/pub?embedded=true"></iframe>
+<div id = 'main-row' class = 'row'>
+<div class = 'col-md-3'></div>
+<div class = 'col-md-6'>
+	<div id = 'welcome-div'>
+		<h1>Welcome to Berkeley PBL Members Portal</h1>
+		<p>
+			An organized set of resources to help you navigate your PBL Semesters. Find resources, check tabling, read blogposts, and more...
+		</p>
+	</div>
+</div>
+<div class = 'col-md-3'>
+</div>

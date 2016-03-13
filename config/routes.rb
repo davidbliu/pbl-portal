@@ -113,11 +113,14 @@ Rails.application.routes.draw do
 
   # profile stuff
   get 'profiles/edit'=> 'profile#edit_profile'
-  post 'profiles/update' => 'profile#update_profile'
+  post 'profiles/update' => 'profile#update'
+  get 'profiles/edit/:id' => 'profile#edit', as: 'edit_profile'
+  get 'profiles/new' => 'profile#new'
   get 'profiles' => 'profile#index' #, as: => :profiles
   get 'profiles/get_project' => 'profile#get_project'
   get 'projects' => "profile#projects"
   get 'position'=> 'profile#position'
+  get 'profiles/show/:id' => 'profile#show'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

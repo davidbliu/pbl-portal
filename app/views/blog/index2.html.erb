@@ -70,10 +70,11 @@
 
 
 <div href = 'javascript:void(0)' class = 'btn btn-default' id = 'filter-btn'>Filter Posts</div>
-<% if @tag %>
-Current Filter is <%= @tag %>
-<% end %>
+  <% if @tag %>
+  Current Filter is <%= @tag %>
+  <% end %>
 </div>
+
 <%= will_paginate @posts %>
 
 <div class = 'row'>
