@@ -10,6 +10,25 @@ class TablingManager
 		slots = slots.flatten()
 	end
 
+	def self.starting_slots
+		(0..4).map{|x| 10+24*x}
+	end
+
+	def self.slot_availabilities
+		cms = Member.get_group('cms')
+		chairs = Member.get_group('officers')
+		availabilities = {}
+		self.default_slots.each do |slot|
+			a_chairs = chairs.select{|x| x.get_commitments.include?(slot)}
+			a_cms = cms.select{|x| x.get_commitments.include?(slot)}
+			availabilities[slot] = {
+				:chairs => a_chairs,
+				:cms => a_cms
+			}
+		end
+		return availabilities
+	end
+
 	def self.random_init
 		slots = self.default_slots
 
@@ -101,10 +120,14 @@ class TablingManager
 		lcvs = [valid_slots.first]
 		valid_slots.each do |slot|
 			slot_members = assignments[slot]
-			if slot_members.length < min_fill
+			slot_size = slot_members.length
+			if self.starting_slots.include?(slot)
+				slot_size -=1 
+			end
+			if slot_size < min_fill
 				min_fill = slot_members.length
 				lcvs = [slot]
-			elsif slot_members.length == min_fill
+			elsif slot_size == min_fill
 				lcvs << slot
 			end
 		end	

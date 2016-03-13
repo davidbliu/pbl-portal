@@ -15,6 +15,12 @@ class TablingController < ApplicationController
 			ActiveRecord::Base.connection.close
 		}
 	end
+
+	def chair_tabling
+		@starting_slots = TablingManager.starting_slots
+		@slots = TablingManager.default_slots
+		@availabilities = TablingManager.slot_availabilities
+	end
 	def index
 		@me = current_member
 		slots = TablingSlot

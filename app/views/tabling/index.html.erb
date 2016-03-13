@@ -3,6 +3,9 @@
 	float:left;
 	width:20%;
 }
+.hour-div{
+	/*border:1px solid black;*/
+}
 </style>
 
 
@@ -17,6 +20,9 @@
 <% if @me.is_admin? %>
 	<div class = 'btn btn-info' id = 'admin-switch-btn'>
 	Admin Switch Tabling</div>
+	<div>
+		<%= link_to 'Check tabling slot availabilities', chair_tabling_path %>
+	</div>
 <% end %>
 </div>
 <h1>Tabling Schedule</h1>
@@ -34,12 +40,14 @@
 
 	<div class = 'day'>
 	<% @slot_hash[day].each do |slot| %>
-		<div class = 'label label-info'>
+		<div class = 'hour-div'>
+			<div class = 'label label-info'>
 			<%= slot.time_string %>
+			</div>
+			<% slot.member_emails.each do |email| %>
+				<div><%= @email_hash[email].name %></div>
+			<% end %>
 		</div>
-		<% slot.member_emails.each do |email| %>
-			<div><%= @email_hash[email].name %></div>
-		<% end %>
 	<% end %>
 	</div>
 

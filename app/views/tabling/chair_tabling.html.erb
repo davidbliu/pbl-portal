@@ -1,0 +1,22 @@
+<h1>
+	Chair/CM Tabling Availabilities
+</h1>
+<% @availabilities.keys.each do |slot| %>
+<div>
+	<div class = 'row'>
+		<h4><%= TablingSlot.get_time_string(slot) %></h4>
+		<div class = 'col-md-3'>
+			<h5>Chairs</h5>
+			<% @availabilities[slot][:chairs].each do |chair| %>
+				<div><%= chair.name %></div> 
+			<% end %>
+		</div>
+		<div class = 'col-md-3'>
+			<h5>CMs</h5>
+			<% @availabilities[slot][:cms].each do |chair| %>
+				<div><%= chair.name %></div> 
+			<% end %>
+		</div>
+	</div>
+</div>
+<% end %>
