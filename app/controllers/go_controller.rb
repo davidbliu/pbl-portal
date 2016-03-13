@@ -19,12 +19,10 @@ class GoController < ApplicationController
         golink = GoLink.where(key: params[:key])
           .where('id in (?)', viewable)
         if golink.length > 1
-          # redirect_to golink.first.url
           @golinks = golink
           @permissions_list = GoLink.permissions_list
           render :template => "go/add"
         elsif golink.length == 1
-          # redirect_to golink.first.url
           golink = golink.first
           # log this
           Thread.new{
