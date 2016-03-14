@@ -2,11 +2,13 @@
 
 easy version: use pbl.link/c9
 
-normal version: 
+normal version (for mac): 
 * install postgres
 * install elasticsearch
 * clone repo `git clone https://github.com/davidbliu/v2-rails.git`
 * TODO finish this
+
+windows version (gg rip). easiest way is to install a virtual machine running linux and follow the prod environment steps (see `prod.md`)
 
 # Models
 see `/db/schema.rb`
@@ -23,13 +25,37 @@ __Member, Position__
 
 __GoLink, GoLinkClick__
 
+* golinks are for PBL Links
+* `pbl.link/{{key}}` redirects to `url`
+* there can be multiple keys with same name, in which case user sees a landing page with all options listed
+* GoLinkClicks are used to track page views
+  * __note:__ this may change
+  * see the blog_controller index view for how tihs works, for example
+
 __Event__
+
+* purpose of events (currently) is just for tracking points
+* list of people who attended and who didnt
+  * this is so you have to respond either yes i went or no i didn't
+  * instead of default no: in which case you can't tell who just forgot to mark their attendance
 
 __TablingSlot, TablingManager__
 
+* tabling manager has tabling algorithm implementation
+* commitments is a field in the member table
+  * it is an array of times that the member is free
+  * times are between 0..167 (24 hours * 7 days = 168 hours per week)
+
 __Post__
 
+* self explanatory, see `schema.rb`
+
 __Mailers__
+
+* currently only blog_mailer
+* sends blog emails 
+* see `send_mail` method in `/app/models/post.rb`
+
 
 # How to play around with stuff
 * before doing anything, you must run `source setenv.sh`. this sets environment variables
