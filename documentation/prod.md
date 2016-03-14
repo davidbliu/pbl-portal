@@ -197,6 +197,8 @@ sudo service haproxy restart
 
 __finally lets run the portal__
 
+run these from your rails root
+
 ```
 rake db:create
 psql -h localhost -p 5432 -U postgres v2_development < c9.dump

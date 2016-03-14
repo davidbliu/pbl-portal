@@ -13,6 +13,7 @@ class Member < ActiveRecord::Base
           'chair', 'exec')
     elsif group == 'cms'
       return Member.current_members.where('position = ?', 'cm')
+        .where.not(committee:'GM')
     elsif group == 'execs'
       return Member.current_members.where(committee:'EX')
     end
