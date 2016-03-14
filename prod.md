@@ -8,11 +8,18 @@ the situation is similar in production. you install the portal and it's dependen
 * THE_IP is the IP of the VPS (digital ocean). 
 * instead of THE_IP, a domain name (namecheap)
 * SOME_PORT is usually port 80, the default HTTP port
-* copies of the rails app are placed behind a loadbalancer. 
+* copies of the rails app are placed behind a loadbalancer (see `haproxy.cfg`). 
 	* for example, having 3 rails servers running on ports 3000, 3001, 3002. 
 	* the load balancer runs on port 80, redirecting requests to either 3000, 3001, 3002, depending on which is most available
 
 # convenience stuff (common tasks)
+
+## setting up VPS
+
+TODO
+
+* digital ocean
+* ubuntu 14.04
 
 ## ssh
 
