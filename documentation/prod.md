@@ -65,11 +65,155 @@ __create a droplet__
 __log into your droplet__
 
 * you should receive an email with instructions for how to do this
+* ssh in with the password
 
 __install portal dependencies__
 
+lets start with the basics, which include ruby, git, and cloning the portal
+
+```
+# install ruby via rvm
+sudo apt-add-repository ppa:rael-gc/rvm
+sudo apt-get update
+sudo apt-get -y install rvm
+
+# log out and log back in
+rvm install ruby
+
+# install git
+sudo apt-get -y install git
+
+# clone the portal
+git clone https://github.com/davidbliu/v2-rails.git
+
+# install the portal's gems
+cd v2-rails
+gem install bundler
+sudo apt-get -y install libpq-dev # this is so pg gem installs
+bundle install
+
+# set up a firewall
+sudo apt-get -y install ufw
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw allow www
+sudo ufw allow ftp
+# if you want you can allow port 3000, for example by 
+# sudo ufw allow 3000/tcp
+sudo ufw enable
+sudo ufw status
+
+# h@ckers should only be able to access your server via ports 20, 21, and 80 now
+# you should see this
+To                         Action      From
+--                         ------      ----
+22                         ALLOW       Anywhere
+80/tcp                     ALLOW       Anywhere
+21/tcp                     ALLOW       Anywhere
+22 (v6)                    ALLOW       Anywhere (v6)
+80/tcp (v6)                ALLOW       Anywhere (v6)
+21/tcp (v6)                ALLOW       Anywhere (v6)
+```
+
+
+__now lets install postgres__
+
+```
+sudo apt-get install -y postgresql postgresql-contrib
+
+# now you'll have to set up your postgres account
+sudo -u postgres psql postgres
+# you will see a postgres console 
+>>> \password postgres
+>>> set your password to "password"
+>>> \q
+```
+
+__last up, elasticsearch__
+```
+# these instructions are from pbl.link/elasticsearch-install
+
+apt-get -y install openjdk-6-jre
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get -y update
+sudo apt-get -y install oracle-java7-installer
+
+# careful not to do this from your v2-rails directory
+wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.7.tar.gz
+tar -xf elasticsearch-0.90.7.tar.gz
+
+# see this link about further setup
+pbl.link/elasticsearch-install
+
+# start elasticsearch
+cd elasticsearch-0.90.7
+./bin/elasticsearch
+
+# test it
+curl localhost:9200
+
+# you should see
+{
+  "ok" : true,
+  "status" : 200,
+  "name" : "Temugin",
+  "version" : {
+    "number" : "0.90.7",
+    "build_hash" : "36897d07dadcb70886db7f149e645ed3d44eb5f2",
+    "build_timestamp" : "2013-11-13T12:06:54Z",
+    "build_snapshot" : false,
+    "lucene_version" : "4.5.1"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
+__last up, we need the setenv.sh script__
+
+```
+cd v2-rails
+touch setenv.sh
+# ask for the contents, paste, save the file
+```
+
+jk this is not the last step 
+
+__install haproxy, for load balancing__
+
+```
+sudo add-apt-repository -y ppa:vbernat/haproxy-1.5
+sudo apt-get update
+sudo apt-get install -y haproxy
+# from just outside the rails directory
+cp v2-rails/haproxy.cfg /etc/haproxy/haproxy.cfg
+sudo service haproxy restart
+
+# visit YOUR_IP, you should see
+# 503 Service Unavailable
+# No server is available to handle this request.
+```
+
+
+__finally lets run the portal__
+
+```
+rake db:create
+psql -h localhost -p 5432 -U postgres v2_development < c9.dump
+rake db:migrate
+source setenv.sh
+
+# start the webservers at ports 3000, 3001, 3002
+sh deploy.sh # check the contents of this file to see whats going on
+```
+
+YAAY. you should now see the landing page of the portal. if you try other pages like the blog, for example, you'll get a google error. this is because you need to add this IP to our google app. (ask about this)
+
+typically now you'd buy a domain name and point it to YOUR_IP
+
 __what this guide left out__
 
+* setting up google accounts, etc (whats in setenv.sh)
 * the contents of setenv.sh are important
 	* google account, keys, etc
 	* pg_host and pg_port
