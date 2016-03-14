@@ -22,6 +22,9 @@ a{
 .navbar-inverse .navbar-nav>li>a:hover{
 	color: white !important;
 }
-.btn{
+.btn, .btn-default, .btn-primary{
+	border-radius:0px !important;
+}
+.form-control{
 	border-radius:0px !important;
 }

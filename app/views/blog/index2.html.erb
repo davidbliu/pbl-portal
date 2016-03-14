@@ -37,6 +37,9 @@
   bottom:0;
   /*bottom:0px;*/
 }
+.filter-btn{
+  margin-top:5px;
+}
 </style>
 
 <!-- Modal -->
@@ -54,7 +57,7 @@
         	</a>
         <% @tags.each do |tag| %>
         	<a href = '/blog?tag=<%= tag %>'>
-        		<div class = 'btn btn-default'><%= tag %>
+        		<div class = 'btn btn-default filter-btn'><%= tag %>
         		</div>
         	</a>
         <% end %>
