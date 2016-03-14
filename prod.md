@@ -14,12 +14,6 @@ the situation is similar in production. you install the portal and it's dependen
 
 # convenience stuff (common tasks)
 
-## setting up VPS
-
-TODO
-
-* digital ocean
-* ubuntu 14.04
 
 ## ssh
 
@@ -51,3 +45,26 @@ assuming you have the dumpfile copied somwhere locally, this will import those r
 ```
 psql -h localhost -p 5432 -U postgres v2_development < path_to_dumpfile.dump
 ```
+
+
+# set up a VPS running the portal from scratch
+
+here goes...(disclaimer: untested). might require giving your credit card info and spending a couple cents.
+
+__set up a digital ocean account__
+* do this here: https://www.digitalocean.com
+
+__create a droplet__
+
+* click 'create droplet'
+* pick ubuntu 14.04
+* pick the smallest size
+* pick san francisco
+* if you wanna be secure, tune the security stuff, otherwise keep going
+
+__log into your droplet__
+
+* you should receive an email with instructions for how to do this
+
+__install portal dependencies__
+
