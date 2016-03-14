@@ -68,3 +68,12 @@ __log into your droplet__
 
 __install portal dependencies__
 
+__what this guide left out__
+
+* the contents of setenv.sh are important
+	* google account, keys, etc
+	* pg_host and pg_port
+	* elasticsearch host and port
+	* google push api keys, etc
+	* read up on google for how to set these up
+

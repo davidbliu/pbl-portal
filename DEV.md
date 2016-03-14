@@ -11,6 +11,26 @@ normal version:
 # Models
 see `/db/schema.rb`
 
+__Member, Position__
+
+* pretty self explanatory
+* email is a foreign key in many tables
+  * email because used to store member_id. this would break when we remove/change members. happened often enough that it was annoying. 
+  * email uniquely identifies members anyway
+* member stores current position
+  * this is just because convenient
+  * position should be viewed as the source of truth for member positions
+
+__GoLink, GoLinkClick__
+
+__Event__
+
+__TablingSlot, TablingManager__
+
+__Post__
+
+__Mailers__
+
 # How to play around with stuff
 * before doing anything, you must run `source setenv.sh`. this sets environment variables
 * running `rails console` lets you test out commands in a REPL
