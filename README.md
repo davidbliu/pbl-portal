@@ -1,6 +1,5 @@
 # Berkeley PBL Members Portal V2
 
-## Dependencies
+## Guides
 
-### Elasticsearch
-http://pbl.link/elasticsearch-install
+see the documentation folder
