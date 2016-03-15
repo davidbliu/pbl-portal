@@ -28,3 +28,6 @@ a{
 .form-control{
 	border-radius:0px !important;
 }
+.centered{
+	text-align: center;
+}

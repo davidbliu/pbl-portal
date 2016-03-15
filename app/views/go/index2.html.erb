@@ -1,0 +1,206 @@
+<style type = 'text/css'>
+.url-div{
+	max-height:100px !important;
+	overflow:auto;
+}
+td{
+	max-width:200px;
+	overflow:auto;
+}
+#table-row{
+	margin-top:25px;
+}
+#permissions-edit{
+	position:fixed;
+	top:100px;
+	right:0px;
+	width:300px;
+	height:300px;
+	background-color:white;
+	border:1px solid rgba(0,0,0,0.1);
+	border-right:none;
+	z-index:5000;
+	padding:20px;
+	display:none;
+}
+#top-row{
+	margin-bottom:25px;
+}
+</style>
+
+<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+
+<div id = 'permissions-edit'>
+	<h4><span id = 'permissions-key' ></span> Permissions</h4>
+	<% @my_groups.each do |group| %>
+		<div>
+			<input class = 'permissions-check' type = 'checkbox' id = '<%= group.gsub " ", "" %>-checkbox' data-string = '<%= group %>'>
+			<label><%= group %></label>
+		</div>
+	<% end %>
+	<div class = 'btn btn-default' id = 'permissions-clear'>Clear</div>
+	<div class = 'btn btn-default' id = 'permissions-save'>Save</div>
+	<div class = 'btn btn-danger' id = 'permissions-cancel'>Cancel</div>
+</div> <!-- end of permissions edit -->
+
+<div class = 'row centered' id = 'top-row'>
+	<h1>PBL Links</h1>
+	<div class = 'col-md-4'></div>
+	<div class = 'col-md-4'>
+		<input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'Search PBL Links'></input>
+
+		<div><%= will_paginate(@golinks) %></div>
+		<!-- <div>
+			<div class = 'btn btn-default'>Add a Link</div>
+			<div class = 'btn btn-default'>Create Group</div>
+		</div> -->
+	</div>
+	<div class = 'col-md-4'></div>
+</div>
+<div class = 'row' id = 'table-row'>
+<table class = 'table table-condensed'>
+	<thead>
+		<th></th>
+		<th>Key</th>
+		<th>Description</th>
+		<th>Url</th>
+		<th>Permissions</th>
+		<th>Creator</th>
+		<th>Clicks</th>
+		<th>Timestamp</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<% @golinks.each do |golink| %>
+		<tr class = 'golink-row' id = '<%= golink[:id] %>-row' data-id = '<%= golink[:id] %>'>
+			<td>
+				<a href = '<%= golink[:url] %>'>
+					<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
+				</a>
+			</td>
+			<td class = 'editable' data-field = 'key'>
+				<%= golink[:key] %>
+			</td>
+			<td class = 'editable' data-field = 'description'>
+				<%= golink[:description] %>
+			</td>
+			<td data-id = '<%= golink[:id] %>'>
+				<div class = 'editable url-div' data-field = 'url'>
+					<%= golink[:url] %>
+				</div>
+			</td>
+			<td class = 'permissions-td' data-key = '<%= golink[:key] %>' data-permissions = '<%= golink[:permissions] %>' id = '<%= golink[:id] %>-permissions-td'>
+				<%= golink[:permissions] %>
+			</td>
+			<td>
+				<%= golink[:member_email] %>
+			</td>
+			<td>
+				<%= golink[:num_clicks] ? golink[:num_clicks] : 0 %>
+			</td>
+			<td>
+				<%= golink[:time_string] %>
+				(<%= golink[:semester] %>)
+			</td>
+			<td>
+				<a href = '#'>x</a>
+			</td>
+		</tr>
+		<% end %>
+		</div>
+	</tbody>
+</table>
+
+<script type = 'text/javascript'>
+var editData;
+var permissionsEditId;
+function activateEditable(){
+	$('.editable').attr('contenteditable', true);
+	$('.editable').unbind('focusin').focusin(function(){
+		editData = $(this).text();
+	});
+	$('.editable').unbind('focusout').focusout(function(){
+		if ($(this).text() != editData){
+			var row = $(this).parent();
+			var updateData = {};
+			updateData['id'] = $(this).parent().attr('data-id');
+			updateData[$(this).attr('data-field')] = $(this).text();
+			$.ajax({
+				url: '/go/update',
+				type: 'post',
+				data: updateData,
+				success: function(data){
+					$(row).fadeOut(100).fadeIn(100);
+				}
+			})
+		}
+	});
+}
+function getCheckedPermissions(){
+	var permissionsList = [];
+	$('.permissions-check').each(function(){
+		if($(this).is(':checked')){
+			permissionsList.push($(this).attr('data-string'));
+		}
+	});
+	return permissionsList.join(',');
+}
+function activateEditPermissions(){
+	$('.permissions-td').click(function(){
+		var currentPermissions = $(this).attr('data-permissions').split(',');
+		permissionsEditId = $(this).parent().attr('data-id');
+		// mark permissions
+		$('.permissions-check').each(function(){
+			$(this).prop('checked', false);
+		});
+		_.each(currentPermissions, function(x){
+			$('#'+x.replace(' ', '')+'-checkbox').prop('checked', true);
+		});
+		$('#permissions-key').text($(this).attr('data-key'));
+		$('#permissions-edit').show();
+	});
+	$('#permissions-cancel').click(function(){
+		$('#permissions-edit').hide();
+		permissionsEditId = null;
+	});
+	$('#permissions-clear').click(function(){
+		$('.permissions-check').each(function(){
+			$(this).prop('checked', false);
+		});
+	});
+	$('#permissions-save').click(function(){
+		$('#permissions-edit').hide();
+		var row = $('#' + permissionsEditId + '-row');
+		updatedPermissions = getCheckedPermissions();
+		if(updatedPermissions == ''){
+			updatedPermissions = 'Anyone';
+		}
+		updateData = {
+			'id': permissionsEditId,
+			'permissions': updatedPermissions
+		}
+		$.ajax({
+			url: '/go/update',
+			type: 'post',
+			data: updateData,
+			success: function(data){
+				$('#'+ permissionsEditId + '-permissions-td').text(updatedPermissions);
+				$('#'+ permissionsEditId + '-permissions-td').attr('data-permissions', updatedPermissions.replace(' ', ''));
+				$(row).fadeOut(100).fadeIn(100);
+				permissionsEditId = null;
+			}
+		})
+	});
+}
+function activateSearch(){
+	$('#search-input').keypress(function(e) {
+	    if(e.which == 13) {
+	    	searchTerm = $(this).val();
+	    	window.location = '?q='+searchTerm;
+	    }
+	});
+}
+activateSearch();
+activateEditable();
+activateEditPermissions();
+</script>

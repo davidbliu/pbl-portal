@@ -56,6 +56,8 @@ class GoController < ApplicationController
     end
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
     @permissions_list = GoLink.permissions_list
+    @my_groups = GoLink.permissions_list
+    render :index2
   end
 
   def insights
