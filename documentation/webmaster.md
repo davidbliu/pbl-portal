@@ -33,7 +33,7 @@ webmaster can act like a tech consultant for PBL.
 
 __reduce tech gap__
 
-* part of responsibility of webmaster is develop/train other webmasters
+* part of responsibility of webmaster can be to develop/train other webmasters
 * have someone who knows how PBL Tech works at all times. (if it is their _job_, then even better)
 * never go too long with nobody knowing anything about tech tools
 	* as was case with old website
@@ -50,7 +50,7 @@ __reduce tech gap__
 	* hold my babys hand through its childhood years
 * safety net
 	* evil/dumb webmasters shouldn't be able to destroy working systems
-	* access to alumni in the position
+	* access to alumni/formal semester reviews
 	* extensive/established onboarding/training process
 
 ## suggestions
