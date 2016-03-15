@@ -39,7 +39,7 @@ __logistics__
 * have training for those interested
 	* if high demand: increase difficulty until most drop out
 	* else: personally find + convince someone 
-	# [example: prod.md](./prod.md)
+	* [example: prod.md](./prod.md)
 * they can still be expected to speak @ 4gen, voted confidence/no confidence 
 	* (they are going to represent PBL at high level)
 	* only eligible if completed training
