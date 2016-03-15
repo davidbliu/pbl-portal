@@ -21,7 +21,7 @@ class Group < ActiveRecord::Base
 			key: 'pbl-fa15'
 		).first_or_create
 		Position.where(semester: 'Fall 2015').each do |pos|
-			GroupMember.where(group:'pbl-fa15',
+			GroupMember.wlhere(group:'pbl-fa15',
 				email: pos.member_email).first_or_create
 		end
 

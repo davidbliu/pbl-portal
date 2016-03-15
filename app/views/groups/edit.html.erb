@@ -1,0 +1,29 @@
+<div class = 'col-md-4'></div>
+<div class = 'col-md-4'>
+
+<h1>Edit Group</h1>
+
+<%= form_tag "/groups/update/#{@group.id}" %>
+
+Name
+<%= text_field_tag 'name', @group.name, placeholder: 'name', class: 'form-control' %>
+
+Key
+<%= text_field_tag 'key', @group.key, placeholder: 'key', class: 'form-control', readonly: true %>
+
+Owner:
+<%= text_field_tag 'creator', @group.creator, placeholder: 'owner', class: 'form-control', readonly: true %>
+
+Description
+<%= text_field_tag 'description', @group.description, placeholder: 'description', class: 'form-control' %>
+
+Members (emails)
+<%= text_area_tag 'emails', @group.emails.join(','), placeholder: 'emails', class: 'form-control', style: 'height:150px' %>
+
+<%= submit_tag 'Save Group', class: 'btn btn-info' %> 
+<a href = '/groups'>
+	<div class = 'btn btn-danger'>Cancel</div>
+</a>
+</div>
+
+<div class = 'col-md-4'></div>

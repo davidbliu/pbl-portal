@@ -1,0 +1,69 @@
+<style type = 'text/css'>
+.url-div{
+	max-height:100px !important;
+	overflow:auto;
+}
+td{
+	max-width:200px;
+	overflow:auto;
+}
+#table-row{
+	margin-top:25px;
+}
+</style>
+
+<div class = 'row' id = 'table-row'>
+<table class = 'table table-condensed'>
+	<thead>
+		<th></th>
+		<th>Key</th>
+		<th>Description</th>
+		<th>Url</th>
+		<th>Sharing</th>
+		<!-- <th>Creator</th> -->
+		<!-- <th>Clicks</th> -->
+		<th>Timestamp</th>
+		<th></th>
+	</thead>
+	<tbody>
+		<% golinks.each do |golink| %>
+		<tr class = 'golink-row' id = '<%= golink[:id] %>-row' data-id = '<%= golink[:id] %>'>
+			<td>
+				<a href = '<%= golink[:url] %>'>
+					<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
+				</a>
+			</td>
+			<td class = 'editable' data-field = 'key'>
+				<%= golink[:key] %>
+			</td>
+			<td class = 'editable' data-field = 'description'>
+				<%= golink[:description] %>
+			</td>
+			<td data-id = '<%= golink[:id] %>'>
+				<div class = 'editable url-div' data-field = 'url'>
+					<%= golink[:url] %>
+				</div>
+			</td>
+			<td class = 'permissions-td' data-key = '<%= golink[:key] %>' data-permissions = '<%= golink[:groups] %>' id = '<%= golink[:id] %>-permissions-td'>
+				<%= golink[:groups] %>
+			</td>
+			<td>
+				<%= golink[:member_email] %>
+			</td>
+			<!-- <td>
+				<%= golink[:num_clicks] ? golink[:num_clicks] : 0 %>
+			</td> -->
+			<td>
+				<%= golink[:time_string] %>
+				(<%= golink[:semester] %>)
+			</td>
+			<td>
+				<a href = 'javascript:void(0)' data-id = '<%= golink[:id] %>' class = 'delete-link'>x</a>
+			</td>
+		</tr>
+		<% end %>
+		</div>
+	</tbody>
+</table>
+</div>
+<!-- end of table row -->

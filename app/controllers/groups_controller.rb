@@ -11,18 +11,59 @@ class GroupsController < ApplicationController
 		else
 			group = Group.create(key: params[:key])
 		end
-		# group = Group.where(key: params[:key]).first_or_create
+		# fails if group with same key already exists
 		if not failed
+			group.creator = myEmail
+			group.save
 			params[:emails].split(',').each do |email|
 				email = email.strip
-				GroupMember.where(group: group.key,
+				GroupMember.where(
+					group: group.key,
 					email: email).first_or_create
 			end
 			render nothing: true, status: 200
 		else
-			render json: 'failed to create group, name already exists', status: 500
+			render json: 'a group with the same key already exists', status: 500
 		end
-
-		
 	end
+
+	def index
+		@groups = current_member.groups.sort_by{|x| x.created_at}.reverse
+	end
+
+	def destroy
+		group = Group.find(params[:id])
+		if group.creator == myEmail
+			group.destroy
+			# fix PBL Links that depend on this group
+		end
+		redirect_to '/groups'
+	end
+
+	def edit
+		@group = Group.find(params[:id])
+			end
+
+	def update
+		@group = Group.find(params[:id])
+		@group.name = params[:name]
+		@group.key = params[:key]
+		@group.description = params[:description]
+		@group.save
+		# update members too
+		GroupMember.where(group: @group.key).destroy_all
+		params[:emails].split(',').each do |email|
+			email = email.strip
+			GroupMember.where(
+				group: @group.key,
+				email: email).first_or_create
+		end
+		redirect_to '/groups'
+	end
+
+	def show
+		@group = Group.find(params[:id])
+		@golinks = GoLink.get_group_links(@group).reverse
+	end
+
 end

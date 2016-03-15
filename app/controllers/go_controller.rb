@@ -15,7 +15,7 @@ class GoController < ApplicationController
         term = params[:key].split(':')[1]
         render json: 'should search the drive for ' + term  
       else
-        viewable = GoLink.can_view(current_member)
+        viewable = GoLink.can_view(myEmail)
         golink = GoLink.where(key: params[:key])
           .where('id in (?)', viewable)
         if golink.length > 1
@@ -56,11 +56,7 @@ class GoController < ApplicationController
     end
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
     # @permissions_list = GoLink.permissions_list
-    @my_groups = Member.groups(myEmail).map{|x| x.key}
-    @my_groups << 'Only Me'
-    # if current_member
-    #   @my_groups = @my_groups +  current_member.groups.pluck(:key)
-    # end
+    @groups = GoLink.get_groups_by_email(myEmail)
     render :index2
   end
 
@@ -141,7 +137,7 @@ class GoController < ApplicationController
         description: params[:desc],
         url: params[:url],
         member_email: current_member.email,
-        permissions: 'Anyone',
+        groups: GoLink.default_groups(myEmail),
         semester: Semester.current_semester
       )
       @golinks = GoLink.where(key: @golink.key).map{|x| x.to_json}
@@ -151,12 +147,13 @@ class GoController < ApplicationController
         member_email: current_member.email,
         key: 'change-this-key',
         url: 'http://change_this_url.com',
-        permissions: 'Anyone',
+        groups: GoLink.default_groups(myEmail),
         semester: Semester.current_semester
       )
-      @golinks = [@golink]
+      @golinks = [@golink.to_json]
     end
-    @permissions_list = GoLink.permissions_list
+    @groups = GoLink.get_groups_by_email(myEmail)
+    render :add2
   end
 
   def create

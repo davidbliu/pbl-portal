@@ -74,7 +74,7 @@ class GoLink < ActiveRecord::Base
 
   	def self.member_search(search_term, member)
   		search = self.default_search(search_term)
-  		viewable = self.can_view(member)
+  		viewable = self.can_view(member.email)
   		result_ids = search.select{|x| viewable.include?(x)}
 		golinks_by_id = GoLink.where('id in (?)', result_ids).index_by(&:id)
 		keys = golinks_by_id.keys
@@ -105,7 +105,7 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def self.trending(member)
-		viewable = self.can_view(member)
+		viewable = self.can_view(member.email)
 		return GoLink.where('id in (?)', viewable)
 			.where.not(key:'change-this-key')
 			.order('created_at DESC')
@@ -132,48 +132,7 @@ class GoLink < ActiveRecord::Base
 		end
 		return viewable.uniq
 	end
-	# verify viewable for a single golink
-	def can_view(member)
-		if self.semester != Semester.current_semester
-			if member == nil
-				pos = nil
-			else
-				pos = Position.where(member_email:member.email).first
-			end
-			if pos == nil
-				return self.get_permissions == 'Anyone'
-			elsif self.get_permissions == 'Anyone'
-				return true
-			elsif self.get_permissions == 'Only PBL'
-				return (member and member.email != nil and member.email != '')
-			elsif self.get_permissions == 'Only Officers'
-				return (pos.position == 'chair' or pos.position == 'exec')
-			elsif self.get_permissions == 'Only Execs'
-				return pos.position == 'exec'
-			elsif self.member_email == member.email
-				return true
-			end
-
-		else
-			# use this if current semester
-			if member == nil
-				return self.get_permissions == 'Anyone'
-			elsif self.get_permissions == 'Anyone'
-				return true
-			elsif self.get_permissions == 'Only PBL'
-				return (member and member.email != nil and member.email != '')
-			elsif self.get_permissions == 'Only Officers'
-				return (member and member.position != nil and (member.position == 'chair' or member.position == 'exec'))
-			elsif self.get_permissions == 'Only Execs'
-				return (member and member.position != nil and member.position == 'exec')
-			elsif self.get_permissions == 'Only My Committee'
-				return true
-			elsif self.member_email == member.email
-				return true
-			end
-		end
-	end
-
+	
 
 	#
 	# new group based permissions system
@@ -187,11 +146,25 @@ class GoLink < ActiveRecord::Base
 		groups = Member.groups(email)
 		ids = []
 		groups.each do |group|
-			ids += GoLink.where('groups like ?', "%#{group.key}%").pluck(:id)
+			ids += self.get_group_links(group).pluck(:id)
+			# ids += GoLink.where('groups like ?', "%#{group.key}%").pluck(:id)
 		end
 		ids += GoLink.where('groups like ?', "%Anyone%").pluck(:id)
 		ids += GoLink.where('groups like ? and member_email = ?', "%Only Me%", email).pluck(:id)
 		return ids.uniq
+	end
+
+	def self.get_groups_by_email(email)
+		groups = Member.groups(email)
+    	groups << Group.new(key: 'Only Me', name: 'Only Me')
+	end
+
+	def self.default_groups(email)
+		return "Anyone"
+	end
+
+	def self.get_group_links(group)
+		GoLink.where('groups like ?', "%#{group.key}%")
 	end
 
 	

@@ -1,0 +1,50 @@
+<style type = 'text/css'>
+.golink-card{
+	padding:15px;
+	margin-bottom:10px;
+}
+.go-url{
+	color: #006621;
+}
+.go-key{
+	color:#1a0dab;
+}
+</style>
+
+<h1 class = 'centered'><%= @group.name %> (<%= @group.key %>)</h1>
+
+<div class = 'col-md-3'>
+<a href = '/groups'>
+	Back to Groups
+</a>
+</div>
+
+<div class = 'col-md-6'>
+<% @golinks.each do |golink| %>
+	<div class = 'golink-card'>
+		<div>
+			<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
+			<a class = 'go-key' href = '<%= golink.url %>'>
+			<%= golink.key %>
+			</a>
+		</div>
+		<div class = 'go-url'>
+			<%= golink.url %>
+		</div>
+		<div>
+			Description: <%= golink.description %>
+		</div>
+		<div>
+			Creator: <%= golink.member_email %>
+		</div>
+		<div>
+			Shared With: <%= golink.groups %>
+		</div>
+		<div>
+			<%= golink.time_string %>
+		</div>
+	</div>
+<% end %>
+</div>
+
+<div class = 'col-md-3'></div>
