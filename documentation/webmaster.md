@@ -32,6 +32,17 @@ Since execs' work can already be distributed across 7 (the current number), addi
 	* train future webmasters
 * same expectation to attend events, etc
 	* should be someone who cares about club and knows what/how to improve
-	
+
+__logistics__
+
+* announce the position same time as others
+* have training for those interested
+	* if high demand: increase difficulty until most drop out
+	* else: personally find + convince someone 
+	# [example: prod.md](./prod.md)
+* they can still be expected to speak @ 4gen, voted confidence/no confidence 
+	* (they are going to represent PBL at high level)
+	* only eligible if completed training
+
 
 
