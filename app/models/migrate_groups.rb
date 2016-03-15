@@ -3,7 +3,7 @@ class MigrateGroups
 		GoLink.all.each do |gl|
 			groups = ''
 			suffix = 'fa15'
-			if gl.semester == 'Spring 2015'
+			if gl.semester == 'Spring 2016'
 				suffix = 'sp16'
 			end
 			if gl.permissions == 'Only PBL'

@@ -6,4 +6,8 @@ class MainController < ApplicationController
   def home
   	@referrer = request.referrer# request.env["HTTP_REFERER"]
   end
+
+  def clicks
+  	render json: Click.all.map{|x| x.to_json}
+  end
 end

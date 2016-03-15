@@ -3,7 +3,7 @@ class GroupsController < ApplicationController
 		failed = false
 		existing = Group.where(key: params[:key]).first
 		if existing
-			if existing.emails.include?(myEmail)
+			if existing.creator == myEmail
 				group = existing
 			else
 				failed = true

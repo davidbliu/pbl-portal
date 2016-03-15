@@ -21,7 +21,7 @@ class Group < ActiveRecord::Base
 			key: 'pbl-fa15'
 		).first_or_create
 		Position.where(semester: 'Fall 2015').each do |pos|
-			GroupMember.wlhere(group:'pbl-fa15',
+			GroupMember.where(group:'pbl-fa15',
 				email: pos.member_email).first_or_create
 		end
 
@@ -54,7 +54,7 @@ class Group < ActiveRecord::Base
 
 		Group.where(
 			name: 'Officers Spring 2016',
-			key: 'of-fa15').first_or_create
+			key: 'of-sp16').first_or_create
 		Position.where(semester:'Spring 2016').where('position = ? or position = ?', 'chair', 'exec').each do |pos| 
 			GroupMember.where(group: 'of-sp16',
 				email: pos.member_email).first_or_create
@@ -62,7 +62,7 @@ class Group < ActiveRecord::Base
 
 		Group.where(
 			name: 'Execs Spring 2016',
-			key: 'ex-fa15').first_or_create
+			key: 'ex-sp16').first_or_create
 		Position.where(semester:'Spring 2016').where(position: 'exec').each do |pos|
 			GroupMember.where(group:'ex-sp16', 
 				email: pos.member_email).first_or_create

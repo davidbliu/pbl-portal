@@ -1,6 +1,6 @@
 class AuthController < ApplicationController
   
-  
+  skip_before_filter :is_signed_in
   def google_callback
     result = Hash.new
     authentication_info = request.env["omniauth.auth"]

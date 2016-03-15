@@ -9,9 +9,13 @@
 .go-key{
 	color:#1a0dab;
 }
+#group-meta-card{
+	border: 1px solid rgba(0,0,0,0.1);
+	padding:25px;
+}
 </style>
 
-<h1 class = 'centered'><%= @group.name %> (<%= @group.key %>)</h1>
+
 
 <div class = 'col-md-3'>
 <a href = '/groups'>
@@ -20,6 +24,24 @@
 </div>
 
 <div class = 'col-md-6'>
+<div id = 'group-meta-card'>
+	<h1 class = 'centered'><%= @group.name %> (<%= @group.key %>)</h1>
+	<div>
+		Name: <%= @group.name %>
+	</div>
+	<div>
+		Key: <%= @group.key %>
+	</div>
+	<div>
+		Description: <%= @group.description %>
+	</div>
+	<div>
+		Creator: <%= @group.creator %>
+	</div>
+	<div>
+		Members: <%= @group.emails.join(', ') %>
+	</div>
+</div>
 <% @golinks.each do |golink| %>
 	<div class = 'golink-card'>
 		<div>

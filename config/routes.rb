@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   get 'test' => 'test#test'
   root 'main#home'
+  get '/track_clicks'=>'main#clicks'
 
 
   # authentication 

@@ -27,7 +27,11 @@
 		<% groups.each do |group| %>
 			<div>
 				<input class = 'permissions-check' type = 'checkbox' id = '<%= group.key.gsub " ", "" %>-checkbox' data-key = '<%= group.key %>'>
-				<label><%= group.name ? group.name : group.key %></label>
+				<label>
+					<a target = '_blank' href = '/groups/show/<%= group.id %>'>
+						<%= group.name ? group.name : group.key %>
+					</a>
+				</label>
 			</div>
 		<% end %>
 	</div>

@@ -45,10 +45,15 @@ class GoController < ApplicationController
 
   def index
     me = current_member
-    viewable = GoLink.can_view(myEmail)
+    
     if params[:q]
       @golinks = GoLink.member_search(params[:q], current_member)
     else
+      if myEmail == 'davidbliu@gmail.com'
+        viewable = GoLink.all.pluck(:id)
+      else
+        viewable = GoLink.can_view(myEmail)
+      end
     	@golinks = GoLink.order('created_at desc')
         .where('id in (?)',viewable)
         .where.not(key: 'change-this-key')
