@@ -23,6 +23,7 @@ Since execs' work can already be distributed across 7 (the current number), addi
 # proposed restructure
 
 * webmaster is an exec on the exec team
+	* performs an important role
 	* hard to know what to build without the inside scoop
 	* can't oversee how projects are used: removes a lot of the incentive for creating them
 	* tech on the exec team
