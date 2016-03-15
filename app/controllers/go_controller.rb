@@ -45,18 +45,22 @@ class GoController < ApplicationController
 
   def index
     me = current_member
-    viewable = GoLink.can_view(me)
+    viewable = GoLink.can_view(myEmail)
     if params[:q]
       @golinks = GoLink.member_search(params[:q], current_member)
     else
-    	@golinks = GoLink.order(:created_at)
+    	@golinks = GoLink.order('created_at desc')
         .where('id in (?)',viewable)
         .where.not(key: 'change-this-key')
-        .reverse.map{|x| x.to_json}
+        .map{|x| x.to_json}
     end
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
-    @permissions_list = GoLink.permissions_list
-    @my_groups = GoLink.permissions_list
+    # @permissions_list = GoLink.permissions_list
+    @my_groups = Member.groups(myEmail).map{|x| x.key}
+    @my_groups << 'Only Me'
+    # if current_member
+    #   @my_groups = @my_groups +  current_member.groups.pluck(:key)
+    # end
     render :index2
   end
 
@@ -197,6 +201,9 @@ class GoController < ApplicationController
     end
     if params[:permissions]
       golink.permissions = params[:permissions].strip
+    end
+    if params[:groups]
+      golink.groups = params[:groups].strip
     end
     golink.save!
     render json: golink.to_json

@@ -16,7 +16,8 @@ class GoLink < ActiveRecord::Base
 	      created_at: self.created_at,
 	      timestamp: self.timestamp,
 	      time_string: self.time_string,
-	      semester:self.semester
+	      semester:self.semester,
+	      groups: self.groups
 	    }
 	end
 
@@ -111,7 +112,7 @@ class GoLink < ActiveRecord::Base
 	end
 
 	# get all links that a member can view
-	def self.can_view(member)
+	def self.can_view2(member)
 		semesters = Semester.past_semesters
 		viewable = []
 		email = member ? member.email : ''
@@ -171,6 +172,26 @@ class GoLink < ActiveRecord::Base
 				return true
 			end
 		end
+	end
+
+
+	#
+	# new group based permissions system
+	#
+
+	def get_groups
+		self.groups.split(',').map{|x| x.strip}
+	end
+
+	def self.can_view(email)
+		groups = Member.groups(email)
+		ids = []
+		groups.each do |group|
+			ids += GoLink.where('groups like ?', "%#{group.key}%").pluck(:id)
+		end
+		ids += GoLink.where('groups like ?', "%Anyone%").pluck(:id)
+		ids += GoLink.where('groups like ? and member_email = ?', "%Only Me%", email).pluck(:id)
+		return ids.uniq
 	end
 
 	

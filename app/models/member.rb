@@ -1,5 +1,6 @@
 class Member < ActiveRecord::Base
   serialize :commitments
+  has_many :groups, primary_key: 'email', foreign_key: 'email'
   
   def self.get_group(group)
     group = group.downcase
@@ -145,5 +146,13 @@ class Member < ActiveRecord::Base
     end
 
 
+  end
+
+  def self.groups(email)
+    group_keys = GroupMember.where(email: email).pluck(:group).uniq
+    Group.where('key in (?)', group_keys).to_a
+  end
+  def groups
+    Member.groups(self.email)
   end
 end
