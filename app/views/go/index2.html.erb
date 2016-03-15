@@ -124,7 +124,7 @@ function activateEditable(){
 			var row = $(this).parent();
 			var updateData = {};
 			updateData['id'] = $(this).parent().attr('data-id');
-			updateData[$(this).attr('data-field')] = $(this).text();
+			updateData[$(this).attr('data-field')] = $(this).text().trim();
 			$.ajax({
 				url: '/go/update',
 				type: 'post',

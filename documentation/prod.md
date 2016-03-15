@@ -14,7 +14,6 @@ the situation is similar in production. you install the portal and it's dependen
 
 # convenience stuff (common tasks)
 
-
 ## ssh
 
 ```
@@ -44,6 +43,11 @@ scp root@107.170.243.219:/path/to/dumpfile /path/to/local/workstation
 assuming you have the dumpfile copied somwhere locally, this will import those records into your local database copy.
 ```
 psql -h localhost -p 5432 -U postgres v2_development < path_to_dumpfile.dump
+```
+
+## random commands
+```
+RAILS_ENV=production bundle exec rake assets:precompile
 ```
 
 

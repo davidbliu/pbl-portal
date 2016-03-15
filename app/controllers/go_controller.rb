@@ -184,19 +184,19 @@ class GoController < ApplicationController
   def update
     golink = GoLink.find(params[:id])
     if params[:title]
-      golink.title = params[:title]
+      golink.title = params[:title].strip
     end
     if params[:key]
-      golink.key = params[:key]
+      golink.key = params[:key].strip
     end
     if params[:url]
-      golink.url = params[:url]
+      golink.url = params[:url].strip
     end
     if params[:description]
-      golink.description = params[:description]
+      golink.description = params[:description].strip
     end
     if params[:permissions]
-      golink.permissions = params[:permissions]
+      golink.permissions = params[:permissions].strip
     end
     golink.save!
     render json: golink.to_json
