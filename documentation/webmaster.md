@@ -23,6 +23,8 @@ Since execs' work can already be distributed across 7 (the current number), addi
 # proposed restructure
 
 * webmaster is an exec on the exec team
+	* hard to know what to build without the inside scoop
+	* can't oversee how projects are used: removes a lot of the incentive for creating them
 * webmasters job is
 	* make sure portal is running. re-deploy at least 1/week.
 	* make sure wiki works
@@ -43,6 +45,8 @@ __logistics__
 * they can still be expected to speak @ 4gen, voted confidence/no confidence 
 	* (they are going to represent PBL at high level)
 	* only eligible if completed training
+* no chair-->exec requirement for webmaster
+	* their passion/involvement will be tested in completing training + speaking at 4gen
 
 
 
