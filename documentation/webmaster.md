@@ -25,6 +25,7 @@ Since execs' work can already be distributed across 7 (the current number), addi
 * webmaster is an exec on the exec team
 	* hard to know what to build without the inside scoop
 	* can't oversee how projects are used: removes a lot of the incentive for creating them
+	* tech on the exec team
 * webmasters job is
 	* make sure portal is running. re-deploy at least 1/week.
 	* make sure wiki works
