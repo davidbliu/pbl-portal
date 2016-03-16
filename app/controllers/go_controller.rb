@@ -3,10 +3,7 @@ class GoController < ApplicationController
   def redirect
     if params[:key].include?('wiki:')
       term = params[:key].split(':')[1]
-      redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term
-    elsif params[:key].include?('drive:')
-      term = params[:key].split(':')[1]
-      render json: 'should search the drive for ' + term  
+      redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term 
     else
       viewable = GoLink.can_view(myEmail)
       golink = GoLink.where(key: params[:key])

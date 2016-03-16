@@ -7,7 +7,7 @@ class GoLink < ActiveRecord::Base
 	def self.admin_emails
 		['davidbliu@gmail.com']
 	end
-	
+
 	def to_json
 		return {
 	      key: self.key,
@@ -99,7 +99,7 @@ class GoLink < ActiveRecord::Base
 
 
 	def self.search_my_links(search_term, email)
-		results = GoLink.search(query: {multi_match: {query: search_term, fields: ['key^3', 'tags^2', 'description', 'text', 'url', 'member_email'], fuzziness:1}}, :size=>100).results
+		results = GoLink.search(query: {multi_match: {query: search_term, fields: ['key^3', 'description', 'text', 'url', 'member_email'], fuzziness:1}}, :size=>100).results
 		return self.search_results_to_golinks(results)
 	end
 
@@ -119,7 +119,6 @@ class GoLink < ActiveRecord::Base
 		ids = []
 		groups.each do |group|
 			ids += self.get_group_links(group).pluck(:id)
-			# ids += GoLink.where('groups like ?', "%#{group.key}%").pluck(:id)
 		end
 		ids += GoLink.where('groups like ?', "%Anyone%").pluck(:id)
 		ids += GoLink.where('groups like ? and member_email = ?', "%Only Me%", email).pluck(:id)
