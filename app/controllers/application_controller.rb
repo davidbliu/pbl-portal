@@ -7,8 +7,19 @@ class ApplicationController < ActionController::Base
 
   before_filter :is_signed_in
 
+  def unauthorized
+  	render 'members/unauthorized'
+  end
+  
+  def is_member
+  	member = Member.where(email: myEmail).first
+  	if not member
+  		redirect_to '/unauthorized'
+  	end
+  end
+
   def is_signed_in
-  	if not myEmail
+  	if not myEmail or myEmail == ''
   		cookies[:auth_redirect] = request.path
   		redirect_to '/auth/google_oauth2'
   	else

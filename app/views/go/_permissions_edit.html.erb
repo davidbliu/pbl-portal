@@ -29,7 +29,7 @@
 				<input class = 'permissions-check' type = 'checkbox' id = '<%= group.key.gsub " ", "" %>-checkbox' data-key = '<%= group.key %>'>
 				<label>
 					<a target = '_blank' href = '/groups/show/<%= group.id %>'>
-						<%= group.name ? group.name : group.key %>
+						<%= group.has_name? ? group.name : group.key %>
 					</a>
 				</label>
 			</div>

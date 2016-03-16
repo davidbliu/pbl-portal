@@ -3,11 +3,11 @@ Rails.application.routes.draw do
   root 'main#home'
   get '/track_clicks'=>'main#clicks'
 
-
   # authentication 
   get "/auth/google_oauth2/callback", to: "auth#google_callback"
   get '/auth/email', to:'auth#email'
   get "/auth/logout", to: "auth#logout"
+  get '/unauthorized', to: 'application#unauthorized'
 
   # get and set member data
   get 'me' => 'members#me'

@@ -3,11 +3,7 @@ class GroupsController < ApplicationController
 		failed = false
 		existing = Group.where(key: params[:key]).first
 		if existing
-			if existing.creator == myEmail
-				group = existing
-			else
-				failed = true
-			end
+			failed = true
 		else
 			group = Group.create(key: params[:key])
 		end
@@ -35,7 +31,6 @@ class GroupsController < ApplicationController
 		group = Group.find(params[:id])
 		if group.creator == myEmail
 			group.destroy
-			# fix PBL Links that depend on this group
 		end
 		redirect_to '/groups'
 	end

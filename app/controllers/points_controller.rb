@@ -1,6 +1,6 @@
 
 class PointsController < ApplicationController
-	
+	before_filter :is_member
 	def index
 		redirect_to '/points/attendance'
 	end

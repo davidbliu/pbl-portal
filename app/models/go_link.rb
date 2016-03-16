@@ -33,9 +33,9 @@ class GoLink < ActiveRecord::Base
 		'http://pbl.link/'+self.key
 	end
 
-	def self.permissions_list
-		['Only Me', 'Only Execs', 'Only Officers', 'Only PBL', 'Anyone']
-	end
+	# def self.permissions_list
+	# 	['Only Me', 'Only Execs', 'Only Officers', 'Only PBL', 'Anyone']
+	# end
 
 	def self.cleanup
 		GoLink.where(key: 'change-this-key').destroy_all
@@ -55,6 +55,7 @@ class GoLink < ActiveRecord::Base
 		)
 	end
 
+	# TODO: bug with spreadsheets
   	def self.url_matches(url)
   		direct_matches = GoLink.where('url=? OR url=?', url.gsub('https:', 'http:'), url.gsub('http:', 'https:')).to_a
   		indirect_matches = []
@@ -81,6 +82,7 @@ class GoLink < ActiveRecord::Base
   		golinks = search.select{|x| golinks_by_id.keys.include?(x)}.map{|x| golinks_by_id[x]}
   		return golinks
   	end
+
 	def self.default_search(search_term)
 		q = {
 			multi_match: {
@@ -100,42 +102,8 @@ class GoLink < ActiveRecord::Base
 		return self.search_results_to_golinks(results)
 	end
 
-	def get_permissions
-		(self.permissions and self.permissions != '') ? self.permissions : 'Anyone'
-	end
-
-	def self.trending(member)
-		viewable = self.can_view(member.email)
-		return GoLink.where('id in (?)', viewable)
-			.where.not(key:'change-this-key')
-			.order('created_at DESC')
-	end
-
-	# get all links that a member can view
-	def self.can_view2(member)
-		semesters = Semester.past_semesters
-		viewable = []
-		email = member ? member.email : ''
-		viewable = GoLink.where('member_email = ? OR semester = ? OR permissions = ? OR permissions IS NULL',
-			email,
-			nil,
-			'Anyone'
-		).pluck(:id)
-		positions = Position.where(member_email: email)
-		positions.each do |position|
-			pos = position.position
-			golink_ids = GoLink.where(semester: position.semester)
-				.where('permissions in (?)',
-				 Post.can_access(pos)
-			).pluck(:id)
-			viewable = viewable + golink_ids
-		end
-		return viewable.uniq
-	end
-	
-
 	#
-	# new group based permissions system
+	# Group based permissions
 	#
 
 	def get_groups

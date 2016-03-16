@@ -1,4 +1,13 @@
 class Group < ActiveRecord::Base
+
+	before_destroy :fix_golinks
+
+	def fix_golinks
+		GoLink.where(groups: self.key).all.each do |golink|
+			golink.groups = 'Anyone'
+			golink.save
+		end
+	end
 	def members
 		emails = GroupMember.where(group: self.key).pluck(:email)
 		Member.where('email in (?)', emails)
@@ -11,6 +20,10 @@ class Group < ActiveRecord::Base
 
 	def emails
 		GroupMember.where(group:self.key).pluck(:email)
+	end
+
+	def has_name?
+		self.name and self.name.strip != ''
 	end
 
 	# create groups for sp 16 and fa 15

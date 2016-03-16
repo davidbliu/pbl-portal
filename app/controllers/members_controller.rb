@@ -1,6 +1,7 @@
 class MembersController < ApplicationController
 
-  before_filter :is_logged_in, :only=> [:edit_profile]
+  before_filter :is_member
+  
   def officer
     
   end

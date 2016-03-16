@@ -1,5 +1,6 @@
 class TablingController < ApplicationController
-	before_filter :is_logged_in
+	before_filter :is_member
+	
 	def slots_available
 		@members = Member.current_members
 			.where.not(committee:'GM')
