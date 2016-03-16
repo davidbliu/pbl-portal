@@ -24,7 +24,7 @@ class GroupsController < ApplicationController
 	end
 
 	def index
-		@groups = current_member.groups.sort_by{|x| x.created_at}.reverse
+		@groups = Group.groups_by_email(myEmail).sort_by{|x| x.created_at}.reverse
 	end
 
 	def destroy
