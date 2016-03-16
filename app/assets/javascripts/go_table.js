@@ -32,6 +32,13 @@ function getCheckedPermissions(){
 	});
 	return permissionsList.join(',');
 }
+function closeBlackFilm(){
+	$('#black-film').click(function(){
+		$('.go-modal').each(function(){
+			$(this).hide();
+		});
+	});
+}
 function activateEditPermissions(){
 	$('.permissions-td').click(function(){
 		var currentPermissions = $(this).attr('data-permissions').split(',');
@@ -95,6 +102,47 @@ function activateDelete(){
 		});
 	});
 }
+function getCheckedKeysAndIds(){
+	var checkedKeys = [];
+	var checkedIds = [];
+	$('.golink-checkbox').each(function(){
+		if($(this).is(':checked')){
+			checkedKeys.push($(this).attr('data-key'));
+			checkedIds.push($(this).attr('data-id'));
+		}
+	});
+	return [checkedKeys, checkedIds];
+}
+function activateCheckboxes(){
+	$('.golink-checkbox').click(function(){
+		checkedData = getCheckedKeysAndIds();
+		checkedIds = checkedData[1];
+		checkedKeys = checkedData[0];
+		if(checkedIds.length > 0){
+			$('#batch-number').text(checkedKeys.length);
+			$('#batch-edit-div').show();
+		}
+		else{
+			$('#batch-edit-div').hide();
+		}
+	});
+	$('#batch-delete-btn').click(function(){
+		var checkedIds = getCheckedKeysAndIds()[1];
+		window.location.href = '/go/batch_delete?ids='+JSON.stringify(checkedIds);
+	});
+	$('#batch-edit-btn').click(function(){
+		var checkedIds = getCheckedKeysAndIds()[1];
+		window.location.href = '/go/batch_edit?ids='+JSON.stringify(checkedIds);
+	});
+	$('#batch-cancel-btn').click(function(){
+		$('.golink-checkbox').each(function(){
+			$(this).prop('checked', false);
+		});
+		$('#batch-edit-div').hide();
+	})
+}
+activateCheckboxes();
+closeBlackFilm();
 activateDelete();
 activateEditable();
 activateEditPermissions();

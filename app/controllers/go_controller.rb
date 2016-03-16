@@ -1,66 +1,52 @@
 class GoController < ApplicationController
 
-
-
   def redirect
-    # must have an email to use pbl links
-    if myEmail == nil or myEmail == ''
-      cookies[:auth_redirect] = '/'+params[:key]+'/go'
-      redirect_to '/auth/google_oauth2'
+    if params[:key].include?('wiki:')
+      term = params[:key].split(':')[1]
+      redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term
+    elsif params[:key].include?('drive:')
+      term = params[:key].split(':')[1]
+      render json: 'should search the drive for ' + term  
     else
-      if params[:key].include?('wiki:')
-        term = params[:key].split(':')[1]
-        redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term
-      elsif params[:key].include?('drive:')
-        term = params[:key].split(':')[1]
-        render json: 'should search the drive for ' + term  
-      else
-        viewable = GoLink.can_view(myEmail)
-        golink = GoLink.where(key: params[:key])
-          .where('id in (?)', viewable)
-        if golink.length > 1
-          @golinks = golink
-          @permissions_list = GoLink.permissions_list
-          render :template => "go/add"
-        elsif golink.length == 1
-          golink = golink.first
-          # log this
-          Thread.new{
-            golink.log_click(myEmail)
-            ActiveRecord::Base.connection.close
-          }
-          reminder_emails = Rails.cache.read('reminder_emails')
-          if reminder_emails != nil and reminder_emails.include?(myEmail)
-            redirect_to '/reminders?key='+golink.key
-          else
-            redirect_to golink.url
-          end
+      viewable = GoLink.can_view(myEmail)
+      golink = GoLink.where(key: params[:key])
+        .where('id in (?)', viewable)
+      if golink.length > 1
+        @golinks = golink
+        @groups = GoLink.get_groups_by_email(myEmail)
+        render :template => "go/add"
+      elsif golink.length == 1
+        golink = golink.first
+        # log this
+        Thread.new{
+          golink.log_click(myEmail)
+          ActiveRecord::Base.connection.close
+        }
+        reminder_emails = Rails.cache.read('reminder_emails')
+        if reminder_emails != nil and reminder_emails.include?(myEmail)
+          redirect_to '/reminders?key='+golink.key
         else
-        	# do a search
-          redirect_to '/go?q='+params[:key]
+          redirect_to golink.url
         end
+      else
+      	# do a search
+        redirect_to '/go?q='+params[:key]
       end
     end
   end
 
   def index
-    me = current_member
-    
     if params[:q]
       @golinks = GoLink.member_search(params[:q], current_member)
     else
-      if myEmail == 'davidbliu@gmail.com'
-        viewable = GoLink.all.pluck(:id)
-      else
-        viewable = GoLink.can_view(myEmail)
-      end
+      viewable = GoLink.can_view(myEmail)
     	@golinks = GoLink.order('created_at desc')
         .where('id in (?)',viewable)
         .where.not(key: 'change-this-key')
         .map{|x| x.to_json}
     end
+    # paginate golinks
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
-    # @permissions_list = GoLink.permissions_list
     @groups = GoLink.get_groups_by_email(myEmail)
     render :index2
   end
@@ -237,6 +223,35 @@ class GoController < ApplicationController
     @avg = @num_clicks.mean
     @std = @num_clicks.standard_deviation
     @click_bins = Array.new(15, 0)
+  end
+
+  def batch_delete
+    ids = JSON.parse(params[:ids])
+    ids.each do |id|
+      GoLink.find(id).destroy
+    end
+    redirect_to '/go'
+  end
+
+  def batch_edit
+    ids = JSON.parse(params[:ids])
+    @golinks = GoLink.where('id in (?)', ids)
+    @groups = GoLink.get_groups_by_email(myEmail)
+  end
+
+  def batch_update
+    ids = params[:ids]
+    add_groups = params[:add_groups] ? params[:add_groups] : []
+    remove_groups = params[:remove_groups] ? params[:remove_groups] : []
+    golinks = GoLink.where('id in (?)', ids)
+    golinks.each do |golink|
+      groups = golink.get_groups
+      groups = groups + add_groups
+      groups = groups.select{|x| not remove_groups.include?(x) and x != 'Anyone'}
+      golink.groups = groups.length > 0 ? groups.join(',') : 'Anyone'
+      golink.save
+    end
+    render nothing: true, status: 200
   end
 
 end

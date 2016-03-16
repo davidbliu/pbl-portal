@@ -3,6 +3,11 @@ class GoLink < ActiveRecord::Base
 	include Elasticsearch::Model
  	include Elasticsearch::Model::Callbacks
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
+	
+	def self.admin_emails
+		['davidbliu@gmail.com']
+	end
+	
 	def to_json
 		return {
 	      key: self.key,
@@ -32,10 +37,6 @@ class GoLink < ActiveRecord::Base
 	def link
 		'http://pbl.link/'+self.key
 	end
-
-	# def self.permissions_list
-	# 	['Only Me', 'Only Execs', 'Only Officers', 'Only PBL', 'Anyone']
-	# end
 
 	def self.cleanup
 		GoLink.where(key: 'change-this-key').destroy_all
@@ -111,7 +112,10 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def self.can_view(email)
-		groups = Member.groups(email)
+		if GoLink.admin_emails.include?(email)
+			return GoLink.all.pluck(:id)
+		end
+		groups = Group.groups_by_email(email)
 		ids = []
 		groups.each do |group|
 			ids += self.get_group_links(group).pluck(:id)
@@ -123,7 +127,7 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def self.get_groups_by_email(email)
-		groups = Member.groups(email)
+		groups = Group.groups_by_email(email)
     	groups << Group.new(key: 'Only Me', name: 'Only Me')
 	end
 

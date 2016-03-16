@@ -45,6 +45,10 @@ class Member < ActiveRecord::Base
     Member.where(email:'davidbliu@gmail.com').first
   end
 
+  def self.admin_emails
+    ['davidbliu@gmail.com']
+  end
+
   def is_admin?
     self.name == 'David Liu' or self.name == 'Haruko Ayabe'
   end
@@ -148,11 +152,7 @@ class Member < ActiveRecord::Base
 
   end
 
-  def self.groups(email)
-    group_keys = GroupMember.where(email: email).pluck(:group).uniq
-    Group.where('key in (?)', group_keys).to_a
-  end
   def groups
-    Member.groups(self.email)
+    Group.groups_by_email(self.email)
   end
 end

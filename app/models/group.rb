@@ -26,6 +26,12 @@ class Group < ActiveRecord::Base
 		self.name and self.name.strip != ''
 	end
 
+	def self.groups_by_email(email)
+   		group_keys = GroupMember.where(email: email).pluck(:group).uniq
+    	Group.where('key in (?)', group_keys).to_a
+  	end
+  
+
 	# create groups for sp 16 and fa 15
 	def self.seed
 		# fa15 

@@ -20,9 +20,8 @@
 
 </style>
 
-<div id = 'group-create-div'>
-	<%= render partial: 'create_group' %>
-</div>
+<%= render partial: 'create_group' %>
+
 
 <%= render partial: 'black_film' %>
 
@@ -45,6 +44,9 @@
 					Manage My Groups
 				</div>
 			</a>
+			<div>
+				<%= link_to "You are in #{@groups.length} groups", '/groups' %>
+			</div>
 		</div>
 	</div>
 	<div class = 'col-md-4'></div>
@@ -57,24 +59,14 @@
 <script type = 'text/javascript'>
 
 
-showingCreateGroup = false;
 function activateGroupCreate(){
 	$('#create-group-btn').click(function(){
-		if(showingCreateGroup){
-			$('#group-create-div').hide();
-			$('#black-film').hide();
-			showingCreateGroup = false;
-		}
-		else{
-			$('#group-create-div').show();
-			$('#black-film').show();
-			showingCreateGroup = true;
-		}
+		$('#group-create-div').toggle();
+		$('#black-film').toggle();
 	});
 	$('#create-group-cancel-btn').click(function(){
 		$('#group-create-div').hide();
 		$('#black-film').hide();
-		showingCreateGroup = false;
 	});
 	// respond to submit
 	$('#create-group-submit').click(function(){
@@ -86,7 +78,6 @@ function activateGroupCreate(){
 				emails: $('#group-emails-input').val()
 			},
 			success:function(data){
-				// alert('successfully created group');
 				location.reload();
 			},
 			error: function(data){
