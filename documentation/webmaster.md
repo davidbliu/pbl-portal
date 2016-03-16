@@ -73,3 +73,17 @@ webmaster on exec level satisfies both pbls need for webmaster and webmasters ne
 * david: portal sp14, fa14, sp15, fa15, sp16
 
 
+## possible tasks for webmaster
+
+* develop new software (extremely time consuming)
+* poll/analyze (midsemester survey, etc)
+* set up and manage email lists
+* generate tabling schedules
+* collect event feedback
+* redeploy portal 1/week
+* set up tools for external website
+	* can also be primary exec in charge of creating it
+* train future webmasters
+
+
+

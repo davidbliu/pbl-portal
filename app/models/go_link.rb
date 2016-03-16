@@ -3,6 +3,11 @@ class GoLink < ActiveRecord::Base
 	include Elasticsearch::Model
  	include Elasticsearch::Model::Callbacks
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
+	
+	def self.admin_emails
+		['davidbliu@gmail.com']
+	end
+
 	def to_json
 		return {
 	      key: self.key,
@@ -32,10 +37,6 @@ class GoLink < ActiveRecord::Base
 	def link
 		'http://pbl.link/'+self.key
 	end
-
-	# def self.permissions_list
-	# 	['Only Me', 'Only Execs', 'Only Officers', 'Only PBL', 'Anyone']
-	# end
 
 	def self.cleanup
 		GoLink.where(key: 'change-this-key').destroy_all
@@ -98,7 +99,7 @@ class GoLink < ActiveRecord::Base
 
 
 	def self.search_my_links(search_term, email)
-		results = GoLink.search(query: {multi_match: {query: search_term, fields: ['key^3', 'tags^2', 'description', 'text', 'url', 'member_email'], fuzziness:1}}, :size=>100).results
+		results = GoLink.search(query: {multi_match: {query: search_term, fields: ['key^3', 'description', 'text', 'url', 'member_email'], fuzziness:1}}, :size=>100).results
 		return self.search_results_to_golinks(results)
 	end
 
@@ -111,11 +112,13 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def self.can_view(email)
-		groups = Member.groups(email)
+		if GoLink.admin_emails.include?(email)
+			return GoLink.all.pluck(:id)
+		end
+		groups = Group.groups_by_email(email)
 		ids = []
 		groups.each do |group|
 			ids += self.get_group_links(group).pluck(:id)
-			# ids += GoLink.where('groups like ?', "%#{group.key}%").pluck(:id)
 		end
 		ids += GoLink.where('groups like ?', "%Anyone%").pluck(:id)
 		ids += GoLink.where('groups like ? and member_email = ?', "%Only Me%", email).pluck(:id)
@@ -123,7 +126,7 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def self.get_groups_by_email(email)
-		groups = Member.groups(email)
+		groups = Group.groups_by_email(email)
     	groups << Group.new(key: 'Only Me', name: 'Only Me')
 	end
 

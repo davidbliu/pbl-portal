@@ -5,14 +5,14 @@ class GroupsController < ApplicationController
 		if existing
 			failed = true
 		else
-			group = Group.create(key: params[:key])
+			group = Group.create(key: params[:key], creator: myEmail)
 		end
 		# fails if group with same key already exists
 		if not failed
-			group.creator = myEmail
-			group.save
-			params[:emails].split(',').each do |email|
-				email = email.strip
+			emails = params[:emails].split(',')
+			emails << myEmail
+			emails = emails.uniq.map{|x| x.strip}
+			emails.each do |email|
 				GroupMember.where(
 					group: group.key,
 					email: email).first_or_create

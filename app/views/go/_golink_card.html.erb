@@ -1,0 +1,23 @@
+<div class = 'golink-card'>
+	<div>
+		<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
+		<a href = '<%= golink.url %>'>
+			<%= golink.key %>
+		</a>
+	</div>
+	<div class = 'url'>
+		<%= golink.url %>
+	</div>
+	<div class = 'description'>
+		<%= golink.description %>
+	</div>	
+	<div>
+		Creator: <%= golink.member_email %>
+	</div>
+	<div>
+		Groups: <%= golink.groups %>
+	</div>
+	<div>
+		<%= golink.time_string %>
+	</div>
+</div>

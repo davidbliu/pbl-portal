@@ -34,7 +34,9 @@ Rails.application.routes.draw do
   get 'go/admin' => 'go#admin'
   get 'go/three_days' => 'go#three_days'
   get 'go/time_distribution' => 'go#time_distribution'
-
+  get 'go/batch_edit' => 'go#batch_edit'
+  get 'go/batch_delete' => 'go#batch_delete'
+  post 'go/batch_update' => 'go#batch_update'
   #blog
   get 'blog' => 'blog#index'
   get 'blog/edit' => 'blog#edit'

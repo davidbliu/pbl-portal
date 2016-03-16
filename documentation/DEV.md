@@ -67,6 +67,15 @@ when you're ready to make changes (ie starting the sample project) __dont do it 
 * `git checkout -b name_of_branch`
 * make your changes
 
+# the dev process
+
+TODO: decide formal process for this
+
+* should developers be added to repo
+* set up private repo
+* have tests, only accept pushes that pass tests
+* fork, pull request
+
 
 # Sample Project
 create a new reports page

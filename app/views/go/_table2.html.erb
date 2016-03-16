@@ -10,7 +10,15 @@ td{
 #table-row{
 	margin-top:25px;
 }
+.golink-checkbox{
+	border-radius:0px;
+}
+.hilite{
+	background-color:rgba(0, 255, 20, 0.2);
+}
 </style>
+
+<%= render partial: 'batch_edit' %>
 
 <div class = 'row' id = 'table-row'>
 <table class = 'table table-condensed'>
@@ -20,7 +28,7 @@ td{
 		<th>Description</th>
 		<th>Url</th>
 		<th>Sharing</th>
-		<!-- <th>Creator</th> -->
+		<th>Creator</th>
 		<!-- <th>Clicks</th> -->
 		<th>Timestamp</th>
 		<th></th>
@@ -58,7 +66,8 @@ td{
 				(<%= golink[:semester] %>)
 			</td>
 			<td>
-				<a href = 'javascript:void(0)' data-id = '<%= golink[:id] %>' class = 'delete-link'>x</a>
+				<input type = 'checkbox' id = '<%= golink[:id] %>-checkbox' data-id = '<%= golink[:id] %>' class = 'golink-checkbox' data-key = '<%= golink[:key] %>'>
+				<!-- <a href = 'javascript:void(0)' data-id = '<%= golink[:id] %>' class = 'delete-link'>x</a> -->
 			</td>
 		</tr>
 		<% end %>

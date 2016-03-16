@@ -1,0 +1,9 @@
+.golink-card{
+	padding:15px;
+	border:1px solid rgba(0,0,0,0.1);
+	margin: 10px;
+	overflow:hidden;
+}
+.golink-card>.url{
+	color: #006621;
+}

@@ -3,8 +3,11 @@ class Group < ActiveRecord::Base
 	before_destroy :fix_golinks
 
 	def fix_golinks
-		GoLink.where(groups: self.key).all.each do |golink|
-			golink.groups = 'Anyone'
+		GoLink.get_group_links(self).each do |golink|
+			groups = golink.get_groups 
+			groups = groups.select{|x| x != self.key}
+			groups = groups.length > 0 ? groups.join(',') : 'Anyone'
+			golink.groups = groups
 			golink.save
 		end
 	end
@@ -19,12 +22,18 @@ class Group < ActiveRecord::Base
 	end
 
 	def emails
-		GroupMember.where(group:self.key).pluck(:email)
+		GroupMember.where(group: self.key).pluck(:email)
 	end
 
 	def has_name?
 		self.name and self.name.strip != ''
 	end
+
+	def self.groups_by_email(email)
+   		group_keys = GroupMember.where(email: email).pluck(:group).uniq
+    	Group.where('key in (?)', group_keys).to_a
+  	end
+  
 
 	# create groups for sp 16 and fa 15
 	def self.seed

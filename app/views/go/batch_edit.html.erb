@@ -1,0 +1,59 @@
+
+<%= stylesheet_link_tag 'golink_card' %>
+<%= javascript_include_tag 'batch_edit_golinks' %>
+<h1 class = 'centered'>Batch Edit</h1>
+
+<div class = 'col-md-4'>
+	<%= link_to 'Back to PBL Links', '/go' %>
+	<h3>Editing these links</h3>
+	<% @golinks.each do |golink| %>
+		<%= render partial: 'golink_card', locals: {golink: golink} %>
+	<% end %>
+</div>
+
+<div class = 'col-md-8'>
+	<div>
+		<h3>Add Groups</h3>
+		<% @groups.each do |group| %>
+			<div>
+				<input class = 'group-add-check' type = 'checkbox' id = '<%= group.key.gsub " ", "" %>-checkbox' data-key = '<%= group.key %>'>
+				<label>
+					<a target = '_blank' href = '/groups/show/<%= group.id %>'>
+						<%= group.has_name? ? group.name : group.key %>
+					</a>
+				</label>
+			</div>
+		<% end %>
+	</div>
+	<div>
+		<h3>Remove Groups</h3>
+		<% @groups.each do |group| %>
+			<div>
+				<input class = 'group-remove-check' type = 'checkbox' id = '<%= group.key.gsub " ", "" %>-checkbox' data-key = '<%= group.key %>'>
+				<label>
+					<a target = '_blank' href = '/groups/show/<%= group.id %>'>
+						<%= group.has_name? ? group.name : group.key %>
+					</a>
+				</label>
+			</div>
+		<% end %>
+	</div>
+
+	<!-- <div>
+		<h3>Add Tags</h3>
+	</div>
+	<div>
+		<h3>Remove Tags</h3>
+	</div> -->
+
+	<div class = 'btn btn-info' id = 'save-btn'>Save Changes</div>
+	<a href = '/go'>
+		<div class = 'btn btn-default'>Cancel</div>
+	</a>
+
+
+</div>
+
+<script type = 'text/javascript'>
+golink_ids = <%= raw(@golinks.map{|x| x.id}) %>;
+</script>
