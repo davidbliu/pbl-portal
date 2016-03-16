@@ -155,8 +155,12 @@ function activateCheckboxes(){
 		$('#batch-edit-div').hide();
 	})
 }
+$(document).ready(function(){
 activateCheckboxes();
 closeBlackFilm();
 activateDelete();
 activateEditable();
 activateEditPermissions();
+});
+
+

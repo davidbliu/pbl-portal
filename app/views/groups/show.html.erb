@@ -1,3 +1,5 @@
+
+
 <style type = 'text/css'>
 .golink-card{
 	padding:15px;
@@ -10,63 +12,50 @@
 	color:#1a0dab;
 }
 #group-meta-card{
-	border: 1px solid rgba(0,0,0,0.1);
-	padding:25px;
+	/*border: 1px solid rgba(0,0,0,0.1);*/
+	padding:15px;
+}
+.info-card{
+	/*border:1px solid rgba(0,0,0,0.1);*/
+	background-color: rgba(0, 0, 255, 0.04);
+	padding:15px;
+	margin-bottom:25px;
 }
 </style>
 
 
+<%= link_to 'Back to groups', '/groups' %>
 
-<div class = 'col-md-3'>
-<a href = '/groups'>
-	Back to Groups
-</a>
+<div class = 'col-md-4'>
+	<div id = 'group-meta-card'>
+		<h3><%= @group.name %> (<%= @group.key %>)</h3>
+		<div class = 'info-card'>
+			<div>
+				Name: <%= @group.name %>
+			</div>
+			<div>
+				Key: <%= @group.key %>
+			</div>
+			<div>
+				Description: <%= @group.description %>
+			</div>
+			<div>
+				Creator: <%= @group.creator %>
+			</div>
+		</div>
+		<div>
+			Members: <%= @group.emails.join(', ') %>
+		</div>
+	</div>
 </div>
 
-<div class = 'col-md-6'>
-<div id = 'group-meta-card'>
-	<h1 class = 'centered'><%= @group.name %> (<%= @group.key %>)</h1>
-	<div>
-		Name: <%= @group.name %>
-	</div>
-	<div>
-		Key: <%= @group.key %>
-	</div>
-	<div>
-		Description: <%= @group.description %>
-	</div>
-	<div>
-		Creator: <%= @group.creator %>
-	</div>
-	<div>
-		Members: <%= @group.emails.join(', ') %>
-	</div>
-</div>
-<% @golinks.each do |golink| %>
-	<div class = 'golink-card'>
-		<div>
-			<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
-			<a class = 'go-key' href = '<%= golink.url %>'>
-			<%= golink.key %>
-			</a>
-		</div>
-		<div class = 'go-url'>
-			<%= golink.url %>
-		</div>
-		<div>
-			Description: <%= golink.description %>
-		</div>
-		<div>
-			Creator: <%= golink.member_email %>
-		</div>
-		<div>
-			Shared With: <%= golink.groups %>
-		</div>
-		<div>
-			<%= golink.time_string %>
-		</div>
-	</div>
-<% end %>
+<div class = 'col-md-8'>
+	<h3>Links shared in this group</h3>
+	<%= javascript_include_tag 'go_table' %>
+	<%= render partial: 'go/black_film' %>
+	<%= render partial: 'go/permissions_edit', locals: { groups: @groups } %>
+	<%= render partial: 'go/table', locals: { golinks: @golinks.map{|x| x.to_json} } %>
 </div>
 
-<div class = 'col-md-3'></div>
+
+

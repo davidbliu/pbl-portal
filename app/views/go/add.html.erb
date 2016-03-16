@@ -1,40 +1,16 @@
-<style type = 'text-css'>
-#add-container{
-	display:none;
+<style type = 'text/css'>
+.red{
+	color:red;
 }
 </style>
 
-<body ng-app = 'goApp'>
-<div ng-controller = 'AddCtrl'>
+<% if @golinks.length > 1 %>
+<h4 class = 'red'>There are multiple PBL Links with the same key</h4>
+<% end %>
 
-<div id = 'add-container' ng-show = 'golinks != null && golinks.length > 0'>
-	<div ng-show = 'golinks.length > 1'>
-		<h2 style = 'color:red'>The key you chose conflicts with {{golinks.length - 1}} links</h2>
-		<p>Review links below with the same key. If there are multiple, users using your link will reach a landing page. If you would like to overwrite an old link, place the older link under a namespace. ex fa15:mission instead of mission.</p>
-	</div>
-	<%= render partial: 'table' %>
-</div>
-<!-- end of golinks area -->
+<%= render partial: 'black_film' %>
+<%= render partial: 'permissions_edit', locals: {groups: @groups} %>
 
-</div>
-<!-- end of add ctrl -->
+<%= render partial: 'table', locals:{golinks: @golinks} %>
 
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
-<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
-<script type = 'text/javascript'>
-var app = angular.module('goApp', []);
-var golinks = <%= raw(@golinks.to_json) %>;
-app.controller('AddCtrl', function($scope){
-	
-	//editable
-	$scope.permissionsList = <%= raw(@permissions_list) %>;
-	$scope.golinks = golinks;
-	setTimeout(function(){
-		activateEditable();
-		activateDelete();
-		$('#add-container').show();
-	}, 500);
-});
-</script>
-
-</body>
+<%= javascript_include_tag 'go_table' %>

@@ -45,7 +45,6 @@ class GoController < ApplicationController
     # paginate golinks
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
     @groups = GoLink.get_groups_by_email(myEmail)
-    render :index2
   end
 
   def insights
@@ -141,7 +140,6 @@ class GoController < ApplicationController
       @golinks = [@golink.to_json]
     end
     @groups = GoLink.get_groups_by_email(myEmail)
-    render :add2
   end
 
   def create

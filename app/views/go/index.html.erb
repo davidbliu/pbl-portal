@@ -1,70 +1,99 @@
+
 <style type = 'text/css'>
-td{
-	max-width:200px;
-	overflow:auto;
+
+#top-row{
+	margin-bottom:25px;
 }
-#search-input{
+
+#group-create-div{
+	position:fixed;
+	top:100px;
+	left:100px;
 	width:300px;
+	height:350px;
+	background-color:white;
+	border:1px solid rgba(0,0,0,0.1);
+	z-index:5000;
+	padding:20px;
+	display:none;
 }
-.url-div{
-	max-height:100px !important;
-	overflow:auto;
-	color:#4285f4;
-}
-.url-div:hover{
-	cursor:pointer;
-}
+
 </style>
-<body ng-app = 'goApp'>
-<div ng-controller = 'GoCtrl'>
 
-<div>
-	<a href="/go/add">Add a link</a>
-</div>
-<%= will_paginate @golinks %>
-<input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'search'>
-	<%= render partial: 'table' %>
+<%= render partial: 'create_group' %>
+
+
+<%= render partial: 'black_film' %>
+
+<%= render partial: 'permissions_edit', locals: {groups: @groups} %>
+
+
+<div class = 'row centered' id = 'top-row'>
+	<h1>PBL Links</h1>
+	<div class = 'col-md-4'></div>
+	<div class = 'col-md-4'>
+		<input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'Search PBL Links'></input>
+
+		<div><%= will_paginate(@golinks) %></div>
+		<div>
+			<div class = 'btn btn-info' id = 'create-group-btn'>
+				Create A Group
+			</div>
+			<a href = '/groups'>
+				<div class = 'btn btn-primary' id = 'manage-group-btn'>
+					Manage My Groups
+				</div>
+			</a>
+			<div>
+				<%= link_to "You are in #{@groups.length} groups", '/groups' %>
+			</div>
+		</div>
+	</div>
+	<div class = 'col-md-4'></div>
 </div>
 
-<!-- <%= @golinks %> -->
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
-<script src = 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+<%= render partial: 'table', locals: {golinks: @golinks} %>
+
+<%= javascript_include_tag 'go_table' %>
+
 <script type = 'text/javascript'>
-var app = angular.module('goApp', []);
-var golinks = <%= raw(@golinks.to_json) %>;
 
-console.log(golinks);
-app.controller('GoCtrl', function($scope){
-	$scope.golinks = golinks;
-	$scope.permissionsList = <%= raw(@permissions_list)%>;
-	//search
-	function activateSearch(){
-		$('#search-input').keypress(function(e) {
-		    if(e.which == 13) {
-		    	searchTerm = $(this).val();
-		    	$.ajax({
-		    		url: '/go/search',
-		    		type: 'GET',
-		    		data: {q: searchTerm},
-		    		success:function(data){
-		    			$scope.golinks = data;
-		    			$scope.$digest();
-		    			activateEditable();
-		    			activateDelete();
-		    		}
-		    	});
-		    }
-		});
-	}
 
-	//editable
-	setTimeout(function(){
-		activateEditable();
-		activateEditableToggle();
-		activateDelete();
-	}, 500);
-	activateSearch();
-});
+function activateGroupCreate(){
+	$('#create-group-btn').click(function(){
+		$('#group-create-div').toggle();
+		$('#black-film').toggle();
+	});
+	$('#create-group-cancel-btn').click(function(){
+		$('#group-create-div').hide();
+		$('#black-film').hide();
+	});
+	// respond to submit
+	$('#create-group-submit').click(function(){
+		$.ajax({
+			url: '/groups/create',
+			type:'post',
+			data:{
+				key: $('#group-key-input').val(),
+				emails: $('#group-emails-input').val()
+			},
+			success:function(data){
+				location.reload();
+			},
+			error: function(data){
+				alert(data.responseText);
+			}
+		})
+	})
+}
+function activateSearch(){
+	$('#search-input').keypress(function(e) {
+	    if(e.which == 13) {
+	    	searchTerm = $(this).val();
+	    	window.location = '?q='+searchTerm;
+	    }
+	});
+}
+activateSearch();
+activateGroupCreate();
 </script>
-
-</body>
