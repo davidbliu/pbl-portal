@@ -73,16 +73,26 @@ class GoLink < ActiveRecord::Base
 		return matches
   	end
 
-
-  	def self.member_search(search_term, member)
+  	def self.email_search(search_term, email)
   		search = self.default_search(search_term)
-  		viewable = self.can_view(member.email)
+  		viewable = self.can_view(email)
   		result_ids = search.select{|x| viewable.include?(x)}
 		golinks_by_id = GoLink.where('id in (?)', result_ids).index_by(&:id)
 		keys = golinks_by_id.keys
   		golinks = search.select{|x| golinks_by_id.keys.include?(x)}.map{|x| golinks_by_id[x]}
   		return golinks
   	end
+
+
+  # 	def self.member_search(search_term, member)
+  # 		search = self.default_search(search_term)
+  # 		viewable = self.can_view(member.email)
+  # 		result_ids = search.select{|x| viewable.include?(x)}
+		# golinks_by_id = GoLink.where('id in (?)', result_ids).index_by(&:id)
+		# keys = golinks_by_id.keys
+  # 		golinks = search.select{|x| golinks_by_id.keys.include?(x)}.map{|x| golinks_by_id[x]}
+  # 		return golinks
+  # 	end
 
 	def self.default_search(search_term)
 		q = {

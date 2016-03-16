@@ -34,7 +34,7 @@ class GoController < ApplicationController
 
   def index
     if params[:q]
-      @golinks = GoLink.member_search(params[:q], current_member)
+      @golinks = GoLink.email_search(params[:q], myEmail)
     else
       viewable = GoLink.can_view(myEmail)
     	@golinks = GoLink.order('created_at desc')
@@ -164,7 +164,7 @@ class GoController < ApplicationController
   end
 
   def search
-    golinks = GoLink.member_search(params[:q], current_member)
+    golinks = GoLink.email_search(params[:q], email)
     render json: golinks.map{|x| x.to_json}
   end
 
