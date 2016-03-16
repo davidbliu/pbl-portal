@@ -113,6 +113,16 @@ function getCheckedKeysAndIds(){
 	});
 	return [checkedKeys, checkedIds];
 }
+function highlightCheckedParents(){
+	$('.hilite').each(function(){
+		$(this).removeClass('hilite');
+	})
+	$('.golink-checkbox').each(function(){
+		if($(this).is(':checked')){
+			$(this).parents('.golink-row').addClass('hilite');
+		}
+	})
+}
 function activateCheckboxes(){
 	$('.golink-checkbox').click(function(){
 		checkedData = getCheckedKeysAndIds();
@@ -125,6 +135,7 @@ function activateCheckboxes(){
 		else{
 			$('#batch-edit-div').hide();
 		}
+		highlightCheckedParents();
 	});
 	$('#batch-delete-btn').click(function(){
 		var checkedIds = getCheckedKeysAndIds()[1];
@@ -135,6 +146,9 @@ function activateCheckboxes(){
 		window.location.href = '/go/batch_edit?ids='+JSON.stringify(checkedIds);
 	});
 	$('#batch-cancel-btn').click(function(){
+		$('.hilite').each(function(){
+			$(this).removeClass('hilite');
+		})
 		$('.golink-checkbox').each(function(){
 			$(this).prop('checked', false);
 		});

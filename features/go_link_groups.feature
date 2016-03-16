@@ -1,8 +1,7 @@
 Feature: golink group sharing correct
  
-	As a user
-  So i can see see golinks
-  I want to see golinks that i have access to only
+  I want to see golinks that my groups have access to
+  when i remove groups i want the permissions to be correctly updated
 
 Background: golinks have been added to the database
 
@@ -23,5 +22,10 @@ Scenario: group permissions work on index page
   Given I am on the go_menu page
   Then I should see "key1"
   Then I should not see "key2"
+
+Scenario: removing a group removes group from golink groups
+
+Scenario: removing a group resets groups to anyone
+
 
 
