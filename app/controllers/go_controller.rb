@@ -45,6 +45,7 @@ class GoController < ApplicationController
     # paginate golinks
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
     @groups = GoLink.get_groups_by_email(myEmail)
+    @tags = params[:q] ? [] : GoTag.where(name:'Pinned')
   end
 
   def insights
@@ -225,26 +226,53 @@ class GoController < ApplicationController
     ids.each do |id|
       GoLink.find(id).destroy
     end
-    redirect_to '/go'
+    redirect_to :back
   end
 
   def batch_edit
     ids = JSON.parse(params[:ids])
     @golinks = GoLink.where('id in (?)', ids)
     @groups = GoLink.get_groups_by_email(myEmail)
+    @tags = GoTag.all
   end
 
-  def batch_update
+  def batch_update_groups
     ids = params[:ids]
-    add_groups = params[:add_groups] ? params[:add_groups] : []
-    remove_groups = params[:remove_groups] ? params[:remove_groups] : []
+    new_groups = params[:groups] ? params[:groups] : []
+    action_type = params[:atype]
     golinks = GoLink.where('id in (?)', ids)
     golinks.each do |golink|
       groups = golink.get_groups
-      groups = groups + add_groups
-      groups = groups.select{|x| not remove_groups.include?(x) and x != 'Anyone'}
+      if action_type == 'add'
+        groups = groups + new_groups
+      elsif action_type == 'remove'
+        groups = groups.select{|x| not new_groups.include?(x)}
+      end
+      groups = groups.select{|x| x!= 'Anyone'}.uniq
       golink.groups = groups.length > 0 ? groups.join(',') : 'Anyone'
       golink.save
+    end
+    render nothing: true, status: 200
+  end
+
+  def batch_update_tags
+    golinks = GoLink.where('id in (?)', params[:ids])
+    tags = params[:tags] ? params[:tags] : []
+    action_type = params[:atype]
+    golinks.each do |golink|
+      tags.each do |tag|
+        if action_type == 'add'
+          GoLinkTag.where(
+            golink_id: golink.id,
+            tag_name: tag
+          ).first_or_create
+        elsif action_type == 'remove'
+          GoLinkTag.where(
+            golink_id: golink.id,
+            tag_name: tag
+          ).destroy_all
+        end
+      end
     end
     render nothing: true, status: 200
   end

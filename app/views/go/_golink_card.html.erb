@@ -17,7 +17,13 @@
 	<div>
 		Groups: <%= golink.groups %>
 	</div>
+
 	<div>
 		<%= golink.time_string %>
+	</div>
+	<div class = 'pull-right'>
+		<% golink.tags.map{|x| x.tag_name}.each do |tag| %>
+		<div class = 'label label-default'><%= tag %></div>
+		<% end %>
 	</div>
 </div>

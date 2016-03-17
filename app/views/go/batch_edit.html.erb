@@ -1,7 +1,10 @@
-
+<style type = 'text/css'>
+</style>
 <%= stylesheet_link_tag 'golink_card' %>
 <%= javascript_include_tag 'batch_edit_golinks' %>
 <h1 class = 'centered'>Batch Edit</h1>
+
+<div class = 'row'>
 
 <div class = 'col-md-4'>
 	<%= link_to 'Back to PBL Links', '/go' %>
@@ -12,47 +15,54 @@
 </div>
 
 <div class = 'col-md-8'>
-	<div>
-		<h3>Add Groups</h3>
-		<% @groups.each do |group| %>
-			<div>
-				<input class = 'group-add-check' type = 'checkbox' id = '<%= group.key.gsub " ", "" %>-checkbox' data-key = '<%= group.key %>'>
-				<label>
-					<a target = '_blank' href = '/groups/show/<%= group.id %>'>
-						<%= group.has_name? ? group.name : group.key %>
-					</a>
-				</label>
+<div class = 'row' id = 'group-tag-row'>
+	<div class = 'col-md-6'>
+		<div id = 'add-remove-groups-container'>
+			<h3>Add/Remove Groups</h3>
+			<% @groups.each do |group| %>
+				<div>
+					<input class = 'group-check' type = 'checkbox' id = '<%= group.key.gsub " ", "" %>-checkbox' data-key = '<%= group.key %>'>
+					<label>
+						<a target = '_blank' href = '/groups/show/<%= group.id %>'>
+							<%= group.has_name? ? group.name : group.key %>
+						</a>
+					</label>
+				</div>
+			<% end %>
+
+
+			<div class = 'btn btn-info group-btn' id = 'add-groups-btn' data-action = 'add'>Add Groups</div>
+			<div class = 'btn btn-danger group-btn' id = 'remove-groups-btn' data-action = 'remove'>Remove Groups</div>
+		</div>
+		
+	</div>
+
+	<div class = 'col-md-6'>
+		<div>
+			<h3 class = 'toggler' data-target = 'add-tags-container'>Add/Remove Tags</h3>
+			<div id = 'add-tags-container' class = 'toggled'>
+				<input type = 'text' id = 'tag-input'placeholder = 'Search Tags' class = 'form-control'>
+				<div class = 'btn btn-default pull-right' id = 'create-tag-btn'>Create Tag</div>
+				<div class = 'tags-list'>
+					<% @tags.each do |tag| %>
+					<div>
+						<input type = 'checkbox' id = '<%= tag.name %>-checkbox' data-name = '<%= tag.name %>' class = 'tag-checkbox'>
+						<%= link_to tag.name, "/go_tag/show/#{tag.id}" %>
+					</div>
+					<% end %>
+				</div>
 			</div>
-		<% end %>
+			<div class = 'btn btn-info tag-btn' data-action = 'add'>Add these tags</div>
+			<div class = 'btn btn-danger tag-btn' data-action = 'remove'>Remove these tags</div>
+		</div>
 	</div>
-	<div>
-		<h3>Remove Groups</h3>
-		<% @groups.each do |group| %>
-			<div>
-				<input class = 'group-remove-check' type = 'checkbox' id = '<%= group.key.gsub " ", "" %>-checkbox' data-key = '<%= group.key %>'>
-				<label>
-					<a target = '_blank' href = '/groups/show/<%= group.id %>'>
-						<%= group.has_name? ? group.name : group.key %>
-					</a>
-				</label>
-			</div>
-		<% end %>
-	</div>
-
-	<!-- <div>
-		<h3>Add Tags</h3>
-	</div>
-	<div>
-		<h3>Remove Tags</h3>
-	</div> -->
-
-	<div class = 'btn btn-info' id = 'save-btn'>Save Changes</div>
-	<a href = '/go'>
-		<div class = 'btn btn-default'>Cancel</div>
-	</a>
-
+</div>
 
 </div>
+
+</div><!-- end of row -->
+
+	
 
 <script type = 'text/javascript'>
 golink_ids = <%= raw(@golinks.map{|x| x.id}) %>;

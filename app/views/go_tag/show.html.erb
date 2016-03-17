@@ -1,0 +1,11 @@
+<h1>Tag: <%= @tag.name %></h1>
+
+<%= render partial: 'go/black_film' %>
+
+<%= render partial: 'go/permissions_edit', locals: {groups: @groups} %>
+
+
+
+<%= render partial: 'go/table', locals: {golinks: @golinks} %>
+
+<%= javascript_include_tag 'go_table' %>

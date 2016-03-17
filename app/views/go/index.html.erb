@@ -17,15 +17,18 @@
 	padding:20px;
 	display:none;
 }
+#search-input{
+	margin-bottom:15px;
+}
 
 </style>
+<%= stylesheet_link_tag 'tag_card' %>
+<%= render partial: 'go/create_group' %>
 
-<%= render partial: 'create_group' %>
 
+<%= render partial: 'go/black_film' %>
 
-<%= render partial: 'black_film' %>
-
-<%= render partial: 'permissions_edit', locals: {groups: @groups} %>
+<%= render partial: 'go/permissions_edit', locals: {groups: @groups} %>
 
 
 <div class = 'row centered' id = 'top-row'>
@@ -34,7 +37,7 @@
 	<div class = 'col-md-4'>
 		<input id = 'search-input' type = 'text' class = 'form-control' placeholder = 'Search PBL Links'></input>
 
-		<div><%= will_paginate(@golinks) %></div>
+		
 		<div>
 			<div class = 'btn btn-info' id = 'create-group-btn'>
 				Create A Group
@@ -47,12 +50,20 @@
 			<div>
 				<%= link_to "You are in #{@groups.length} groups", '/groups' %>
 			</div>
+
+			
 		</div>
 	</div>
 	<div class = 'col-md-4'></div>
 </div>
 
-<%= render partial: 'table', locals: {golinks: @golinks} %>
+<div class = 'row'>
+	<% @tags.each do |tag| %>
+	<%= render partial: 'go/tag_card', locals: {tag: tag} %>
+	<% end %>
+</div>
+<div class = 'centered'><%= will_paginate(@golinks) %></div>
+<%= render partial: 'go/table', locals: {golinks: @golinks} %>
 
 <%= javascript_include_tag 'go_table' %>
 

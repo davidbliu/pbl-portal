@@ -50,7 +50,7 @@
 </div>
 
 <div class = 'col-md-8'>
-	<h3>Links shared in this group</h3>
+	<h3><%= @golinks.length %> Links shared in this group</h3>
 	<%= javascript_include_tag 'go_table' %>
 	<%= render partial: 'go/black_film' %>
 	<%= render partial: 'go/permissions_edit', locals: { groups: @groups } %>
