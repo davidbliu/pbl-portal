@@ -21,7 +21,9 @@ Members (emails)
 <%= text_area_tag 'emails', @group.emails.join(','), placeholder: 'emails', class: 'form-control', style: 'height:150px' %>
 
 <%= submit_tag 'Save Group', class: 'btn btn-info' %> 
-<a href = '/groups'>
+
+
+<a href="javascript:history.back()">
 	<div class = 'btn btn-danger'>Cancel</div>
 </a>
 </div>

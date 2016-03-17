@@ -1,168 +1,78 @@
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Change Permissions</h4>
-      </div>
-      <div class="modal-body">
-        <div ng-repeat = 'permission in permissionsList' class = 'btn btn-default permission-btn'>{{permission}}</div>
-      </div>
-    </div>
-  </div>
-</div>
+<style type = 'text/css'>
+.url-div{
+	max-height:50px !important;
+	overflow:auto;
+}
+td{
+	max-width:150px;
+	overflow:auto;
+}
+#table-row{
+	margin-top:25px;
+}
+.golink-checkbox{
+	border-radius:0px;
+}
+.hilite{
+	background-color:rgba(0, 255, 20, 0.2);
+}
+</style>
 
+<%= render partial: 'go/batch_edit' %>
+
+<div class = 'row' id = 'table-row'>
 <table class = 'table table-condensed'>
 	<thead>
 		<th></th>
 		<th>Key</th>
 		<th>Description</th>
 		<th>Url</th>
-		<th>Permissions</th>
+		<th>Sharing</th>
 		<th>Creator</th>
-		<th>Clicks</th>
+		<!-- <th>Clicks</th> -->
 		<th>Timestamp</th>
 		<th></th>
 	</thead>
 	<tbody>
-		<tr ng-repeat = 'golink in golinks track by $index' id = '{{golink.id}}' data-id = '{{golink.id}}' ng-show = 'golink.key != null '>
+		<% golinks.each do |golink| %>
+		<tr class = 'golink-row' id = '<%= golink[:id] %>-row' data-id = '<%= golink[:id] %>'>
 			<td>
-				<a href = '{{golink.url}}'>
-					<img src = 'http://www.google.com/s2/favicons?domain={{golink.url}}'>
+				<a href = '<%= golink[:url] %>'>
+					<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
 				</a>
 			</td>
-
-			<td class = 'editable' data-col = 'key'>{{golink.key}}</td>	
-			<td class = 'editable' data-col = 'description'>{{golink.description}}</td>
-			<td data-col = 'url' id = '{{golink.id}}' data-id = '{{golink.id}}'>
-				<div class = 'editable-toggle url-div' data-col = 'url'>
-					<!-- <a href = '{{golink.url}}' > -->
-					{{golink.url}}
-					<!-- </a> -->
+			<td class = 'editable' data-field = 'key'>
+				<%= golink[:key] %>
+			</td>
+			<td class = 'editable' data-field = 'description'>
+				<%= golink[:description] %>
+			</td>
+			<td data-id = '<%= golink[:id] %>'>
+				<div class = 'editable url-div' data-field = 'url'>
+					<%= golink[:url] %>
 				</div>
 			</td>
-			<td class = 'permissions-edit'>{{golink.permissions}}</td>
-			<td>{{golink.member_email}}</td>
-			<td>
-				<a href = '/go/insights/{{golink.id}}'>{{golink.num_clicks ? golink.num_clicks : 0}}</a>
+			<td class = 'permissions-td' data-key = '<%= golink[:key] %>' data-permissions = '<%= golink[:groups] %>' id = '<%= golink[:id] %>-permissions-td'>
+				<%= golink[:groups] %>
 			</td>
-			<td>{{golink.time_string}} ({{golink.semester}})</th>
 			<td>
-				<a href = 'javascript:void(0)' class = 'delete-link' data-id = '{{golink.id}}'>x</a>
+				<%= golink[:member_email] %>
 			</td>
+			<!-- <td>
+				<%= golink[:num_clicks] ? golink[:num_clicks] : 0 %>
+			</td> -->
+			<td>
+				<%= golink[:time_string] %>
+				(<%= golink[:semester] %>)
+			</td>
+			<td>
+				<input type = 'checkbox' id = '<%= golink[:id] %>-checkbox' data-id = '<%= golink[:id] %>' class = 'golink-checkbox' data-key = '<%= golink[:key] %>'>
+				<!-- <a href = 'javascript:void(0)' data-id = '<%= golink[:id] %>' class = 'delete-link'>x</a> -->
+			</td>
+		</tr>
+		<% end %>
+		</div>
 	</tbody>
 </table>
-
-<script type = 'text/javascript'>
-var editData;
-
-var permissionLinkId;
-var permissionTd;
-var DELAY = 500, clicks = 0, timer = null;
-
-function activateEditableToggle(){
-
-	$('.editable-toggle').unbind('click').on('click',function(){
-		var that = $(this);
-		clicks++;
-		if(clicks == 1){
-			 timer = setTimeout(function() {
-                clicks = 0;
-                window.location = $(that).text();
-            }, DELAY);
-		}
-		else{
-			clearTimeout(timer);
-			clicks = 0;
-			if(!$(this).hasClass('editable')){
-				$(this).addClass('editable');
-				$(this).unbind('click');
-				activateEditable();
-				$(this).focus();
-			}
-			else{
-				$(this).removeClass('editable');
-				
-			}
-		}
-		
-	})
-	.on("dblclick", function(e){
-        e.preventDefault();//cancel system double-click event
-    });
-}
-function activateEditable(){
-	$('.editable').attr('contenteditable', true);
-	$('.editable').unbind('focusin').focusin(function(){
-		editData = $(this).text();
-	});
-	$('.editable').unbind('focusout').focusout(function(){
-		var that = $(this);
-		if(editData != $(this).text()){
-			var col = $(this).attr('data-col');
-			var val = $(this).text();
-			var id = $(this).parent().attr('data-id');
-			var updateData = { id: id }
-			updateData[col] = val;
-			console.log(col + ':' + val + ':' + id);
-			$.ajax({
-				url: '/go/update',
-				type:'POST',
-				data: updateData,
-				success:function(data){
-					console.log('updated');
-
-				}
-			});
-			
-		}
-		if($(that).hasClass('editable-toggle')){
-			$(this).unbind('focusin');
-			$(that).unbind('focusout');
-			$(that).attr('contenteditable', false);
-			activateEditableToggle();
-		}
-	});
-
-
-	$('.permissions-edit').dblclick(function(){
-		permissionTd = $(this);
-		permissionLinkId = $(this).parent().attr('data-id');
-		console.log(permissionLinkId);
-		$('#myModal').modal('show');
-	});
-	$('.permission-btn').click(function(){
-		var that = $(this);
-		$.ajax({
-			url:'/go/update',
-			type:'POST',
-			data:{
-				id: permissionLinkId,
-				permissions: $(this).text()
-			},
-			success:function(data){
-				console.log('updated');
-				$(permissionTd).text($(that).text());
-				$('#myModal').modal('hide');
-			}
-		})
-	});
-}
-
-function activateDelete(){
-	$('.delete-link').click(function(){
-		var that = $(this);
-		$.ajax({
-			url:'/go/destroy',
-			type:'POST',
-			data:{id: $(this).attr('data-id')},
-			success:function(){
-				$(that).parent().parent().remove();
-			}
-		});
-	});	
-}
-
-
-</script>
+</div>
+<!-- end of table row -->

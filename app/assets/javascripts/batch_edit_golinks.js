@@ -1,31 +1,62 @@
 $(document).ready(function(){
 
-$('#save-btn').click(function(){
-	addGroups = [];
-	removeGroups = [];
-	$('.group-add-check').each(function(){
+$('.group-btn').click(function(){
+	console.log($(this).attr('data-action'));
+	groups = [];
+	$('.group-check').each(function(){
 		if($(this).is(':checked')){
-			addGroups.push($(this).attr('data-key'));
-		}
-	});
-	$('.group-remove-check').each(function(){
-		if($(this).is(':checked')){
-			removeGroups.push($(this).attr('data-key'));
+			groups.push($(this).attr('data-key'));
 		}
 	});
 	$.ajax({
-		url:'/go/batch_update',
+		url:'/go/batch_update_groups',
 		type:'post',
 		data:{
 			ids: golink_ids,
-			add_groups: addGroups,
-			remove_groups: removeGroups
+			groups: groups,
+			atype: $(this).attr('data-action')
 		}, 
 		success: function(data){
-			window.location.reload();// = '/go';
+			window.location.reload();
 		}
 	});
 });
+$('.tag-btn').click(function(){
+	atype = $(this).attr('data-action');
+	tags = [];
+	$('.tag-checkbox').each(function(){
+		if($(this).is(':checked')){
+			tags.push($(this).attr('data-name'));
+		}
+	});
+	$.ajax({
+		url:'/go/batch_update_tags',
+		type:'post',
+		data:{
+			ids: golink_ids,
+			tags: tags,
+			atype: $(this).attr('data-action')
+		},
+		success:function(data){
+			window.location.reload();
+		}
+	})
+})
 
+$('#create-tag-btn').click(function(){
+	$.ajax({
+		url:'/go_tag/create',
+		type: 'post',
+		data:{
+			name: $('#tag-input').val()
+		},
+		success:function(data){
+			window.location.reload();
+		},
+		error:function(data){
+			alert(data.responseText);
+		}
+	})
+});
 
 });

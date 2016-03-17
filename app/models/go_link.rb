@@ -8,6 +8,10 @@ class GoLink < ActiveRecord::Base
 		['davidbliu@gmail.com']
 	end
 
+	def tags
+		GoLinkTag.where(golink_id: self.id)
+	end
+
 	def to_json
 		return {
 	      key: self.key,

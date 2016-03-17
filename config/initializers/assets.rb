@@ -12,3 +12,4 @@ Rails.application.config.assets.version = '1.0'
 Rails.application.config.assets.precompile += %w( go_table.js )
 Rails.application.config.assets.precompile += %w( golink_card.css )
 Rails.application.config.assets.precompile += %w( batch_edit_golinks.js )
+Rails.application.config.assets.precompile += %w( tag_card.css )

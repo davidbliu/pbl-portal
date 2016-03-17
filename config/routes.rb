@@ -36,7 +36,13 @@ Rails.application.routes.draw do
   get 'go/time_distribution' => 'go#time_distribution'
   get 'go/batch_edit' => 'go#batch_edit'
   get 'go/batch_delete' => 'go#batch_delete'
-  post 'go/batch_update' => 'go#batch_update'
+  post 'go/batch_update_groups' => 'go#batch_update_groups'
+  post 'go/batch_update_tags' => 'go#batch_update_tags'
+
+  # tags
+  post 'go_tag/create' => 'go_tag#create'
+  get 'go_tag/show/:id' => 'go_tag#show'
+
   #blog
   get 'blog' => 'blog#index'
   get 'blog/edit' => 'blog#edit'

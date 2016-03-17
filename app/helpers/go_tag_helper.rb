@@ -1,0 +1,2 @@
+module GoTagHelper
+end
