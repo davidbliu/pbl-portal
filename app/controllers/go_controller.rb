@@ -45,7 +45,8 @@ class GoController < ApplicationController
     # paginate golinks
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
     @groups = GoLink.get_groups_by_email(myEmail)
-    @tags = params[:q] ? [] : GoTag.where(name:'Pinned')
+    @tags = params[:q] ? [] : GoTag.all 
+    @pinned = @tags.select{|x| x.name == 'Pinned'}#where(name:'Pinned')
   end
 
   def insights

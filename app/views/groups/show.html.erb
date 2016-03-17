@@ -44,7 +44,14 @@
 			</div>
 		</div>
 		<div>
-			Members: <%= @group.emails.join(', ') %>
+			Members:
+			<p>
+				<% @group.emails.each do |email| %>
+				<div>
+					<%= email %>
+				</div>
+				<% end %>
+			</p>
 		</div>
 	</div>
 </div>

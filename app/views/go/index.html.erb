@@ -21,6 +21,13 @@
 	margin-bottom:15px;
 }
 
+#card-row{
+	/*width:1000000px;*/
+}
+.card-scroll{
+	font-size:5em;
+}
+
 </style>
 <%= stylesheet_link_tag 'tag_card' %>
 <%= render partial: 'go/create_group' %>
@@ -57,10 +64,23 @@
 	<div class = 'col-md-4'></div>
 </div>
 
-<div class = 'row'>
-	<% @tags.each do |tag| %>
-	<%= render partial: 'go/tag_card', locals: {tag: tag} %>
-	<% end %>
+<div class = 'row' id = 'card-row'>
+	<div class = 'col-md-1'>
+		<h1 class = 'card-scroll'>
+			<a href = '#'>&lt;</a>
+		</h1>
+	</div>
+	<div class = 'col-md-10'>
+		<%= render partial: 'go/tag_card', locals: {tag: @pinned[0] } %>
+		<% @groups.first(3).each do |group| %>
+		<%= render partial: 'go/group_card', locals: {group: group} %>
+		<% end %>
+	</div>
+	<div class = 'col-md-1'>
+		<h1 class = 'card-scroll'>
+			<a href = '#'>&gt;</a>
+		</h1>
+	</div>
 </div>
 <div class = 'centered'><%= will_paginate(@golinks) %></div>
 <%= render partial: 'go/table', locals: {golinks: @golinks} %>

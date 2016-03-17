@@ -1,11 +1,12 @@
 .tag-card{
 	/*-webkit-box-shadow: 0px 0px 8px 2px rgba(0,0,0,0.1);*/
-	border:1px solid rgba(0,0,0,0.1);
-	width:300px;
+	/*border:1px solid rgba(0,0,0,0.1);*/
+	width:20%;
 	max-height:450px;
 	padding:15px;
 	margin:15px;
-	overflow:auto;
+	overflow:hidden;
+	float:left;
 }
 .golink-row{
 	margin-bottom:10px;

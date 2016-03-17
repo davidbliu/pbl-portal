@@ -132,7 +132,8 @@ class GoLink < ActiveRecord::Base
 		groups = Group.groups_by_email(email)
 		ids = []
 		groups.each do |group|
-			ids += self.get_group_links(group).pluck(:id)
+			# ids += self.get_group_links(group).pluck(:id)
+			ids += group.golinks.pluck(:id)
 		end
 		ids += GoLink.where('groups like ?', "%Anyone%").pluck(:id)
 		ids += GoLink.where('groups like ? and member_email = ?', "%Only Me%", email).pluck(:id)
@@ -148,9 +149,9 @@ class GoLink < ActiveRecord::Base
 		return "Anyone"
 	end
 
-	def self.get_group_links(group)
-		GoLink.where('groups like ?', "%#{group.key}%")
-	end
+	# def self.get_group_links(group)
+	# 	GoLink.where('groups like ?', "%#{group.key}%")
+	# end
 
 	
 

@@ -1,0 +1,15 @@
+
+<div class = 'tag-card'>
+	<h3>
+		<%= link_to group.get_name, "/groups/show/#{group.id}" %>
+	</h3>
+	<% group.golinks.each do |golink| %>
+	<div class = 'golink-row'>
+		<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
+		<a href = '<%= golink.url %>'>
+			<%= golink.key %>
+		</a>
+		<div class = 'smalltext text-muted'><%= golink.description %></div>
+	</div>
+	<% end %>
+</div>

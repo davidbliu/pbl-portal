@@ -25,13 +25,20 @@ class Group < ActiveRecord::Base
 		GroupMember.where(group: self.key).pluck(:email)
 	end
 
+	def get_name
+		self.name and self.name != '' ? self.name : self.key
+	end
 	def has_name?
 		self.name and self.name.strip != ''
 	end
 
 	def self.groups_by_email(email)
    		group_keys = GroupMember.where(email: email).pluck(:group).uniq
-    	Group.where('key in (?)', group_keys).to_a
+    	Group.where('key in (?)', group_keys)
+  	end
+
+  	def golinks
+  		GoLink.where('groups like ?', "%#{self.key}%").order('created_at desc')
   	end
   
 

@@ -59,7 +59,7 @@ class GroupsController < ApplicationController
 	def show
 		@group = Group.find(params[:id])
 		@groups = Group.groups_by_email(myEmail)
-		@golinks = GoLink.get_group_links(@group).reverse
+		@golinks = @group.golinks
 	end
 
 end
