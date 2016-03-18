@@ -1,0 +1,12 @@
+<h1><%= @warning %></h1>
+<%= form_tag '/groups/create' %>
+
+Key
+<%= text_field_tag 'key', @group.name, placeholder: 'Group Key (Must be a unique key without spaces)', class: 'form-control' %>
+Name
+<%= text_field_tag 'name', @group.name, placeholder: 'Group Name (Optional)', class: 'form-control' %>
+
+Members
+<%= text_area_tag 'emails', @group.name, placeholder: 'Group Members Emails (comma separated)', class: 'form-control' %>
+
+<%= submit_tag 'Submit', class: 'btn btn-info' %>

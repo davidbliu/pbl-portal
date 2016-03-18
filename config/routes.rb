@@ -41,6 +41,13 @@ Rails.application.routes.draw do
   post 'go/batch_update_groups' => 'go#batch_update_groups'
   post 'go/batch_update_tags' => 'go#batch_update_tags'
   post 'go/batch_delete2' => 'go#batch_delete2'
+  post 'go/add_checked_id' => 'go#add_checked_id'
+  post 'go/remove_checked_id' => 'go#remove_checked_id'
+  get 'go/get_checked_ids' => 'go#get_checked_ids'
+  get 'go/checked_links' => 'go#checked_links'
+  get 'go/deselect_links' => 'go#deselect_links'
+
+  get 'go/test'=> 'go#test'
 
   # tags
   post 'go_tag/create' => 'go_tag#create'
@@ -142,6 +149,8 @@ Rails.application.routes.draw do
   get 'groups/edit/:id'=>'groups#edit'
   post 'groups/update/:id'=>'groups#update'
   get 'groups/show/:id' => 'groups#show'
+
+  get 'groups/new' => 'groups#new'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

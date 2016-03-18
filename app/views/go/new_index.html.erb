@@ -11,7 +11,7 @@ tr:hover{
     top: 30px;
 }*/
 #title-box{
-	background-color:#F3F3F3;
+	background-color:#f2f2f2;
 	padding:15px;
 	margin-bottom:15px;
 }
@@ -22,33 +22,56 @@ tr:hover{
 	height:30px;
 	border-radius:100px;
 }
+#checked-div{
+	display:none;
+}
+#pbl-links-title{
+	margin-top:0px;
+}
+#search-input{
+	margin-bottom:1em;
+}
+#golink-info-outer{
+	top:50px;
+	right:0px;
+	width:400px;
+	background-color: #f2f2f2;
+	display:none;
+}
+#close-info-btn{
+	margin:1em;
+}
 </style>
-
+<%= stylesheet_link_tag 'flickr_pagination' %>
+<%= csrf_meta_tag %>
 <div class = 'row'>
 
 <div class = 'col-md-7' id = 'col6'>
 <div id = 'title-box'>
-	<h1 class = 'centered'>PBL Links</h1>
+	<h1 class = 'centered' id = 'pbl-links-title'>PBL Links</h1>
 	<input type = 'text' class = 'form-control' placeholder = 'Search  |  Paste your long url here' id = 'search-input'>
-	<%= will_paginate(@golinks) %>
+	
+	<div id = 'checked-div'>
+		<span>
+			<a href = '/go/checked_links' id = 'checked-link'>
+			Edit <span id = 'checked-count'></span> Selected Links</a>
+		</span>&nbsp;&nbsp;
+		<span>
+			<a href = '/go/deselect_links'>Deselect Links</a>
+		</span>
+	</div>
 </div>
 
 <table class = 'table table-condensed table-hover'>
-	<thead>
-		<th></th>
-		<th></th>
-		<th>Key</th>
-		<th>Description</th>
-		<th>Timestamp</th>
-		<th>Creator</th>
-	</thead>
+	
 	<tbody>
 		<% @golinks.each do |golink| %>
 		<tr id = '<%= golink[:id] %>-tr' class = 'golink-row' data-id = '<%= golink[:id] %>'>
 			<td>
 				<input type = 'checkbox' class = 'golink-checkbox' data-id = '<%= golink[:id] %>'>
-			</td>
-			<td>
+				&nbsp;
+			<!-- </td> -->
+			<!-- <td> -->
 				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
 			</td>
 			<td>
@@ -57,24 +80,42 @@ tr:hover{
 				</a>
 			</td>
 			<td>
+				<span class = 'smalltext text-muted'>
+					<%= golink[:time_string] %>
+				</span>&nbsp;|
 				<%= golink[:description] %>
+
 			</td>
-			<td>
-				<%= golink[:time_string] %>
-			</td>
+			<!-- <td> -->
+				
+			<!-- </td> -->
 			<td>
 				<img src = '<%= golink[:gravatar] %>' class = 'gravatar-img'>
+				<span class = 'text-muted smalltext'>
+					To: <%= golink[:groups] %>
+				</span>
 			</td>
 		</tr>
 		<% end %>
 	</tbody>
 </table>
+
+<div>
+		<!-- <%= will_paginate(@golinks) %> -->
+		<div class="flickr_pagination">
+    <%= will_paginate @golinks, :container => false %>
+  </div>
+	</div>
+
 </div>
 
 <div class = 'col-md-5'>
 <div id = 'right-div' class = ''>
-	<h3>My Groups</h3>
+
+<% if not @batch_editing %>
+	
 	<div id = 'groups-container'>
+		<div><u>My Groups</u></div>
 		<% @groups.each do |group| %>
 			<div><a href = '/go?group_id=<%= group.id %>'>
 				<%= group.get_name %>
@@ -83,18 +124,24 @@ tr:hover{
 			</div>
 		<% end %>
 		<div>
-			<a href = '/groups/create'>Create a group</a>
+			<a href = '/groups/new'>Create a group</a>
 		</div>
 	</div>
+<% else %>
+<h3>Batch Edit these Links</h3>
 
-	<div id = 'golink-info-container'>
-	</div>
+<% end %>
+<div id = 'golink-info-outer' class = 'affix'>
+	<div class = 'btn btn-default' id = 'close-info-btn'>Close</div>
+	<div id = 'golink-info-container'></div>
 </div>
+</div><!-- end of right-div -->
 </div>
 
 </div> <!-- end of row -->
 
 <script type = 'text/javascript'>
+
 var checkedIds = [];
 function getCheckedIds(){
 	var checked = [];
@@ -105,43 +152,64 @@ function getCheckedIds(){
 	});
 	return checked;
 }
-
-// $('.golink-checkbox').click(function(){
-// 	var checked = getCheckedIds();
-// 	// insertParam('checked_ids', checked);
-// });
-
-$('.golink-checkbox').click(function(){
-	checkedIds = [];
+function renderCheckedIds(ids){
 	$('.golink-checkbox').each(function(){
-		if($(this).is(':checked')){
-			var id = $(this).attr('data-id');
-			checkedIds.push(id);
-			$(this).parents('golink-row').addClass('hilite');
+		if(_.contains(ids, $(this).attr('data-id'))){
+			$(this).prop('checked', true);
+		}
+		else{
+			$(this).prop('checked', false);
 		}
 	});
-	removeHilite();
+	if(ids.length > 0){
+		$('#checked-div').show();
+	}
+	else{
+		$('#checked-div').hide();
+	}
+	$('#checked-count').text(ids.length);
+}
+$.ajax({
+	url:'/go/get_checked_ids',
+	type:'get',
+	success:function(data){
+		renderCheckedIds(data);
+	}
+})
+$('.golink-checkbox').click(function(){
+	var route = '/go/remove_checked_id';
+	if($(this).is(':checked')){
+		route = '/go/add_checked_id';
+	}
 	$.ajax({
-		url: '/go/batch_show',
-		type:'get',
+		url: route, 
+		type:'post',
 		data:{
-			ids: checkedIds
+			id: $(this).attr('data-id')
 		},
-		success:function (data){
-			$('#golink-info-container').html(data);
+		success:function(data){
+			renderCheckedIds(data);
 		}
 	});
 });
+function showGolinkInfo(data){
+	$("#golink-info-container").html(data);
+	$('#golink-info-outer').show();
+}
+function hideGolinkInfo(data){
+	$('#golink-info-outer').hide();
+}
+$('#close-info-btn').click(function(){
+	hideGolinkInfo();
+})
 $('.golink-row').click(function(){
-	if(checkedIds.length == 0){
 		$.ajax({
 			url:'/go/show/'+$(this).attr('data-id'),
 			type:'get',
 			success: function(data){
-				$("#golink-info-container").html(data);
+				showGolinkInfo(data);
 			}
 		});
-	}
 });
 function removeHilite(){
 	$('.hilite').each(function(){
@@ -153,7 +221,7 @@ function uncheckGolinks(){
 		$(this).prop('checked', false);
 	});
 	removeHilite();
-	$('#golink-info-container').html('');
+	hideGolinkInfo();
 	checkedIds = [];
 }
 $('#search-input').keypress(function(e) {
@@ -166,13 +234,10 @@ $('#search-input').keypress(function(e) {
 function insertParam(key, value)
 {
     key = encodeURI(key); value = encodeURI(value);
-
     var kvp = document.location.search.substr(1).split('&');
-
     var i=kvp.length; var x; while(i--) 
     {
         x = kvp[i].split('=');
-
         if (x[0]==key)
         {
             x[1] = value;
@@ -180,10 +245,7 @@ function insertParam(key, value)
             break;
         }
     }
-
     if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-
-    //this will reload the page, it's likely better to store this until finished
     document.location.search = kvp.join('&'); 
 }
 

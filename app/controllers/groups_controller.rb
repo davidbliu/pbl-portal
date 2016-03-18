@@ -1,4 +1,10 @@
 class GroupsController < ApplicationController
+	def new
+		@warning = flash[:warning]
+		@group = Group.new
+	end
+
+
 	def create
 		failed = false
 		existing = Group.where(key: params[:key]).first
@@ -17,9 +23,12 @@ class GroupsController < ApplicationController
 					group: group.key,
 					email: email).first_or_create
 			end
-			render nothing: true, status: 200
+			# render nothing: true, status: 200
+			redirect_to '/go'
 		else
-			render json: 'a group with the same key already exists', status: 500
+			flash[:warning] = 'A group with the same key already exists'
+			redirect_to :back
+			# render json: 'a group with the same key already exists', status: 500
 		end
 	end
 

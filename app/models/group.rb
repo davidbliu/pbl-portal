@@ -26,7 +26,7 @@ class Group < ActiveRecord::Base
 	end
 
 	def get_name
-		self.name and self.name != '' ? self.name : self.key
+		(self.name != nil and self.name != '') ? self.name : self.key
 	end
 	def has_name?
 		self.name and self.name.strip != ''

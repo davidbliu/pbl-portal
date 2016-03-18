@@ -2,6 +2,7 @@
 <style type = 'text/css'>
 .show-card{
 	padding:15px;
+	padding-top:0px;
 	margin:15px;
 }
 .groups-form{
@@ -40,12 +41,14 @@
 		</div>
 		<div class = 'groups-form'>
 			<% @groups.each do |group| %>
+			<div>
 				<% if @golink.get_groups.include?(group.key) %>
 					<input class = 'group-checkbox' type = 'checkbox' data-key = '<%= group.key %>' checked>
 				<% else %>
 					<input class = 'group-checkbox' type = 'checkbox' data-key = '<%= group.key %>'>
 				<% end %>
 				<%= link_to group.get_name, "#" %>
+			</div>
 			<% end %>
 		</div>
 	</div>

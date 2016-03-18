@@ -13,7 +13,7 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def creator_gravatar
-		email = self.member_email ? self.member_email : ''
+		email = self.member_email ? self.member_email : 'asdf@gmail.com'
 		gravatar_id = Digest::MD5.hexdigest(email.downcase)
 		return "http://gravatar.com/avatar/#{gravatar_id}.png"
 	end
@@ -155,6 +155,32 @@ class GoLink < ActiveRecord::Base
 		return "Anyone"
 	end
 
+
+	def self.get_checked_ids(email)
+		Rails.cache.fetch("#{email}-checked") do 
+			[]
+		end
+	end
+
+	def self.add_checked_id(email, id)
+		ids = self.get_checked_ids(email)
+		ids << id
+		ids = ids.uniq
+		Rails.cache.write("#{email}-checked", ids)
+		return ids
+	end
+
+	def self.remove_checked_id(email, id)
+		ids = self.get_checked_ids(email)
+		ids = ids.select{|x| x != id}
+		ids = ids.uniq
+		Rails.cache.write("#{email}-checked", ids)
+		return ids
+	end
+
+	def self.deselect_links(email)
+		Rails.cache.delete("#{email}-checked")
+	end
 	
 
 end
