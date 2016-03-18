@@ -10,9 +10,13 @@
 #close-info-btn{
 	margin:1em;
 }
+.gravatar-img{
+	height:30px;
+	border-radius:100px;
+}
 </style>
 <%= javascript_include_tag 'go_table' %>
-<%= stylesheet_link_tag 'flickr_pagination' %>
+
 <table class = 'table table-condensed table-hover'>
 	
 	<tbody>
@@ -51,12 +55,7 @@
 	</tbody>
 </table>
 
-<div>
-	<div class="flickr_pagination">
-    <%= will_paginate golinks, :container => false %>
-  </div>
-	</div>
-</div>
+
 
 <div id = 'golink-info-outer' class = 'affix'>
 	<div class = 'btn btn-default' id = 'close-info-btn'>Close</div>

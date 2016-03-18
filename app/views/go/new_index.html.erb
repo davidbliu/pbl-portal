@@ -18,10 +18,7 @@ tr:hover{
 .hilite{
 	background-color: rgba(27, 255, 0, 0.25);
 }
-.gravatar-img{
-	height:30px;
-	border-radius:100px;
-}
+
 #checked-div{
 	display:none;
 }
@@ -36,7 +33,7 @@ tr:hover{
 }
 
 </style>
-
+<%= stylesheet_link_tag 'flickr_pagination' %>
 <div class = 'row'>
 
 <div class = 'col-md-7' id = 'col6'>
@@ -72,7 +69,16 @@ tr:hover{
 	</div>
 </div>
 
+<div>
+	<div class="flickr_pagination">
+    <%= will_paginate @golinks, :container => false %>
+  	</div>
+</div>
 <%= render partial: 'go/table', locals:{golinks: @golinks} %>
+
+
+</div>
+
 
 
 

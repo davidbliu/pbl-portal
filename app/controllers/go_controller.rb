@@ -75,6 +75,10 @@ class GoController < ApplicationController
       @golinks = @group.golinks.where('id in (?)', viewable)
       @golinks = @golinks.map{|x| x.to_json}
     elsif params[:q]
+      if params[:q].include?('http://') or params[:q].include?('https://')
+        redirected = true
+        redirect_to controller: 'go', action: 'add', url: params[:q]
+      end
       @search_term = params[:q]
       @golinks = GoLink.email_search(params[:q], myEmail)
       @golinks = @golinks.map{|x| x.to_json}
@@ -87,7 +91,9 @@ class GoController < ApplicationController
     end
     @groups = Group.groups_by_email(myEmail)
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
-    render :new_index
+    if not redirected
+      render :new_index
+    end
   end
 
   def show
@@ -196,27 +202,21 @@ class GoController < ApplicationController
 
   def add
     if params[:key]
-      @golink = GoLink.create(
-        key: params[:key],
-        description: params[:desc],
-        url: params[:url],
-        member_email: current_member.email,
-        groups: GoLink.default_groups(myEmail),
-        semester: Semester.current_semester
-      )
-      @golinks = GoLink.where(key: @golink.key).map{|x| x.to_json}
-
+      @golinks = GoLink.where(key: params[:key]).map{|x| x.to_json}
     else
-      @golink = GoLink.create(
-        member_email: current_member.email,
-        key: 'change-this-key',
-        url: 'http://change_this_url.com',
-        groups: GoLink.default_groups(myEmail),
-        semester: Semester.current_semester
-      )
-      @golinks = [@golink.to_json]
+      @golinks = []
     end
-    @groups = GoLink.get_groups_by_email(myEmail)
+    @groups = Group.groups_by_email(myEmail)
+
+    group_keys = @groups.map{|x| x.key}
+    group_keys = group_keys.length > 0 ? group_keys : ['Anyone']
+    @golink = GoLink.create(
+      key: params[:key],
+      url: params[:url],
+      groups: group_keys.join(','),
+      member_email: myEmail
+    )
+    
   end
 
   def create

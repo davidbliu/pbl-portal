@@ -1,16 +1,39 @@
 <style type = 'text/css'>
-.red{
-	color:red;
+.golink-card{
+	padding:15px;
+	margin-bottom:15px;
 }
 </style>
 
-<% if @golinks.length > 1 %>
-<h4 class = 'red'>There are multiple PBL Links with the same key</h4>
+<h3>New Link Details</h3>
+<div class = 'golink-card'>
+	<div>
+		Key: 
+		<input type = 'text' class = 'form-control' value = '<%= @golink.key %>' placeholder = 'Key (ex: example-key)'>
+	</div>
+	<div>
+		URL: 
+		<input type = 'text' class = 'form-control' value = '<%= @golink.url %>' placeholder = 'URL'>
+	</div>
+	<div>
+		Description: 
+		<input type = 'text' class = 'form-control' value = '<%= @golink.description %>' placeholder = 'Description'>
+	</div>
+	<div>
+		Groups:
+		<% @groups.each do |group| %>
+			<div>
+				<input type = 'checkbox'> <%= group.get_name %>
+			</div>
+		<% end %>
+	</div>
+	<div class = 'btn btn-info'>Save Link</div>
+	<div class = 'btn btn-danger'>Delete Link</div>
+</div>
+
+<% if @golinks.length > 0 %>
+<h3>Links with the same key</h3>
+<p>These links might conflict with the link you've just created. Users will be redirected to landing page with all these links unless the keys are edited.</p>
+
+	<%= render partial: 'go/table', locals:{golinks: @golinks} %>
 <% end %>
-
-<%= render partial: 'black_film' %>
-<%= render partial: 'permissions_edit', locals: {groups: @groups} %>
-
-<%= render partial: 'table', locals:{golinks: @golinks} %>
-
-<%= javascript_include_tag 'go_table' %>
