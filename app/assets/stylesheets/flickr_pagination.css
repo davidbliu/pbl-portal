@@ -3,7 +3,7 @@
   padding: 0.3em;
   cursor: default; }
   .flickr_pagination a, .flickr_pagination span, .flickr_pagination em {
-    padding: 0.2em 0.2em; }
+    padding: 0.2em 0.3em; }
   .flickr_pagination .disabled {
     color: #aaaaaa; }
   .flickr_pagination .current {

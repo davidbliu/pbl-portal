@@ -181,6 +181,28 @@ class GoLink < ActiveRecord::Base
 	def self.deselect_links(email)
 		Rails.cache.delete("#{email}-checked")
 	end
+
+	def self.checked_golinks(email)
+		return GoLink.where('id in (?)', self.get_checked_ids(email))
+	end
 	
+	def add_groups(groups)
+		group_keys = self.groups.split(',')
+		group_keys = group_keys.concat(groups.map{|x| x.key})
+		group_keys = group_keys.uniq.select{|x| x != 'Anyone'}.join(',')
+		group_keys = group_keys != '' ? group_keys : 'Anyone'
+		self.groups = group_keys
+		self.save
+	end
+
+	def remove_groups(groups)
+		group_keys = self.groups.split(',')
+		remove_keys = groups.map{|x| x.key}
+		group_keys = group_keys.select{|x| not remove_keys.include?(x)}
+		group_keys = group_keys.uniq.select{|x| x != 'Anyone'}.join(',')
+		group_keys = group_keys != '' ? group_keys : 'Anyone'
+		self.groups = group_keys
+		self.save
+	end
 
 end

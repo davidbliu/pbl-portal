@@ -11,7 +11,11 @@ class GroupsController < ApplicationController
 		if existing
 			failed = true
 		else
-			group = Group.create(key: params[:key], creator: myEmail)
+			group = Group.create(
+				key: params[:key], 
+				name: params[:name],
+				group_type: params[:group_type],
+				creator: myEmail)
 		end
 		# fails if group with same key already exists
 		if not failed
@@ -26,7 +30,7 @@ class GroupsController < ApplicationController
 			# render nothing: true, status: 200
 			redirect_to '/go'
 		else
-			flash[:warning] = 'A group with the same key already exists'
+			flash[:warning] = "Cannot create a group with the key #{params[:key]}"
 			redirect_to :back
 			# render json: 'a group with the same key already exists', status: 500
 		end
@@ -41,18 +45,20 @@ class GroupsController < ApplicationController
 		if group.creator == myEmail
 			group.destroy
 		end
-		redirect_to '/groups'
+		redirect_to '/go'
 	end
 
 	def edit
 		@group = Group.find(params[:id])
-			end
+		@editing = true
+		render :new
+	end
 
 	def update
 		@group = Group.find(params[:id])
 		@group.name = params[:name]
 		@group.key = params[:key]
-		@group.description = params[:description]
+		@group.group_type = params[:group_type]
 		@group.save
 		# update members too
 		GroupMember.where(group: @group.key).destroy_all
@@ -62,7 +68,7 @@ class GroupsController < ApplicationController
 				group: @group.key,
 				email: email).first_or_create
 		end
-		redirect_to '/groups'
+		redirect_to :back
 	end
 
 	def show

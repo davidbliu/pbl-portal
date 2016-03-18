@@ -58,6 +58,7 @@ class GoController < ApplicationController
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
     @groups = Group.groups_by_email(myEmail)
     @batch_editing = true
+    @group = Group.new(name: 'Batch Edit Links')
     render :new_index
   end
 
@@ -68,10 +69,13 @@ class GoController < ApplicationController
 
   def index2
     if params[:group_id]
+      @group = Group.find(params[:group_id])
+      @group_editing = true
       viewable = GoLink.can_view(myEmail)
-      @golinks = Group.find(params[:group_id]).golinks.where('id in (?)', viewable)
+      @golinks = @group.golinks.where('id in (?)', viewable)
       @golinks = @golinks.map{|x| x.to_json}
     elsif params[:q]
+      @search_term = params[:q]
       @golinks = GoLink.email_search(params[:q], myEmail)
       @golinks = @golinks.map{|x| x.to_json}
     else
@@ -309,20 +313,11 @@ class GoController < ApplicationController
   end
 
   def batch_update_groups
-    ids = params[:ids]
-    new_groups = params[:groups] ? params[:groups] : []
-    action_type = params[:atype]
-    golinks = GoLink.where('id in (?)', ids)
-    golinks.each do |golink|
-      groups = golink.get_groups
-      if action_type == 'add'
-        groups = groups + new_groups
-      elsif action_type == 'remove'
-        groups = groups.select{|x| not new_groups.include?(x)}
-      end
-      groups = groups.select{|x| x!= 'Anyone'}.uniq
-      golink.groups = groups.length > 0 ? groups.join(',') : 'Anyone'
-      golink.save
+    add_groups = Group.where('id in (?)', params[:add])
+    remove_groups = Group.where('id in (?)', params[:remove])
+    GoLink.checked_golinks(myEmail).each do |golink|
+      golink.add_groups(add_groups)
+      golink.remove_groups(remove_groups)
     end
     render nothing: true, status: 200
   end

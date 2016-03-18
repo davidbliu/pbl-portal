@@ -1,78 +1,64 @@
 <style type = 'text/css'>
-.url-div{
-	max-height:50px !important;
-	overflow:auto;
+#golink-info-outer{
+	top:50px;
+	right:0px;
+	width:400px;
+	background-color: #f2f2f2;
+	z-index:1000;
+	display:none;
 }
-td{
-	max-width:150px;
-	overflow:auto;
-}
-#table-row{
-	margin-top:25px;
-}
-.golink-checkbox{
-	border-radius:0px;
-}
-.hilite{
-	background-color:rgba(0, 255, 20, 0.2);
+#close-info-btn{
+	margin:1em;
 }
 </style>
-
-<%= render partial: 'go/batch_edit' %>
-
-<div class = 'row' id = 'table-row'>
-<table class = 'table table-condensed'>
-	<thead>
-		<th></th>
-		<th>Key</th>
-		<th>Description</th>
-		<th>Url</th>
-		<th>Sharing</th>
-		<th>Creator</th>
-		<!-- <th>Clicks</th> -->
-		<th>Timestamp</th>
-		<th></th>
-	</thead>
+<%= javascript_include_tag 'go_table' %>
+<%= stylesheet_link_tag 'flickr_pagination' %>
+<table class = 'table table-condensed table-hover'>
+	
 	<tbody>
 		<% golinks.each do |golink| %>
-		<tr class = 'golink-row' id = '<%= golink[:id] %>-row' data-id = '<%= golink[:id] %>'>
+		<tr id = '<%= golink[:id] %>-tr' class = 'golink-row' data-id = '<%= golink[:id] %>'>
+			<td>
+				<input type = 'checkbox' class = 'golink-checkbox' data-id = '<%= golink[:id] %>'>
+				&nbsp;
+			<!-- </td> -->
+			<!-- <td> -->
+				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
+			</td>
 			<td>
 				<a href = '<%= golink[:url] %>'>
-					<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
+					<%= golink[:key] %>
 				</a>
 			</td>
-			<td class = 'editable' data-field = 'key'>
-				<%= golink[:key] %>
-			</td>
-			<td class = 'editable' data-field = 'description'>
+			<td>
+				<span class = 'smalltext text-muted'>
+					<%= golink[:time_string] %>
+				</span>&nbsp;|
 				<%= golink[:description] %>
+
 			</td>
-			<td data-id = '<%= golink[:id] %>'>
-				<div class = 'editable url-div' data-field = 'url'>
-					<%= golink[:url] %>
-				</div>
-			</td>
-			<td class = 'permissions-td' data-key = '<%= golink[:key] %>' data-permissions = '<%= golink[:groups] %>' id = '<%= golink[:id] %>-permissions-td'>
-				<%= golink[:groups] %>
-			</td>
+			<!-- <td> -->
+				
+			<!-- </td> -->
 			<td>
-				<%= golink[:member_email] %>
-			</td>
-			<!-- <td>
-				<%= golink[:num_clicks] ? golink[:num_clicks] : 0 %>
-			</td> -->
-			<td>
-				<%= golink[:time_string] %>
-				(<%= golink[:semester] %>)
-			</td>
-			<td>
-				<input type = 'checkbox' id = '<%= golink[:id] %>-checkbox' data-id = '<%= golink[:id] %>' class = 'golink-checkbox' data-key = '<%= golink[:key] %>'>
-				<!-- <a href = 'javascript:void(0)' data-id = '<%= golink[:id] %>' class = 'delete-link'>x</a> -->
+				<img src = '<%= golink[:gravatar] %>' class = 'gravatar-img'>
+				<span class = 'text-muted smalltext'>
+					To: <%= golink[:groups] %>
+				</span>
 			</td>
 		</tr>
 		<% end %>
-		</div>
 	</tbody>
 </table>
+
+<div>
+	<div class="flickr_pagination">
+    <%= will_paginate golinks, :container => false %>
+  </div>
+	</div>
 </div>
-<!-- end of table row -->
+
+<div id = 'golink-info-outer' class = 'affix'>
+	<div class = 'btn btn-default' id = 'close-info-btn'>Close</div>
+	<div id = 'golink-info-container'></div>
+</div>

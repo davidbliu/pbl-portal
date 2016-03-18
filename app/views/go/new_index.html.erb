@@ -31,24 +31,34 @@ tr:hover{
 #search-input{
 	margin-bottom:1em;
 }
-#golink-info-outer{
-	top:50px;
-	right:0px;
-	width:400px;
-	background-color: #f2f2f2;
-	display:none;
+#create-group-div{
+	margin-top:0.5em;
 }
-#close-info-btn{
-	margin:1em;
-}
+
 </style>
-<%= stylesheet_link_tag 'flickr_pagination' %>
-<%= csrf_meta_tag %>
+
 <div class = 'row'>
 
 <div class = 'col-md-7' id = 'col6'>
 <div id = 'title-box'>
-	<h1 class = 'centered' id = 'pbl-links-title'>PBL Links</h1>
+	<h1 class = 'centered' id = 'pbl-links-title'>
+		<% if @search_term %>
+			Search: <%= @search_term %>
+		<% elsif @group %>
+			<%= @group.get_name %>
+		<% else %>
+			PBL Links
+		<% end %>
+
+	</h1>
+	<% if @group %>
+		<div class = 'centered'>
+			<%= @group.get_type.capitalize %> Group (<%= @group.emails.length %> Members)&nbsp;
+		<% if @group.creator == myEmail %>
+			<%= link_to 'Edit Group', "/groups/edit/#{@group.id}" %>
+		<% end %>
+		</div>
+	<% end %>
 	<input type = 'text' class = 'form-control' placeholder = 'Search  |  Paste your long url here' id = 'search-input'>
 	
 	<div id = 'checked-div'>
@@ -62,52 +72,9 @@ tr:hover{
 	</div>
 </div>
 
-<table class = 'table table-condensed table-hover'>
-	
-	<tbody>
-		<% @golinks.each do |golink| %>
-		<tr id = '<%= golink[:id] %>-tr' class = 'golink-row' data-id = '<%= golink[:id] %>'>
-			<td>
-				<input type = 'checkbox' class = 'golink-checkbox' data-id = '<%= golink[:id] %>'>
-				&nbsp;
-			<!-- </td> -->
-			<!-- <td> -->
-				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
-			</td>
-			<td>
-				<a href = '<%= golink[:url] %>'>
-					<%= golink[:key] %>
-				</a>
-			</td>
-			<td>
-				<span class = 'smalltext text-muted'>
-					<%= golink[:time_string] %>
-				</span>&nbsp;|
-				<%= golink[:description] %>
+<%= render partial: 'go/table', locals:{golinks: @golinks} %>
 
-			</td>
-			<!-- <td> -->
-				
-			<!-- </td> -->
-			<td>
-				<img src = '<%= golink[:gravatar] %>' class = 'gravatar-img'>
-				<span class = 'text-muted smalltext'>
-					To: <%= golink[:groups] %>
-				</span>
-			</td>
-		</tr>
-		<% end %>
-	</tbody>
-</table>
 
-<div>
-		<!-- <%= will_paginate(@golinks) %> -->
-		<div class="flickr_pagination">
-    <%= will_paginate @golinks, :container => false %>
-  </div>
-	</div>
-
-</div>
 
 <div class = 'col-md-5'>
 <div id = 'right-div' class = ''>
@@ -117,150 +84,78 @@ tr:hover{
 	<div id = 'groups-container'>
 		<div><u>My Groups</u></div>
 		<% @groups.each do |group| %>
-			<div><a href = '/go?group_id=<%= group.id %>'>
+			<div>
+				<a href = '/go?group_id=<%= group.id %>'>
 				<%= group.get_name %>
-			</a>
+				</a>&nbsp;
+				<span class = 'smalltext text-area'>
+					<%= group.key %>
+				</span>
 			&nbsp;
 			</div>
 		<% end %>
-		<div>
+		<div id = 'create-group-div'>
 			<a href = '/groups/new'>Create a group</a>
 		</div>
 	</div>
 <% else %>
 <h3>Batch Edit these Links</h3>
 
+<div>Add/Remove Groups</div>
+<table class = 'table table-condensed table-hover'>
+	<% @groups.each do |group| %>
+	<tr>
+		<td>
+			<a href = '/go?group_id=<%= group.id %>'>
+				<%= group.get_name %>
+			</a>&nbsp;
+			<span class = 'smalltext text-muted'>
+				<%= group.key %>
+			</span>
+		</td>
+		<td><input class = 'batch-group-checkbox' type = 'checkbox' data-type = 'add' data-id = '<%= group.id %>'>&nbsp;Add</td>
+		<td><input class = 'batch-group-checkbox' type = 'checkbox' data-type = 'remove' data-id = '<%= group.id %>'>&nbsp;Remove</td>
+	</tr>
+	<% end %>
+</table>
+<div class = 'btn btn-info pull-right' id = 'update-groups-btn'>Update Groups</div>
+<div class = 'btn btn-danger'>Delete All</div>
+
 <% end %>
-<div id = 'golink-info-outer' class = 'affix'>
-	<div class = 'btn btn-default' id = 'close-info-btn'>Close</div>
-	<div id = 'golink-info-container'></div>
-</div>
+
+
 </div><!-- end of right-div -->
 </div>
 
 </div> <!-- end of row -->
 
 <script type = 'text/javascript'>
-
-var checkedIds = [];
-function getCheckedIds(){
-	var checked = [];
-	$('.golink-checkbox').each(function(){
-		if($(this).is(':checked')){
-			checked.push($(this).attr('data-id'));
+function getCheckedGroups(type){
+	var ids = [];
+	$('.batch-group-checkbox').each(function(){
+		if($(this).is(':checked') && $(this).attr('data-type') == type){
+			ids.push($(this).attr('data-id'));
 		}
 	});
-	return checked;
+	return ids;
 }
-function renderCheckedIds(ids){
-	$('.golink-checkbox').each(function(){
-		if(_.contains(ids, $(this).attr('data-id'))){
-			$(this).prop('checked', true);
-		}
-		else{
-			$(this).prop('checked', false);
-		}
-	});
-	if(ids.length > 0){
-		$('#checked-div').show();
-	}
-	else{
-		$('#checked-div').hide();
-	}
-	$('#checked-count').text(ids.length);
-}
-$.ajax({
-	url:'/go/get_checked_ids',
-	type:'get',
-	success:function(data){
-		renderCheckedIds(data);
-	}
-})
-$('.golink-checkbox').click(function(){
-	var route = '/go/remove_checked_id';
-	if($(this).is(':checked')){
-		route = '/go/add_checked_id';
-	}
+$('#update-groups-btn').click(function(){
 	$.ajax({
-		url: route, 
+		url: '/go/batch_update_groups',
 		type:'post',
 		data:{
-			id: $(this).attr('data-id')
+			add: getCheckedGroups('add'),
+			remove: getCheckedGroups('remove')
 		},
 		success:function(data){
-			renderCheckedIds(data);
+			window.location.reload();
 		}
-	});
+	})
 });
-function showGolinkInfo(data){
-	$("#golink-info-container").html(data);
-	$('#golink-info-outer').show();
-}
-function hideGolinkInfo(data){
-	$('#golink-info-outer').hide();
-}
-$('#close-info-btn').click(function(){
-	hideGolinkInfo();
-})
-$('.golink-row').click(function(){
-		$.ajax({
-			url:'/go/show/'+$(this).attr('data-id'),
-			type:'get',
-			success: function(data){
-				showGolinkInfo(data);
-			}
-		});
-});
-function removeHilite(){
-	$('.hilite').each(function(){
-		$(this).removeClass('hilite');
-	});
-}
-function uncheckGolinks(){
-	$('.golink-checkbox').each(function(){
-		$(this).prop('checked', false);
-	});
-	removeHilite();
-	hideGolinkInfo();
-	checkedIds = [];
-}
 $('#search-input').keypress(function(e) {
     if(e.which == 13) {
     	searchTerm = $(this).val();
     	window.location = '?q='+searchTerm;
     }
 });
-
-function insertParam(key, value)
-{
-    key = encodeURI(key); value = encodeURI(value);
-    var kvp = document.location.search.substr(1).split('&');
-    var i=kvp.length; var x; while(i--) 
-    {
-        x = kvp[i].split('=');
-        if (x[0]==key)
-        {
-            x[1] = value;
-            kvp[i] = x.join('=');
-            break;
-        }
-    }
-    if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-    document.location.search = kvp.join('&'); 
-}
-
-// scroll affix
-// var isShiftedUp = false;
-// $(window).scroll(function (event) {
-//     var scroll = $(window).scrollTop();
-//     // Do something
-//     if(scroll > 75 && !isShiftedUp){
-//     	$('#right-div').css('top', 10);
-//     	isShiftedUp = true;
-//     }
-//     else if(scroll < 75 && isShiftedUp){
-//     	$('#right-div').css('top', '');
-//     	isShiftedUp = false;
-//     }
-// });
 </script>
