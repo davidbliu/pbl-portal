@@ -10,8 +10,11 @@ class GoController < ApplicationController
         .where('id in (?)', viewable)
       if golink.length > 1
         @golinks = golink
+        @golinks = @golinks.map{|x| x.to_json}
         @groups = GoLink.get_groups_by_email(myEmail)
-        render :template => "go/add"
+        @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
+
+        render :new_index
       elsif golink.length == 1
         golink = golink.first
         # log this
@@ -90,7 +93,7 @@ class GoController < ApplicationController
         .map{|x| x.to_json}
     end
     @groups = Group.groups_by_email(myEmail)
-    @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
+    @golinks = @golinks.paginate(:page => params[:page], :per_page => 25)
     if not redirected
       render :new_index
     end
@@ -111,6 +114,12 @@ class GoController < ApplicationController
   def batch_delete2
     GoLink.where('id in (?)', params[:ids]).destroy_all
     render nothing: true, status: 200
+  end
+
+  def delete_checked
+    GoLink.checked_golinks(myEmail).destroy_all
+    GoLink.deselect_links(myEmail)
+    redirect_to '/go'
   end
 
   def index
@@ -209,14 +218,14 @@ class GoController < ApplicationController
     @groups = Group.groups_by_email(myEmail)
 
     group_keys = @groups.map{|x| x.key}
-    group_keys = group_keys.length > 0 ? group_keys : ['Anyone']
+    group_keys = group_keys.length > 0 ? group_keys.join(',') : 'Anyone'
     @golink = GoLink.create(
       key: params[:key],
       url: params[:url],
-      groups: group_keys.join(','),
+      member_email: myEmail,
+      groups: group_keys,
       member_email: myEmail
     )
-    
   end
 
   def create

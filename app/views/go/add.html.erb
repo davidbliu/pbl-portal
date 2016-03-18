@@ -4,36 +4,68 @@
 	margin-bottom:15px;
 }
 </style>
-
-<h3>New Link Details</h3>
+<h3>You've added a link</h3>
 <div class = 'golink-card'>
 	<div>
 		Key: 
-		<input type = 'text' class = 'form-control' value = '<%= @golink.key %>' placeholder = 'Key (ex: example-key)'>
+		<input id = 'key-input' type = 'text' class = 'form-control' value = '<%= @golink.key %>' placeholder = 'Key (ex: example-key)'>
 	</div>
 	<div>
 		URL: 
-		<input type = 'text' class = 'form-control' value = '<%= @golink.url %>' placeholder = 'URL'>
+		<input id = 'url-input' type = 'text' class = 'form-control' value = '<%= @golink.url %>' placeholder = 'URL'>
 	</div>
 	<div>
 		Description: 
-		<input type = 'text' class = 'form-control' value = '<%= @golink.description %>' placeholder = 'Description'>
+		<input id = 'description-input' type = 'text' class = 'form-control' value = '<%= @golink.description %>' placeholder = 'Description'>
 	</div>
 	<div>
 		Groups:
 		<% @groups.each do |group| %>
 			<div>
-				<input type = 'checkbox'> <%= group.get_name %>
+				<input class = 'golink-group-checkbox' data-key = '<%= group.key %>' type = 'checkbox'> <%= group.get_name %>
 			</div>
 		<% end %>
 	</div>
-	<div class = 'btn btn-info'>Save Link</div>
-	<div class = 'btn btn-danger'>Delete Link</div>
+	<div class = 'btn btn-info' id = 'save-golink-btn'>Update</div>
+	<div class = 'btn btn-danger' id = 'delete-golink-btn'>Undo</div>
 </div>
 
-<% if @golinks.length > 0 %>
-<h3>Links with the same key</h3>
-<p>These links might conflict with the link you've just created. Users will be redirected to landing page with all these links unless the keys are edited.</p>
-
-	<%= render partial: 'go/table', locals:{golinks: @golinks} %>
-<% end %>
+<script type = 'text/javascript'>
+function getCheckedGroupKeys(){
+	var ids = [];
+	$('.golink-group-checkbox').each(function(){
+		if($(this).is(':checked')){
+			ids.push($(this).attr('data-key'));
+		}
+	});
+	return ids;
+}
+$('#save-golink-btn').click(function(){
+	$.ajax({
+		url:'/go/update',
+		type:'post',
+		data:{
+			id: <%= raw(@golink.id) %>,
+			key: $('#key-input').val(),
+			description: $('#description-input').val(),
+			url: $('#url-input').val(),
+			groups: getCheckedGroupKeys()
+		},
+		success:function(data){
+			window.location = '/go'
+		}
+	})
+});
+$('#delete-golink-btn').click(function(){
+	$.ajax({
+		url:'/go/destroy',
+		type:'post', 
+		data:{
+			id: <%= raw(@golink.id) %>
+		},
+		success:function(data){
+			window.location = '/go'
+		}
+	})
+})
+</script>
