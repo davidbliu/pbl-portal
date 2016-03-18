@@ -1,0 +1,30 @@
+<h1><%= @warning %></h1>
+<% if @editing %>
+	<%= form_tag "/groups/update/#{@group.id}" %>
+<% else %>
+	<%= form_tag "/groups/create" %>
+<% end %>
+
+
+Key
+<%= text_field_tag 'key', @group.key, placeholder: 'Group Key (Must be a unique key without spaces)', class: 'form-control', readonly: @editing %>
+Name
+<%= text_field_tag 'name', @group.name, placeholder: 'Group Name (Optional)', class: 'form-control' %>
+
+Members
+<%= text_area_tag 'emails', @group.emails.join(','), placeholder: 'Group Members Emails (comma separated)', class: 'form-control' %>
+
+Group Privacy (who can view links in the group)
+<select name = 'group_type' class = 'form-control'>
+	<option value = 'public' >Public</option>
+	<option value = 'private' <%= @group.group_type == 'private' ? "selected" : "" %>>Group Members Only</option>
+</select>
+<%= submit_tag 'Submit', class: 'btn btn-info' %>
+
+<% if @editing %>
+<a href = '<%= "/groups/destroy/#{@group.id}" %>'>
+	<div class = 'btn btn-danger'>
+		Destroy Group
+	</div>
+</a>
+<% end %>

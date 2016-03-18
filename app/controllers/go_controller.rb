@@ -1,5 +1,5 @@
 class GoController < ApplicationController
-
+  skip_before_filter :verify_authenticity_token, only: [:add_checked_id, :get_checked_ids, :remove_checked_id, :test]
   def redirect
     if params[:key].include?('wiki:')
       term = params[:key].split(':')[1]
@@ -32,6 +32,81 @@ class GoController < ApplicationController
     end
   end
 
+  def get_checked_ids
+    render json: GoLink.get_checked_ids(myEmail)
+  end
+
+  def test
+    session[:test] ||= []
+    session[:test] << params[:p]
+    render json: session[:test]
+  end
+
+  def add_checked_id
+    ids = GoLink.add_checked_id(myEmail, params[:id])
+    render json: ids
+  end
+
+  def remove_checked_id
+    ids = GoLink.remove_checked_id(myEmail, params[:id])
+    render json: ids
+  end
+
+  def checked_links
+    @golinks = GoLink.where('id in (?)', GoLink.get_checked_ids(myEmail))
+    @golinks = @golinks.map{|x| x.to_json}
+    @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
+    @groups = Group.groups_by_email(myEmail)
+    @batch_editing = true
+    @group = Group.new(name: 'Batch Edit Links')
+    render :new_index
+  end
+
+  def deselect_links
+    GoLink.deselect_links(myEmail)
+    redirect_to '/go'
+  end
+
+  def index2
+    if params[:group_id]
+      @group = Group.find(params[:group_id])
+      @group_editing = true
+      viewable = GoLink.can_view(myEmail)
+      @golinks = @group.golinks.where('id in (?)', viewable)
+      @golinks = @golinks.map{|x| x.to_json}
+    elsif params[:q]
+      @search_term = params[:q]
+      @golinks = GoLink.email_search(params[:q], myEmail)
+      @golinks = @golinks.map{|x| x.to_json}
+    else
+      viewable = GoLink.can_view(myEmail)
+      @golinks = GoLink.order('created_at desc')
+        .where('id in (?)',viewable)
+        .where.not(key: 'change-this-key')
+        .map{|x| x.to_json}
+    end
+    @groups = Group.groups_by_email(myEmail)
+    @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
+    render :new_index
+  end
+
+  def show
+    @golink = GoLink.find(params[:id])
+    @groups = Group.groups_by_email(myEmail)
+    render layout: false
+  end
+
+  def batch_show
+    @groups = Group.groups_by_email(myEmail)
+    @golinks = GoLink.where('id in (?)', params[:ids])
+    render layout: false
+  end
+
+  def batch_delete2
+    GoLink.where('id in (?)', params[:ids]).destroy_all
+    render nothing: true, status: 200
+  end
+
   def index
     if params[:q]
       @golinks = GoLink.email_search(params[:q], myEmail)
@@ -45,7 +120,8 @@ class GoController < ApplicationController
     # paginate golinks
     @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
     @groups = GoLink.get_groups_by_email(myEmail)
-    @tags = params[:q] ? [] : GoTag.where(name:'Pinned')
+    @tags = params[:q] ? [] : GoTag.all 
+    @pinned = @tags.select{|x| x.name == 'Pinned'}#where(name:'Pinned')
   end
 
   def insights
@@ -187,7 +263,7 @@ class GoController < ApplicationController
       golink.permissions = params[:permissions].strip
     end
     if params[:groups]
-      golink.groups = params[:groups].strip
+      golink.groups = Group.process_groups(params[:groups])
     end
     golink.save!
     render json: golink.to_json
@@ -237,20 +313,11 @@ class GoController < ApplicationController
   end
 
   def batch_update_groups
-    ids = params[:ids]
-    new_groups = params[:groups] ? params[:groups] : []
-    action_type = params[:atype]
-    golinks = GoLink.where('id in (?)', ids)
-    golinks.each do |golink|
-      groups = golink.get_groups
-      if action_type == 'add'
-        groups = groups + new_groups
-      elsif action_type == 'remove'
-        groups = groups.select{|x| not new_groups.include?(x)}
-      end
-      groups = groups.select{|x| x!= 'Anyone'}.uniq
-      golink.groups = groups.length > 0 ? groups.join(',') : 'Anyone'
-      golink.save
+    add_groups = Group.where('id in (?)', params[:add])
+    remove_groups = Group.where('id in (?)', params[:remove])
+    GoLink.checked_golinks(myEmail).each do |golink|
+      golink.add_groups(add_groups)
+      golink.remove_groups(remove_groups)
     end
     render nothing: true, status: 200
   end

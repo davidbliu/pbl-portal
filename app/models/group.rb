@@ -3,7 +3,7 @@ class Group < ActiveRecord::Base
 	before_destroy :fix_golinks
 
 	def fix_golinks
-		GoLink.get_group_links(self).each do |golink|
+		self.golinks.each do |golink|
 			groups = golink.get_groups 
 			groups = groups.select{|x| x != self.key}
 			groups = groups.length > 0 ? groups.join(',') : 'Anyone'
@@ -25,15 +25,34 @@ class Group < ActiveRecord::Base
 		GroupMember.where(group: self.key).pluck(:email)
 	end
 
+	def get_name
+		(self.name != nil and self.name != '') ? self.name : self.key
+	end
 	def has_name?
 		self.name and self.name.strip != ''
 	end
 
 	def self.groups_by_email(email)
    		group_keys = GroupMember.where(email: email).pluck(:group).uniq
-    	Group.where('key in (?)', group_keys).to_a
+    	Group.where('key in (?) or group_type = ?', group_keys, 'public')
+  	end
+
+  	def golinks
+  		GoLink.where('groups like ?', "%#{self.key}%").order('created_at desc')
+  	end
+
+  	def self.process_groups(groups)
+  		groups = groups.map{|x| x.strip}.select{|x| x != 'Anyone' and x != ''}
+  		if groups.length == 0
+  			return 'Anyone'
+  		else
+  			return groups.join(',')
+  		end
   	end
   
+  	def get_type
+  		self.group_type ? self.group_type : 'public'
+  	end
 
 	# create groups for sp 16 and fa 15
 	def self.seed

@@ -1,0 +1,161 @@
+<style type = 'text/css'>
+td{
+	max-width:120px;
+	overflow:auto;
+}
+tr:hover{
+	cursor:pointer;
+}
+/*.affix{
+	width: 500px;
+    top: 30px;
+}*/
+#title-box{
+	background-color:#f2f2f2;
+	padding:15px;
+	margin-bottom:15px;
+}
+.hilite{
+	background-color: rgba(27, 255, 0, 0.25);
+}
+.gravatar-img{
+	height:30px;
+	border-radius:100px;
+}
+#checked-div{
+	display:none;
+}
+#pbl-links-title{
+	margin-top:0px;
+}
+#search-input{
+	margin-bottom:1em;
+}
+#create-group-div{
+	margin-top:0.5em;
+}
+
+</style>
+
+<div class = 'row'>
+
+<div class = 'col-md-7' id = 'col6'>
+<div id = 'title-box'>
+	<h1 class = 'centered' id = 'pbl-links-title'>
+		<% if @search_term %>
+			Search: <%= @search_term %>
+		<% elsif @group %>
+			<%= @group.get_name %>
+		<% else %>
+			PBL Links
+		<% end %>
+
+	</h1>
+	<% if @group %>
+		<div class = 'centered'>
+			<%= @group.get_type.capitalize %> Group (<%= @group.emails.length %> Members)&nbsp;
+		<% if @group.creator == myEmail %>
+			<%= link_to 'Edit Group', "/groups/edit/#{@group.id}" %>
+		<% end %>
+		</div>
+	<% end %>
+	<input type = 'text' class = 'form-control' placeholder = 'Search  |  Paste your long url here' id = 'search-input'>
+	
+	<div id = 'checked-div'>
+		<span>
+			<a href = '/go/checked_links' id = 'checked-link'>
+			Edit <span id = 'checked-count'></span> Selected Links</a>
+		</span>&nbsp;&nbsp;
+		<span>
+			<a href = '/go/deselect_links'>Deselect Links</a>
+		</span>
+	</div>
+</div>
+
+<%= render partial: 'go/table', locals:{golinks: @golinks} %>
+
+
+
+<div class = 'col-md-5'>
+<div id = 'right-div' class = ''>
+
+<% if not @batch_editing %>
+	
+	<div id = 'groups-container'>
+		<div><u>My Groups</u></div>
+		<% @groups.each do |group| %>
+			<div>
+				<a href = '/go?group_id=<%= group.id %>'>
+				<%= group.get_name %>
+				</a>&nbsp;
+				<span class = 'smalltext text-area'>
+					<%= group.key %>
+				</span>
+			&nbsp;
+			</div>
+		<% end %>
+		<div id = 'create-group-div'>
+			<a href = '/groups/new'>Create a group</a>
+		</div>
+	</div>
+<% else %>
+<h3>Batch Edit these Links</h3>
+
+<div>Add/Remove Groups</div>
+<table class = 'table table-condensed table-hover'>
+	<% @groups.each do |group| %>
+	<tr>
+		<td>
+			<a href = '/go?group_id=<%= group.id %>'>
+				<%= group.get_name %>
+			</a>&nbsp;
+			<span class = 'smalltext text-muted'>
+				<%= group.key %>
+			</span>
+		</td>
+		<td><input class = 'batch-group-checkbox' type = 'checkbox' data-type = 'add' data-id = '<%= group.id %>'>&nbsp;Add</td>
+		<td><input class = 'batch-group-checkbox' type = 'checkbox' data-type = 'remove' data-id = '<%= group.id %>'>&nbsp;Remove</td>
+	</tr>
+	<% end %>
+</table>
+<div class = 'btn btn-info pull-right' id = 'update-groups-btn'>Update Groups</div>
+<div class = 'btn btn-danger'>Delete All</div>
+
+<% end %>
+
+
+</div><!-- end of right-div -->
+</div>
+
+</div> <!-- end of row -->
+
+<script type = 'text/javascript'>
+function getCheckedGroups(type){
+	var ids = [];
+	$('.batch-group-checkbox').each(function(){
+		if($(this).is(':checked') && $(this).attr('data-type') == type){
+			ids.push($(this).attr('data-id'));
+		}
+	});
+	return ids;
+}
+$('#update-groups-btn').click(function(){
+	$.ajax({
+		url: '/go/batch_update_groups',
+		type:'post',
+		data:{
+			add: getCheckedGroups('add'),
+			remove: getCheckedGroups('remove')
+		},
+		success:function(data){
+			window.location.reload();
+		}
+	})
+});
+$('#search-input').keypress(function(e) {
+    if(e.which == 13) {
+    	searchTerm = $(this).val();
+    	window.location = '?q='+searchTerm;
+    }
+});
+</script>
