@@ -51,7 +51,7 @@ class Group < ActiveRecord::Base
   	end
   
   	def get_type
-  		self.group_type ? self.group_type : 'public'
+  		self.group_type ? self.group_type : 'private'
   	end
 
 	# create groups for sp 16 and fa 15
