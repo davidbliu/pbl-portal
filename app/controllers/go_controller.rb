@@ -66,7 +66,7 @@ class GoController < ApplicationController
 
   def deselect_links
     GoLink.deselect_links(myEmail)
-    redirect_to '/go'
+    redirect_to :back
   end
 
   def index2
