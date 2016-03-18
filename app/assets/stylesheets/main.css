@@ -30,3 +30,6 @@ p, div {
 .centered{
 	text-align: center;
 }
+select.form-control{
+	border-radius:0px !important;
+}

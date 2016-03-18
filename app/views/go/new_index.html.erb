@@ -34,6 +34,15 @@ tr:hover{
 .flickr_pagination{
 	margin-bottom:15px;
 }
+#right-div{
+	margin-top:13em;
+}
+#my-groups-title{
+	margin-bottom:0.5em;
+}
+.half-em{
+	margin-bottom:0.5em;
+}
 </style>
 <%= stylesheet_link_tag 'flickr_pagination' %>
 <div class = 'row'>
@@ -90,7 +99,7 @@ tr:hover{
 <% if not @batch_editing %>
 	
 	<div id = 'groups-container'>
-		<div><u>My Groups</u></div>
+		<div class = 'half-em'>My Groups</div>
 		<% @groups.each do |group| %>
 			<div>
 				<a href = '/go?group_id=<%= group.id %>'>
@@ -109,7 +118,7 @@ tr:hover{
 <% else %>
 <h3>Batch Edit these Links</h3>
 
-<div>Add/Remove Groups</div>
+<div class = 'half-em'>Add/Remove Groups</div>
 <table class = 'table table-condensed table-hover'>
 	<% @groups.each do |group| %>
 	<tr>
@@ -168,4 +177,6 @@ $('#search-input').keypress(function(e) {
     	window.location = '?q='+searchTerm;
     }
 });
+
+
 </script>

@@ -16,8 +16,8 @@ Members
 
 Group Privacy (who can view links in the group)
 <select name = 'group_type' class = 'form-control'>
-	<option value = 'public' >Public</option>
-	<option value = 'private' <%= @group.group_type == 'private' ? "selected" : "" %>>Group Members Only</option>
+	<option value = 'private' >Private: Group Members Only</option>
+	<option value = 'public' <%= @group.group_type == 'public' ? "selected" : "" %>>Public</option>
 </select>
 <%= submit_tag 'Submit', class: 'btn btn-info' %>
 

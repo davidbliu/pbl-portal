@@ -13,7 +13,6 @@ class GoController < ApplicationController
         @golinks = @golinks.map{|x| x.to_json}
         @groups = GoLink.get_groups_by_email(myEmail)
         @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
-
         render :new_index
       elsif golink.length == 1
         golink = golink.first
@@ -223,7 +222,7 @@ class GoController < ApplicationController
       key: params[:key],
       url: params[:url],
       member_email: myEmail,
-      groups: group_keys,
+      groups: 'Anyone',
       member_email: myEmail
     )
   end

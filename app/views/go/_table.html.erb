@@ -29,8 +29,8 @@
 			<!-- <td> -->
 				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
 			</td>
-			<td>
-				<a href = '<%= golink[:url] %>'>
+			<td class = 'mute-info'>
+				<a class = 'mute-info' href = '<%= golink[:url] %>'>
 					<%= golink[:key] %>
 				</a>
 			</td>
@@ -58,6 +58,8 @@
 
 
 <div id = 'golink-info-outer' class = 'affix'>
-	<div class = 'btn btn-default' id = 'close-info-btn'>Close</div>
+		<!-- <div class = 'btn btn-default' id = 'close-info-btn'>Close</div> -->
+
 	<div id = 'golink-info-container'></div>
+
 </div>

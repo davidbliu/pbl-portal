@@ -12,10 +12,13 @@
 	cursor:pointer;
 	opacity:0.5;
 }
+.groups-edit{
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+}
 </style>
 
 <div class = 'show-card'>
-
 	<div>
 		Key
 		<input type = 'text' class = 'form-control' placeholder = 'key' id = 'key-input' value = '<%= @golink.key %>'>
@@ -47,7 +50,7 @@
 				<% else %>
 					<input class = 'group-checkbox' type = 'checkbox' data-key = '<%= group.key %>'>
 				<% end %>
-				<%= link_to group.get_name, "#" %>
+				<%= link_to group.get_name, "/go?group_id=#{group.id}" %>
 			</div>
 			<% end %>
 		</div>

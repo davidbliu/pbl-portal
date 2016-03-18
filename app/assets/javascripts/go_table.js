@@ -66,13 +66,26 @@ activateGolinkCheckbox();
 $('#close-info-btn').click(function(){
 	hideGolinkInfo();
 })
-$('.golink-row').click(function(){
-		$.ajax({
-			url:'/go/show/'+$(this).attr('data-id'),
-			type:'get',
-			success: function(data){
-				showGolinkInfo(data);
-			}
-		});
+$('.golink-row').click(function(event){
+	if($(event.target).hasClass('golink-checkbox') || 
+		$(event.target).hasClass('mute-info')){
+		return;
+	}
+	$.ajax({
+		url:'/go/show/'+$(this).attr('data-id'),
+		type:'get',
+		success: function(data){
+			showGolinkInfo(data);
+		}
+	});
 });
+
+
+$('html').click(function(){
+	hideGolinkInfo();
+});
+$('#golink-info-outer').click(function(event){
+	event.stopPropagation();
+})
+
 });
