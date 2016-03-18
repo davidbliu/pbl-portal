@@ -1,0 +1,106 @@
+<style type = 'text/css'>
+.edit-div{
+	padding:15px;
+	margin-bottom:15px;
+	margin-top:15px;
+	background-color: #F3F3F3;
+
+}
+.golink-div{
+	padding:10px;
+	/*float:left;*/
+	width:200px;
+	overflow:hidden;
+}
+.group-check-div{
+	padding:5px;
+	float: left;
+}
+#group-btns-div{
+	display:block;
+	clear:both;
+}
+</style>
+
+<div class = 'btn btn-default' id = 'clear-batch-btn'>Clear selection</div>
+
+
+<div class = 'group-edit edit-div'>
+	<h4>Add/Remove groups</h4>
+	<% @groups.each do |group| %>
+		<div class = 'group-check-div'>
+			<input type = 'checkbox' data-key = '<%= group.key %>' class = 'group-checkbox'>
+			<a href = '/go?group=<%= group.id %>'><%= group.get_name %></a>
+		</div>
+	<% end %>
+	<div id = 'group-btns-div'>
+		<div class = 'btn btn-danger group-btn' id = 'remove-groups-btn'  data-action = 'remove'>Remove Groups</div>
+		<div class = 'btn btn-info group-btn' id = 'add-groups-btn' data-action = 'add'>Add Groups</div>	
+	</div>
+</div>
+
+
+
+<div class = 'row'>
+	<% @golinks.each do |golink| %>
+	<div class = 'golink-div'>
+		<div>
+			<a href = '<%= golink.url %>'>
+				<%= golink.key %>
+			</a>
+		</div>
+		<div class = 'smalltext text-muted'>
+			<%= golink.member_email %>
+		</div>
+		<div class = 'smalltext text-muted'>
+			Groups: <%= golink.groups %>
+		</div>
+	</div>
+	<% end %>
+</div>
+
+<div class = 'btn btn-danger' id = 'delete-all-btn'>Delete All</div>
+
+
+<script type = 'text/javascript'>
+function getCheckedGroups(){
+	checked = [];
+	$('.group-checkbox').each(function(){
+		if($(this).is(':checked')){
+			checked.push($(this).attr('data-key'));
+		}
+	});
+	return checked;
+}
+$('.group-btn').click(function(){
+	console.log('clicke');
+	$.ajax({
+		url: '/go/batch_update_groups',
+		type:'post',
+		data:{
+			atype: $(this).attr('data-action'),
+			groups: getCheckedGroups(),
+			ids: <%= raw(@golinks.map{|x| x.id}) %>
+		},
+		success:function(data){
+			window.location.reload();
+		}
+
+	})
+});
+$('#delete-all-btn').click(function(){
+	$.ajax({
+		url:'/go/batch_delete2',
+		type:'post',
+		data:{
+			ids: <%= raw(@golinks.map{|x| x.id}) %>
+		},
+		success:function(data){
+			window.location.reload();
+		}
+	})
+});
+$('#clear-batch-btn').click(function(){
+	uncheckGolinks();
+})
+</script>

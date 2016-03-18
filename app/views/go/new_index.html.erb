@@ -1,0 +1,204 @@
+<style type = 'text/css'>
+td{
+	max-width:120px;
+	overflow:auto;
+}
+tr:hover{
+	cursor:pointer;
+}
+/*.affix{
+	width: 500px;
+    top: 30px;
+}*/
+#title-box{
+	background-color:#F3F3F3;
+	padding:15px;
+	margin-bottom:15px;
+}
+.hilite{
+	background-color: rgba(27, 255, 0, 0.25);
+}
+.gravatar-img{
+	height:30px;
+	border-radius:100px;
+}
+</style>
+
+<div class = 'row'>
+
+<div class = 'col-md-7' id = 'col6'>
+<div id = 'title-box'>
+	<h1 class = 'centered'>PBL Links</h1>
+	<input type = 'text' class = 'form-control' placeholder = 'Search  |  Paste your long url here' id = 'search-input'>
+	<%= will_paginate(@golinks) %>
+</div>
+
+<table class = 'table table-condensed table-hover'>
+	<thead>
+		<th></th>
+		<th></th>
+		<th>Key</th>
+		<th>Description</th>
+		<th>Timestamp</th>
+		<th>Creator</th>
+	</thead>
+	<tbody>
+		<% @golinks.each do |golink| %>
+		<tr id = '<%= golink[:id] %>-tr' class = 'golink-row' data-id = '<%= golink[:id] %>'>
+			<td>
+				<input type = 'checkbox' class = 'golink-checkbox' data-id = '<%= golink[:id] %>'>
+			</td>
+			<td>
+				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
+			</td>
+			<td>
+				<a href = '<%= golink[:url] %>'>
+					<%= golink[:key] %>
+				</a>
+			</td>
+			<td>
+				<%= golink[:description] %>
+			</td>
+			<td>
+				<%= golink[:time_string] %>
+			</td>
+			<td>
+				<img src = '<%= golink[:gravatar] %>' class = 'gravatar-img'>
+			</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+</div>
+
+<div class = 'col-md-5'>
+<div id = 'right-div' class = ''>
+	<h3>My Groups</h3>
+	<div id = 'groups-container'>
+		<% @groups.each do |group| %>
+			<div><a href = '/go?group_id=<%= group.id %>'>
+				<%= group.get_name %>
+			</a>
+			&nbsp;
+			</div>
+		<% end %>
+		<div>
+			<a href = '/groups/create'>Create a group</a>
+		</div>
+	</div>
+
+	<div id = 'golink-info-container'>
+	</div>
+</div>
+</div>
+
+</div> <!-- end of row -->
+
+<script type = 'text/javascript'>
+var checkedIds = [];
+function getCheckedIds(){
+	var checked = [];
+	$('.golink-checkbox').each(function(){
+		if($(this).is(':checked')){
+			checked.push($(this).attr('data-id'));
+		}
+	});
+	return checked;
+}
+
+// $('.golink-checkbox').click(function(){
+// 	var checked = getCheckedIds();
+// 	// insertParam('checked_ids', checked);
+// });
+
+$('.golink-checkbox').click(function(){
+	checkedIds = [];
+	$('.golink-checkbox').each(function(){
+		if($(this).is(':checked')){
+			var id = $(this).attr('data-id');
+			checkedIds.push(id);
+			$(this).parents('golink-row').addClass('hilite');
+		}
+	});
+	removeHilite();
+	$.ajax({
+		url: '/go/batch_show',
+		type:'get',
+		data:{
+			ids: checkedIds
+		},
+		success:function (data){
+			$('#golink-info-container').html(data);
+		}
+	});
+});
+$('.golink-row').click(function(){
+	if(checkedIds.length == 0){
+		$.ajax({
+			url:'/go/show/'+$(this).attr('data-id'),
+			type:'get',
+			success: function(data){
+				$("#golink-info-container").html(data);
+			}
+		});
+	}
+});
+function removeHilite(){
+	$('.hilite').each(function(){
+		$(this).removeClass('hilite');
+	});
+}
+function uncheckGolinks(){
+	$('.golink-checkbox').each(function(){
+		$(this).prop('checked', false);
+	});
+	removeHilite();
+	$('#golink-info-container').html('');
+	checkedIds = [];
+}
+$('#search-input').keypress(function(e) {
+    if(e.which == 13) {
+    	searchTerm = $(this).val();
+    	window.location = '?q='+searchTerm;
+    }
+});
+
+function insertParam(key, value)
+{
+    key = encodeURI(key); value = encodeURI(value);
+
+    var kvp = document.location.search.substr(1).split('&');
+
+    var i=kvp.length; var x; while(i--) 
+    {
+        x = kvp[i].split('=');
+
+        if (x[0]==key)
+        {
+            x[1] = value;
+            kvp[i] = x.join('=');
+            break;
+        }
+    }
+
+    if(i<0) {kvp[kvp.length] = [key,value].join('=');}
+
+    //this will reload the page, it's likely better to store this until finished
+    document.location.search = kvp.join('&'); 
+}
+
+// scroll affix
+// var isShiftedUp = false;
+// $(window).scroll(function (event) {
+//     var scroll = $(window).scrollTop();
+//     // Do something
+//     if(scroll > 75 && !isShiftedUp){
+//     	$('#right-div').css('top', 10);
+//     	isShiftedUp = true;
+//     }
+//     else if(scroll < 75 && isShiftedUp){
+//     	$('#right-div').css('top', '');
+//     	isShiftedUp = false;
+//     }
+// });
+</script>

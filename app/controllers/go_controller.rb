@@ -32,6 +32,42 @@ class GoController < ApplicationController
     end
   end
 
+  def index2
+    if params[:group_id]
+      viewable = GoLink.can_view(myEmail)
+      @golinks = Group.find(params[:group_id]).golinks.where('id in (?)', viewable)
+    elsif params[:q]
+      @golinks = GoLink.email_search(params[:q], myEmail)
+    else
+      viewable = GoLink.can_view(myEmail)
+      @golinks = GoLink.order('created_at desc')
+        .where('id in (?)',viewable)
+        .where.not(key: 'change-this-key')
+        .map{|x| x.to_json}
+    end
+    @groups = Group.groups_by_email(myEmail)
+    @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
+    render :new_index
+  end
+
+  def show
+    @golink = GoLink.find(params[:id])
+    @groups = Group.groups_by_email(myEmail)
+    render layout: false
+  end
+
+  def batch_show
+    session[:checked_ids] = params[:ids]
+    @groups = Group.groups_by_email(myEmail)
+    @golinks = GoLink.where('id in (?)', params[:ids])
+    render layout: false
+  end
+
+  def batch_delete2
+    GoLink.where('id in (?)', params[:ids]).destroy_all
+    render nothing: true, status: 200
+  end
+
   def index
     if params[:q]
       @golinks = GoLink.email_search(params[:q], myEmail)
@@ -188,7 +224,7 @@ class GoController < ApplicationController
       golink.permissions = params[:permissions].strip
     end
     if params[:groups]
-      golink.groups = params[:groups].strip
+      golink.groups = Group.process_groups(params[:groups])
     end
     golink.save!
     render json: golink.to_json

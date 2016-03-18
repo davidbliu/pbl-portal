@@ -18,8 +18,10 @@ Rails.application.routes.draw do
 
   # pbl links
   get ':key/go' => 'go#redirect'
-  get 'go' => 'go#index'
-  get 'go/menu' => 'go#index'
+  get 'go' => 'go#index2'
+  get 'go/menu' => 'go#index2'
+  get 'go/show/:id' => 'go#show'
+  get 'go/batch_show' => 'go#batch_show'
   get 'go/search' => 'go#search'
   get 'go/lookup' => 'go#lookup'
   get 'go/insights/:id' => 'go#insights'
@@ -38,6 +40,7 @@ Rails.application.routes.draw do
   get 'go/batch_delete' => 'go#batch_delete'
   post 'go/batch_update_groups' => 'go#batch_update_groups'
   post 'go/batch_update_tags' => 'go#batch_update_tags'
+  post 'go/batch_delete2' => 'go#batch_delete2'
 
   # tags
   post 'go_tag/create' => 'go_tag#create'

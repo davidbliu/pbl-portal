@@ -12,6 +12,12 @@ class GoLink < ActiveRecord::Base
 		GoLinkTag.where(golink_id: self.id)
 	end
 
+	def creator_gravatar
+		email = self.member_email ? self.member_email : ''
+		gravatar_id = Digest::MD5.hexdigest(email.downcase)
+		return "http://gravatar.com/avatar/#{gravatar_id}.png"
+	end
+
 	def to_json
 		return {
 	      key: self.key,
@@ -26,7 +32,8 @@ class GoLink < ActiveRecord::Base
 	      timestamp: self.timestamp,
 	      time_string: self.time_string,
 	      semester:self.semester,
-	      groups: self.groups
+	      groups: self.groups,
+	      gravatar: self.creator_gravatar
 	    }
 	end
 
@@ -132,7 +139,6 @@ class GoLink < ActiveRecord::Base
 		groups = Group.groups_by_email(email)
 		ids = []
 		groups.each do |group|
-			# ids += self.get_group_links(group).pluck(:id)
 			ids += group.golinks.pluck(:id)
 		end
 		ids += GoLink.where('groups like ?', "%Anyone%").pluck(:id)
@@ -148,10 +154,6 @@ class GoLink < ActiveRecord::Base
 	def self.default_groups(email)
 		return "Anyone"
 	end
-
-	# def self.get_group_links(group)
-	# 	GoLink.where('groups like ?', "%#{group.key}%")
-	# end
 
 	
 
