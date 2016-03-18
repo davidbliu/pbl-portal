@@ -18,10 +18,7 @@ tr:hover{
 .hilite{
 	background-color: rgba(27, 255, 0, 0.25);
 }
-.gravatar-img{
-	height:30px;
-	border-radius:100px;
-}
+
 #checked-div{
 	display:none;
 }
@@ -34,9 +31,20 @@ tr:hover{
 #create-group-div{
 	margin-top:0.5em;
 }
-
+.flickr_pagination{
+	margin-bottom:15px;
+}
+#right-div{
+	margin-top:13em;
+}
+#my-groups-title{
+	margin-bottom:0.5em;
+}
+.half-em{
+	margin-bottom:0.5em;
+}
 </style>
-
+<%= stylesheet_link_tag 'flickr_pagination' %>
 <div class = 'row'>
 
 <div class = 'col-md-7' id = 'col6'>
@@ -72,7 +80,16 @@ tr:hover{
 	</div>
 </div>
 
+<div>
+	<div class="flickr_pagination">
+    <%= will_paginate @golinks, :container => false %>
+  	</div>
+</div>
 <%= render partial: 'go/table', locals:{golinks: @golinks} %>
+
+
+</div>
+
 
 
 
@@ -82,7 +99,7 @@ tr:hover{
 <% if not @batch_editing %>
 	
 	<div id = 'groups-container'>
-		<div><u>My Groups</u></div>
+		<div class = 'half-em'>My Groups</div>
 		<% @groups.each do |group| %>
 			<div>
 				<a href = '/go?group_id=<%= group.id %>'>
@@ -101,7 +118,7 @@ tr:hover{
 <% else %>
 <h3>Batch Edit these Links</h3>
 
-<div>Add/Remove Groups</div>
+<div class = 'half-em'>Add/Remove Groups</div>
 <table class = 'table table-condensed table-hover'>
 	<% @groups.each do |group| %>
 	<tr>
@@ -119,7 +136,9 @@ tr:hover{
 	<% end %>
 </table>
 <div class = 'btn btn-info pull-right' id = 'update-groups-btn'>Update Groups</div>
-<div class = 'btn btn-danger'>Delete All</div>
+<a href = '/go/delete_checked'>
+	<div class = 'btn btn-danger' id = 'delete-all-btn'>Delete All</div>
+</a>
 
 <% end %>
 
@@ -158,4 +177,6 @@ $('#search-input').keypress(function(e) {
     	window.location = '?q='+searchTerm;
     }
 });
+
+
 </script>

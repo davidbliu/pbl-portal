@@ -10,9 +10,13 @@
 #close-info-btn{
 	margin:1em;
 }
+.gravatar-img{
+	height:30px;
+	border-radius:100px;
+}
 </style>
 <%= javascript_include_tag 'go_table' %>
-<%= stylesheet_link_tag 'flickr_pagination' %>
+
 <table class = 'table table-condensed table-hover'>
 	
 	<tbody>
@@ -25,8 +29,8 @@
 			<!-- <td> -->
 				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
 			</td>
-			<td>
-				<a href = '<%= golink[:url] %>'>
+			<td class = 'mute-info'>
+				<a class = 'mute-info' href = '<%= golink[:url] %>'>
 					<%= golink[:key] %>
 				</a>
 			</td>
@@ -51,14 +55,11 @@
 	</tbody>
 </table>
 
-<div>
-	<div class="flickr_pagination">
-    <%= will_paginate golinks, :container => false %>
-  </div>
-	</div>
-</div>
+
 
 <div id = 'golink-info-outer' class = 'affix'>
-	<div class = 'btn btn-default' id = 'close-info-btn'>Close</div>
+		<!-- <div class = 'btn btn-default' id = 'close-info-btn'>Close</div> -->
+
 	<div id = 'golink-info-container'></div>
+
 </div>

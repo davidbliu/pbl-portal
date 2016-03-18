@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   get 'go/deselect_links' => 'go#deselect_links'
 
   get 'go/test'=> 'go#test'
+  get 'go/delete_checked' => 'go#delete_checked'
 
   # tags
   post 'go_tag/create' => 'go_tag#create'

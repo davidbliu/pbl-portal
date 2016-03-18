@@ -34,7 +34,7 @@ class Group < ActiveRecord::Base
 
 	def self.groups_by_email(email)
    		group_keys = GroupMember.where(email: email).pluck(:group).uniq
-    	Group.where('key in (?) or group_type = ?', group_keys, 'public')
+		groups = Group.where('key in (?) or group_type = ?', group_keys, 'public')
   	end
 
   	def golinks

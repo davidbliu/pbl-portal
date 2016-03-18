@@ -10,8 +10,10 @@ class GoController < ApplicationController
         .where('id in (?)', viewable)
       if golink.length > 1
         @golinks = golink
+        @golinks = @golinks.map{|x| x.to_json}
         @groups = GoLink.get_groups_by_email(myEmail)
-        render :template => "go/add"
+        @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
+        render :new_index
       elsif golink.length == 1
         golink = golink.first
         # log this
@@ -75,6 +77,10 @@ class GoController < ApplicationController
       @golinks = @group.golinks.where('id in (?)', viewable)
       @golinks = @golinks.map{|x| x.to_json}
     elsif params[:q]
+      if params[:q].include?('http://') or params[:q].include?('https://')
+        redirected = true
+        redirect_to controller: 'go', action: 'add', url: params[:q]
+      end
       @search_term = params[:q]
       @golinks = GoLink.email_search(params[:q], myEmail)
       @golinks = @golinks.map{|x| x.to_json}
@@ -86,8 +92,10 @@ class GoController < ApplicationController
         .map{|x| x.to_json}
     end
     @groups = Group.groups_by_email(myEmail)
-    @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
-    render :new_index
+    @golinks = @golinks.paginate(:page => params[:page], :per_page => 25)
+    if not redirected
+      render :new_index
+    end
   end
 
   def show
@@ -105,6 +113,12 @@ class GoController < ApplicationController
   def batch_delete2
     GoLink.where('id in (?)', params[:ids]).destroy_all
     render nothing: true, status: 200
+  end
+
+  def delete_checked
+    GoLink.checked_golinks(myEmail).destroy_all
+    GoLink.deselect_links(myEmail)
+    redirect_to '/go'
   end
 
   def index
@@ -196,27 +210,21 @@ class GoController < ApplicationController
 
   def add
     if params[:key]
-      @golink = GoLink.create(
-        key: params[:key],
-        description: params[:desc],
-        url: params[:url],
-        member_email: current_member.email,
-        groups: GoLink.default_groups(myEmail),
-        semester: Semester.current_semester
-      )
-      @golinks = GoLink.where(key: @golink.key).map{|x| x.to_json}
-
+      @golinks = GoLink.where(key: params[:key]).map{|x| x.to_json}
     else
-      @golink = GoLink.create(
-        member_email: current_member.email,
-        key: 'change-this-key',
-        url: 'http://change_this_url.com',
-        groups: GoLink.default_groups(myEmail),
-        semester: Semester.current_semester
-      )
-      @golinks = [@golink.to_json]
+      @golinks = []
     end
-    @groups = GoLink.get_groups_by_email(myEmail)
+    @groups = Group.groups_by_email(myEmail)
+
+    group_keys = @groups.map{|x| x.key}
+    group_keys = group_keys.length > 0 ? group_keys.join(',') : 'Anyone'
+    @golink = GoLink.create(
+      key: params[:key],
+      url: params[:url],
+      member_email: myEmail,
+      groups: 'Anyone',
+      member_email: myEmail
+    )
   end
 
   def create
