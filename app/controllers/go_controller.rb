@@ -9,36 +9,28 @@ class GoController < ApplicationController
   end
 
   def redirect
-    if params[:key].include?('wiki:')
-      term = params[:key].split(':')[1]
-      redirect_to 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+term 
-    else
-      viewable = GoLink.can_view(myEmail)
-      golink = GoLink.where(key: params[:key])
-        .where('id in (?)', viewable)
-      if golink.length > 1
-        @golinks = golink
-        @golinks = @golinks.map{|x| x.to_json}
-        @groups = GoLink.get_groups_by_email(myEmail)
-        @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
-        render :new_index
-      elsif golink.length == 1
-        golink = golink.first
-        # log this
-        Thread.new{
-          golink.log_click(myEmail)
-          ActiveRecord::Base.connection.close
-        }
-        reminder_emails = Rails.cache.read('reminder_emails')
-        if reminder_emails != nil and reminder_emails.include?(myEmail)
-          redirect_to '/reminders?key='+golink.key
-        else
-          redirect_to golink.url
-        end
+    where = GoLink.handle_redirect(params[:key], myEmail)
+    if where.length == 1
+      golink = where.first
+      Thread.new{
+        golink.log_click(myEmail)
+        ActiveRecord::Base.connection.close
+      }
+      # TODO remove reminders
+      reminder_emails = Rails.cache.read('reminder_emails')
+      if reminder_emails != nil and reminder_emails.include?(myEmail)
+        redirect_to '/reminders?key='+golink.key
       else
-      	# do a search
-        redirect_to '/go?q='+params[:key]
+        redirect_to golink.url
       end
+    elsif where.length > 0
+      @golinks = where
+      @golinks = @golinks.map{|x| x.to_json}
+      @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
+      @groups = GoLink.get_groups_by_email(myEmail)
+      render :new_index
+    else
+      redirect_to '/go?q='+params[:key]
     end
   end
 
@@ -60,7 +52,7 @@ class GoController < ApplicationController
   def checked_links
     @golinks = GoLink.where('id in (?)', GoLink.get_checked_ids(myEmail))
     @golinks = @golinks.map{|x| x.to_json}
-    @golinks = @golinks.paginate(:page => params[:page], :per_page => 10)
+    @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
     @groups = Group.groups_by_email(myEmail)
     @batch_editing = true
     @group = Group.new(name: 'Batch Edit Links')
@@ -95,7 +87,7 @@ class GoController < ApplicationController
         .map{|x| x.to_json}
     end
     @groups = Group.groups_by_email(myEmail)
-    @golinks = @golinks.paginate(:page => params[:page], :per_page => 25)
+    @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
     if not redirected
       render :new_index
     end

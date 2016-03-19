@@ -9,15 +9,17 @@
   </div>
 <% end %>
 
-<h3>Search Groups</h3>
-<p>PBL Links will search through these groups to find urls corresponding to your key</p>
-<p><i>Highly recommended</i> that you keep all selected</p>
-<% @groups.each do |group| %>
-  <div>
-    <input type = 'checkbox' data-id = '<%= group.id %>' class = 'group-checkbox' data-type = 'search' id = '<%= group.id %>-search'>
-    <%= link_to group.get_name, "/go?group_id=#{group.id}" %>
-  </div>
-<% end %>
+<div style = 'display:none'>
+	<h3>Search Groups</h3>
+	<p>PBL Links will search through these groups to find urls corresponding to your key</p>
+	<p><i>Highly recommended</i> that you keep all selected</p>
+	<% @groups.each do |group| %>
+	  <div>
+	    <input type = 'checkbox' data-id = '<%= group.id %>' class = 'group-checkbox' data-type = 'search' id = '<%= group.id %>-search'>
+	    <%= link_to group.get_name, "/go?group_id=#{group.id}" %>
+	  </div>
+	<% end %>
+</div>
 
 <div class = 'btn btn-info' id = 'save-preferences-btn'>Save Preferences</div>
 

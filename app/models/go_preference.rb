@@ -34,7 +34,7 @@ class GoPreference < ActiveRecord::Base
   end
 
   def self.search_groups(email)
-    ids = self.search_group_ids
+    ids = self.search_group_ids(email)
     Group.where('id in (?)', ids)
   end
 

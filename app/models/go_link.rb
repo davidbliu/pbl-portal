@@ -15,6 +15,23 @@ class GoLink < ActiveRecord::Base
 		end
 		self.groups = gps
 	end
+
+	def self.handle_redirect(key, email)
+		viewable = GoLink.can_view(email)		
+		where = GoLink.where(key: key).where('id in (?)', viewable)
+		search_group_keys = GoPreference.search_groups(email).map{|x| x.key}
+		where = where.select{|x| x.is_searchable(search_group_keys)}
+		return where
+	end
+
+	def is_searchable(search_group_keys)
+		true
+		# self.get_groups.select{|x| search_group_keys.include?(x)}
+	end
+
+	def self.per_page
+		25
+	end
 	def self.admin_emails
 		['davidbliu@gmail.com']
 	end
