@@ -92,7 +92,7 @@ class GoController < ApplicationController
         .where.not(key: 'change-this-key')
     end
     @groups = Group.groups_by_email(myEmail)
-    @golinks.map{|x| x.to_json}
+    @golinks = @golinks.map{|x| x.to_json}
     @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
     if not redirected
       render :new_index
