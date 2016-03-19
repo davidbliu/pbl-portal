@@ -1,9 +1,37 @@
 require 'elasticsearch/model'
 class GoLink < ActiveRecord::Base
+
+	before_save :fix_groups
 	include Elasticsearch::Model
  	include Elasticsearch::Model::Callbacks
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 	
+	def fix_groups
+		gps = self.groups.split(',').map{|x| x.strip}
+		gps = gps.select{|x| x != '' and x != 'Anyone'}.uniq
+		gps = gps.join(',')
+		if gps == ''
+			gps = 'Anyone'
+		end
+		self.groups = gps
+	end
+
+	def self.handle_redirect(key, email)
+		viewable = GoLink.can_view(email)		
+		where = GoLink.where(key: key).where('id in (?)', viewable)
+		search_group_keys = GoPreference.search_groups(email).map{|x| x.key}
+		where = where.select{|x| x.is_searchable(search_group_keys)}
+		return where
+	end
+
+	def is_searchable(search_group_keys)
+		true
+		# self.get_groups.select{|x| search_group_keys.include?(x)}
+	end
+
+	def self.per_page
+		25
+	end
 	def self.admin_emails
 		['davidbliu@gmail.com']
 	end
@@ -94,17 +122,6 @@ class GoLink < ActiveRecord::Base
   		return golinks
   	end
 
-
-  # 	def self.member_search(search_term, member)
-  # 		search = self.default_search(search_term)
-  # 		viewable = self.can_view(member.email)
-  # 		result_ids = search.select{|x| viewable.include?(x)}
-		# golinks_by_id = GoLink.where('id in (?)', result_ids).index_by(&:id)
-		# keys = golinks_by_id.keys
-  # 		golinks = search.select{|x| golinks_by_id.keys.include?(x)}.map{|x| golinks_by_id[x]}
-  # 		return golinks
-  # 	end
-
 	def self.default_search(search_term)
 		q = {
 			multi_match: {
@@ -142,17 +159,13 @@ class GoLink < ActiveRecord::Base
 			ids += group.golinks.pluck(:id)
 		end
 		ids += GoLink.where('groups like ?', "%Anyone%").pluck(:id)
-		ids += GoLink.where('groups like ? and member_email = ?', "%Only Me%", email).pluck(:id)
+		ids += GoLink.where(member_email: email).pluck(:id)
 		return ids.uniq
 	end
 
 	def self.get_groups_by_email(email)
 		groups = Group.groups_by_email(email)
     	groups << Group.new(key: 'Only Me', name: 'Only Me')
-	end
-
-	def self.default_groups(email)
-		return "Anyone"
 	end
 
 
@@ -188,9 +201,7 @@ class GoLink < ActiveRecord::Base
 	
 	def add_groups(groups)
 		group_keys = self.groups.split(',')
-		group_keys = group_keys.concat(groups.map{|x| x.key})
-		group_keys = group_keys.uniq.select{|x| x != 'Anyone'}.join(',')
-		group_keys = group_keys != '' ? group_keys : 'Anyone'
+		group_keys = group_keys.concat(groups.map{|x| x.key}).join(',')
 		self.groups = group_keys
 		self.save
 	end
@@ -198,9 +209,7 @@ class GoLink < ActiveRecord::Base
 	def remove_groups(groups)
 		group_keys = self.groups.split(',')
 		remove_keys = groups.map{|x| x.key}
-		group_keys = group_keys.select{|x| not remove_keys.include?(x)}
-		group_keys = group_keys.uniq.select{|x| x != 'Anyone'}.join(',')
-		group_keys = group_keys != '' ? group_keys : 'Anyone'
+		group_keys = group_keys.select{|x| not remove_keys.include?(x)}.join(',')
 		self.groups = group_keys
 		self.save
 	end

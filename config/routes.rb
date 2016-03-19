@@ -18,8 +18,8 @@ Rails.application.routes.draw do
 
   # pbl links
   get ':key/go' => 'go#redirect'
-  get 'go' => 'go#index2'
-  get 'go/menu' => 'go#index2'
+  get 'go' => 'go#index'
+  get 'go/menu' => 'go#index'
   get 'go/show/:id' => 'go#show'
   get 'go/batch_show' => 'go#batch_show'
   get 'go/search' => 'go#search'
@@ -34,7 +34,6 @@ Rails.application.routes.draw do
   get 'go/insights/:id' => 'go#insights'
   get 'go/engagement' => 'go#engagement'
   get 'go/admin' => 'go#admin'
-  get 'go/three_days' => 'go#three_days'
   get 'go/time_distribution' => 'go#time_distribution'
   get 'go/batch_edit' => 'go#batch_edit'
   get 'go/batch_delete' => 'go#batch_delete'
@@ -49,6 +48,8 @@ Rails.application.routes.draw do
 
   get 'go/test'=> 'go#test'
   get 'go/delete_checked' => 'go#delete_checked'
+  get 'go/preferences' => 'go#preferences'
+  post 'go/update_preferences' => 'go#update_preferences'
 
   # tags
   post 'go_tag/create' => 'go_tag#create'

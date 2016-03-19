@@ -23,10 +23,8 @@
 		<% golinks.each do |golink| %>
 		<tr id = '<%= golink[:id] %>-tr' class = 'golink-row' data-id = '<%= golink[:id] %>'>
 			<td>
-				<input type = 'checkbox' class = 'golink-checkbox' data-id = '<%= golink[:id] %>'>
+				<input type = 'checkbox' id = '<%= golink[:id] %>-checkbox'  class = 'golink-checkbox' data-id = '<%= golink[:id] %>' >
 				&nbsp;
-			<!-- </td> -->
-			<!-- <td> -->
 				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
 			</td>
 			<td class = 'mute-info'>
@@ -37,13 +35,12 @@
 			<td>
 				<span class = 'smalltext text-muted'>
 					<%= golink[:time_string] %>
-				</span>&nbsp;|
-				<%= golink[:description] %>
+				</span>
+				<% if golink[:description].present? %>
+				&nbsp;&nbsp;<%= golink[:description] %>
+				<% end %>
 
 			</td>
-			<!-- <td> -->
-				
-			<!-- </td> -->
 			<td>
 				<img src = '<%= golink[:gravatar] %>' class = 'gravatar-img'>
 				<span class = 'text-muted smalltext'>
@@ -58,8 +55,5 @@
 
 
 <div id = 'golink-info-outer' class = 'affix'>
-		<!-- <div class = 'btn btn-default' id = 'close-info-btn'>Close</div> -->
-
 	<div id = 'golink-info-container'></div>
-
 </div>

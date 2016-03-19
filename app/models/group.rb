@@ -38,17 +38,17 @@ class Group < ActiveRecord::Base
   	end
 
   	def golinks
-  		GoLink.where('groups like ?', "%#{self.key}%").order('created_at desc')
+  		GoLink.where(
+  			'groups like ? 
+  			or groups like ? 
+  			or groups like ? 
+  			or groups like ?', 
+  			"#{self.key}", 
+  			"#{self.key},%", 
+  			"%,#{self.key}", 
+  			"%,#{self.key},%").order('created_at desc')
   	end
 
-  	def self.process_groups(groups)
-  		groups = groups.map{|x| x.strip}.select{|x| x != 'Anyone' and x != ''}
-  		if groups.length == 0
-  			return 'Anyone'
-  		else
-  			return groups.join(',')
-  		end
-  	end
   
   	def get_type
   		self.group_type ? self.group_type : 'private'

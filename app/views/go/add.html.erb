@@ -22,7 +22,7 @@
 		Groups:
 		<% @groups.each do |group| %>
 			<div>
-				<input class = 'golink-group-checkbox' data-key = '<%= group.key %>' type = 'checkbox'> <%= group.get_name %>
+				<input id = '<%= group.id %>-checkbox' class = 'golink-group-checkbox' data-key = '<%= group.key %>' type = 'checkbox'> <%= group.get_name %>
 			</div>
 		<% end %>
 	</div>
@@ -31,6 +31,10 @@
 </div>
 
 <script type = 'text/javascript'>
+default_ids = <%= raw(@default_ids) %>;
+_.each(default_ids, function(id){
+	$('#'+id+'-checkbox').prop('checked', true);
+})
 function getCheckedGroupKeys(){
 	var ids = [];
 	$('.golink-group-checkbox').each(function(){

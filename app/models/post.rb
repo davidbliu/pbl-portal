@@ -26,6 +26,12 @@ class Post < ActiveRecord::Base
 		['CMs_and_Officers', 'Execs', 'Officers', 'CMs', 'GMs', 'David']
 	end
 
+	def gravatar
+		email = self.author ? self.author : 'asdf@gmail.com'
+		gravatar_id = Digest::MD5.hexdigest(email.downcase)
+		return "http://gravatar.com/avatar/#{gravatar_id}.png"
+	end
+
 	def time_string
 		self.created_at.strftime('%m-%d-%Y')
 	end
