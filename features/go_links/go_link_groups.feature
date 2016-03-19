@@ -44,13 +44,6 @@ Scenario: non creators cannot remove groups
   Given I am on the go_menu page
   Then I should see "g1-key"
 
-Scenario: batch editing groups works
-  Given that I am logged in as "e1@gmail.com"
-  And I am batch editing "key1, key3"
-  Then I should see "key1"
-  And I should see "key3"
-  And I should not see "key2"
-
 Scenario: group substring superstring permissions working
   Given that I am logged in as "e1@gmail.com"
   And I am on the go_menu page

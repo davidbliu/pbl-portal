@@ -16,6 +16,27 @@ Background: golinks have been added to the database
   | g3k | g3-name | e2@g | e2@g |
   | g4k | g4-name | e2@g | e2@g |
 
+@javascript
 Scenario: clicking checkboxes selects golinks
-	Given that I am logged in as "e1@g"
-	Given I am on the go_menu page
+  Given I am on the cookie_hack page
+  Given I am on the go_menu page
+  Given I check the box for "key1"
+  And I check the box for "key2"
+  Given I visit the checked links page
+  Then I should see "key1"
+  Then I should see "key2"
+  Then I should not see "key3"
+  Given I uncheck the box for "key2"
+  And I visit the checked links page
+  Then I should not see "key2"
+
+@javascript
+Scenario: editing groups changes their groups
+  Given I am on the cookie_hack page
+  Given I am on the go_menu page
+  Given I check the box for "key1"
+  And I check the box for "key2"
+  And I visit the checked links page
+  And I check the box to "add" "g1k"
+  And I check the box to "add" "g2k"
+  And I click the id "update-groups-btn"

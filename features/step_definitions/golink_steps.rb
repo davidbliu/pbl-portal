@@ -14,17 +14,29 @@ Given(/^I am batch editing "([^"]*)"$/) do |keys|
 	visit '/go/batch_edit?ids='+ids.to_json.to_s
 end
 
-Given(/^I check the box for "([^"]*)"$/) do |key|
+Given(/^I (.*) the box for "([^"]*)"$/) do |type, key|
 	golink = GoLink.where(key: key).first
-	# puts GoLink.all.map{|x| x.id.to_s+':'+x.key}
-	# id = golink.id.to_s+'-checkbox'
-	# puts page.first('.golink-checkbox')[:id]
-	# find('#'+golink.id.to_s+'-checkbox').click
-	# find('#check-check').click
-	check('check-check')
+	if type == 'check'
+		check("#{golink.id}-checkbox")
+	else
+		uncheck("#{golink.id}-checkbox")
+	end
 end
 
 Given(/^I visit the checked links page$/) do 
 	visit '/go/checked_links'
+end
+
+Given(/^I wait (\d+) seconds for sign in$/) do |arg1|
+	sleep(arg1.to_i)
+end
+
+Given(/^I check the box to "([^"]*)" "([^"]*)"$/) do |type, groupKey|
+	group = Group.where(key:groupKey).first
+	check("#{type}-group-#{group.id}-checkbox")
+end
+
+Given(/^I click the id "([^"]*)"$/) do |id|
+	find('#'+id).click
 end
 

@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   get 'test' => 'test#test'
   root 'main#home'
   get '/track_clicks'=>'main#clicks'
+  get '/cookie_hack' => 'main#cookie_hack'
 
   # authentication 
   get "/auth/google_oauth2/callback", to: "auth#google_callback"
