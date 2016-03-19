@@ -133,6 +133,7 @@ class GoController < ApplicationController
     @golink = GoLink.create(
       key: params[:key],
       url: params[:url],
+      description: params[:desc],
       member_email: myEmail,
       groups: @default_keys.join(','),
       member_email: myEmail
