@@ -252,3 +252,7 @@ end
 Then /^show me the page$/ do
   save_and_open_page
 end
+
+When /^I wait for (\d+) seconds?$/ do |secs|
+  sleep secs.to_i
+end

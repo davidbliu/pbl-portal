@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160318183012) do
+ActiveRecord::Schema.define(version: 20160319013725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -91,6 +91,14 @@ ActiveRecord::Schema.define(version: 20160318183012) do
     t.datetime "updated_at",   null: false
     t.string   "semester"
     t.text     "groups"
+  end
+
+  create_table "go_preferences", force: :cascade do |t|
+    t.string   "email"
+    t.text     "default_group_ids"
+    t.text     "search_group_ids"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "go_tags", force: :cascade do |t|

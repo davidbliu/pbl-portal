@@ -10,12 +10,15 @@ Background: golinks have been added to the database
   | key1 | url1 | g1-key |
   | key2 | url2 | g3-key |
   | key3 | url3 | g1-key,g2-key |
+  | key4 | url4 | g1-key-super |
 
   Given the following groups exist:
   | key | name | creator | emails |
   | g1-key | g1-name | e1@gmail.com | e1@gmail.com | 
   | g2-key | g2-name | e1@gmail.com | e1@gmail.com, e2@gmail.com |
   | g3-key | g3-name | e2@gmail.com | e2@gmail.com |
+  | g1-key-super | g4-name | e2@gmail.com | e2@gmail.com |
+  | g1 | g5-name | e2@gmail.com | e2@gmail.com |
 
 Scenario: group permissions work on index page
   Given that I am logged in as "e1@gmail.com"
@@ -47,6 +50,14 @@ Scenario: batch editing groups works
   Then I should see "key1"
   And I should see "key3"
   And I should not see "key2"
+
+Scenario: group substring superstring permissions working
+  Given that I am logged in as "e1@gmail.com"
+  And I am on the go_menu page
+  Then I should not see "key4"
+  Given that I am logged in as "e2@gmail.com"
+  And I am on the go_menu page
+  Then I should not see "key1" 
 
 
 

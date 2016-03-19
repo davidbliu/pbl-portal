@@ -43,8 +43,14 @@ tr:hover{
 .half-em{
 	margin-bottom:0.5em;
 }
+#pref-link-div{
+	display:inline-block;
+	/*right:0px;*/
+	text-align: right;
+}
 </style>
 <%= stylesheet_link_tag 'flickr_pagination' %>
+
 <div class = 'row'>
 
 <div class = 'col-md-7' id = 'col6'>
@@ -61,14 +67,20 @@ tr:hover{
 	</h1>
 	<% if @group %>
 		<div class = 'centered'>
-			<%= @group.get_type.capitalize %> Group (<%= @group.emails.length %> Members)&nbsp;
+			<%= @group.get_type.capitalize %> Group (<%= @group.emails.length %> Members)
+			&nbsp;
+			<% if @group.key != @group.get_name %>
+				(<%= @group.key %>)
+			<% end %>
 		<% if @group.creator == myEmail %>
 			<%= link_to 'Edit Group', "/groups/edit/#{@group.id}" %>
 		<% end %>
 		</div>
 	<% end %>
 	<input type = 'text' class = 'form-control' placeholder = 'Search  |  Paste your long url here' id = 'search-input'>
-	
+	<div id = 'pref-link-div'>
+		<a href = '/go/preferences'>Preferences</a>
+	</div>
 	<div id = 'checked-div'>
 		<span>
 			<a href = '/go/checked_links' id = 'checked-link'>
@@ -78,6 +90,7 @@ tr:hover{
 			<a href = '/go/deselect_links'>Deselect Links</a>
 		</span>
 	</div>
+
 </div>
 
 <div>
@@ -177,6 +190,5 @@ $('#search-input').keypress(function(e) {
     	window.location = '?q='+searchTerm;
     }
 });
-
 
 </script>

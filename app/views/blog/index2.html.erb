@@ -43,8 +43,16 @@
 #top-stuff{
 
 }
+.flickr_pagination{
+  margin-top:1em;
+  margin-bottom:1em;
+}
+.profile-img{
+  height:35px;
+  border-radius:100px;
+}
 </style>
-
+<%= stylesheet_link_tag 'flickr_pagination' %>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -72,7 +80,7 @@
 <div id = 'top-stuff' class = 'centered'>
   <h1>PBL Blog</h1>
   <a href = '/blog/edit'>
-    <div class = 'btn btn-default'>Add New Post</div>
+    <div class = 'btn btn-info'>Add New Post</div>
   </a>
 
 
@@ -81,8 +89,10 @@
   Current Filter is <%= @tag %>
   <% end %>
   <div>
-    <%= will_paginate @posts %>
-  </div>
+  <div class="flickr_pagination">
+    <%= will_paginate @posts, :container => false %>
+    </div>
+</div>
 </div>
 
 
@@ -90,7 +100,10 @@
 <div class = 'row'>
 <% @posts.each do |post| %>
 <div class = 'post-div' id = '<%= post.id %>'>
-	<div class = 'title'><%= post.title %></div>
+	<div class = 'title'>
+    <img src = '<%= post.gravatar %>' class = 'profile-img pull-right'>
+    <%= post.title %>
+  </div>
 	
   <div class = 'text-muted author'>
     By <%= @email_hash[post.author].name %>,

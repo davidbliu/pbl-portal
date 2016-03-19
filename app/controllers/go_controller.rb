@@ -1,5 +1,13 @@
 class GoController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [:add_checked_id, :get_checked_ids, :remove_checked_id, :test]
+  before_filter :is_search
+
+  def is_search
+    if params[:q] and request.path != '/go'
+      redirect_to controller:'go', action:'index', q: params[:q]
+    end
+  end
+
   def redirect
     if params[:key].include?('wiki:')
       term = params[:key].split(':')[1]
@@ -38,11 +46,6 @@ class GoController < ApplicationController
     render json: GoLink.get_checked_ids(myEmail)
   end
 
-  def test
-    session[:test] ||= []
-    session[:test] << params[:p]
-    render json: session[:test]
-  end
 
   def add_checked_id
     ids = GoLink.add_checked_id(myEmail, params[:id])
@@ -104,16 +107,6 @@ class GoController < ApplicationController
     render layout: false
   end
 
-  def batch_show
-    @groups = Group.groups_by_email(myEmail)
-    @golinks = GoLink.where('id in (?)', params[:ids])
-    render layout: false
-  end
-
-  def batch_delete2
-    GoLink.where('id in (?)', params[:ids]).destroy_all
-    render nothing: true, status: 200
-  end
 
   def delete_checked
     GoLink.checked_golinks(myEmail).destroy_all
@@ -133,6 +126,97 @@ class GoController < ApplicationController
     @keys = GoLinkClick.all.pluck(:key).uniq
     @groups = Member.groups
   end
+
+
+  def add
+    if params[:key]
+      @golinks = GoLink.where(key: params[:key]).map{|x| x.to_json}
+    else
+      @golinks = []
+    end
+    @groups = Group.groups_by_email(myEmail)
+    @default_groups = GoPreference.default_groups(myEmail)
+    @default_keys = @default_groups.map{|x| x.key}
+    @default_ids = @default_groups.map{|x| x.id}
+    @golink = GoLink.create(
+      key: params[:key],
+      url: params[:url],
+      member_email: myEmail,
+      groups: @default_keys.join(','),
+      member_email: myEmail
+    )
+  end
+
+  def lookup
+    render json: GoLink.url_matches(params[:url]).map{|x| x.to_json}
+  end
+
+  def search
+    golinks = GoLink.email_search(params[:q], email)
+    render json: golinks.map{|x| x.to_json}
+  end
+
+
+
+  def update
+    golink = GoLink.find(params[:id])
+    if params[:title]
+      golink.title = params[:title].strip
+    end
+    if params[:key]
+      golink.key = params[:key].strip
+    end
+    if params[:url]
+      golink.url = params[:url].strip
+    end
+    if params[:description]
+      golink.description = params[:description].strip
+    end
+    params[:groups] ||= []
+    golink.groups = params[:groups].join(',')
+    golink.save!
+    render json: golink.to_json
+  end
+
+  def destroy
+    GoLink.find(params[:id]).destroy
+    render nothing: true, status: 200
+  end
+
+ 
+
+  def batch_delete
+    ids = JSON.parse(params[:ids])
+    ids.each do |id|
+      GoLink.find(id).destroy
+    end
+    redirect_to :back
+  end
+
+  def batch_update_groups
+    add_groups = Group.where('id in (?)', params[:add])
+    remove_groups = Group.where('id in (?)', params[:remove])
+    GoLink.checked_golinks(myEmail).each do |golink|
+      golink.add_groups(add_groups)
+      golink.remove_groups(remove_groups)
+    end
+    render nothing: true, status: 200
+  end
+  
+  def preferences
+    @default_group_ids = GoPreference.default_group_ids(myEmail)
+    @search_group_ids = GoPreference.search_group_ids(myEmail)
+    @groups = Group.groups_by_email(myEmail)
+  end
+  def update_preferences
+    GoPreference.set_default_group_ids(myEmail, params[:default_groups])
+    GoPreference.set_search_group_ids(myEmail, params[:search_groups])
+    render nothing: true, status: 200
+  end
+
+#
+# TODO: move to reporting controller
+#
 
   def engagement
     keys = params[:keys] ? params[:keys].split(',') : []
@@ -180,91 +264,9 @@ class GoController < ApplicationController
         @active << m
       end
     end
-
-
   end
 
-
-  def add
-    if params[:key]
-      @golinks = GoLink.where(key: params[:key]).map{|x| x.to_json}
-    else
-      @golinks = []
-    end
-    @groups = Group.groups_by_email(myEmail)
-
-    group_keys = @groups.map{|x| x.key}
-    group_keys = group_keys.length > 0 ? group_keys.join(',') : 'Anyone'
-    @golink = GoLink.create(
-      key: params[:key],
-      url: params[:url],
-      member_email: myEmail,
-      groups: 'Anyone',
-      member_email: myEmail
-    )
-  end
-
-  def create
-    if not params[:key] or not params[:url] or params[:key] = '' or params[:url] = ''
-      render json: []
-    else
-      GoLink.create(
-        key: params[:key], 
-        url: params[:url],
-        permissions: 'Anyone',
-        member_email: current_member.email
-      )
-      golinks = GoLink.where(key: params[:key]).to_a
-      render json: golinks.map{|x| x.to_json}
-    end
-  end
-
-  def lookup
-    render json: GoLink.url_matches(params[:url]).map{|x| x.to_json}
-  end
-
-  def search
-    golinks = GoLink.email_search(params[:q], email)
-    render json: golinks.map{|x| x.to_json}
-  end
-
-
-
-  def update
-    golink = GoLink.find(params[:id])
-    if params[:title]
-      golink.title = params[:title].strip
-    end
-    if params[:key]
-      golink.key = params[:key].strip
-    end
-    if params[:url]
-      golink.url = params[:url].strip
-    end
-    if params[:description]
-      golink.description = params[:description].strip
-    end
-    if params[:permissions]
-      golink.permissions = params[:permissions].strip
-    end
-    if params[:groups]
-      golink.groups = Group.process_groups(params[:groups])
-    end
-    golink.save!
-    render json: golink.to_json
-  end
-
-  def destroy
-    GoLink.find(params[:id]).destroy
-    render nothing: true, status: 200
-  end
-
-  def three_days
-    @three_past = 3.days.ago
-    @clicks = GoLinkClick.where('created_at > ?', @three_past)
-  end
-
-  def time_distribution
+   def time_distribution
     @clicks = GoLinkClick.all
     @bins = Array.new(24, 0)
     @hours = (0..24).to_a
@@ -280,53 +282,6 @@ class GoController < ApplicationController
     @avg = @num_clicks.mean
     @std = @num_clicks.standard_deviation
     @click_bins = Array.new(15, 0)
-  end
-
-  def batch_delete
-    ids = JSON.parse(params[:ids])
-    ids.each do |id|
-      GoLink.find(id).destroy
-    end
-    redirect_to :back
-  end
-
-  def batch_edit
-    ids = JSON.parse(params[:ids])
-    @golinks = GoLink.where('id in (?)', ids)
-    @groups = GoLink.get_groups_by_email(myEmail)
-    @tags = GoTag.all
-  end
-
-  def batch_update_groups
-    add_groups = Group.where('id in (?)', params[:add])
-    remove_groups = Group.where('id in (?)', params[:remove])
-    GoLink.checked_golinks(myEmail).each do |golink|
-      golink.add_groups(add_groups)
-      golink.remove_groups(remove_groups)
-    end
-    render nothing: true, status: 200
-  end
-
-  def batch_update_tags
-    golinks = GoLink.where('id in (?)', params[:ids])
-    tags = params[:tags] ? params[:tags] : []
-    action_type = params[:atype]
-    golinks.each do |golink|
-      tags.each do |tag|
-        if action_type == 'add'
-          GoLinkTag.where(
-            golink_id: golink.id,
-            tag_name: tag
-          ).first_or_create
-        elsif action_type == 'remove'
-          GoLinkTag.where(
-            golink_id: golink.id,
-            tag_name: tag
-          ).destroy_all
-        end
-      end
-    end
-    render nothing: true, status: 200
   end
 
 end

@@ -1,0 +1,59 @@
+<h1>Preferences</h1>
+
+<h3>Default Group</h3>
+<p>When you create a PBL Link, it will be added into these group(s) by default</p>
+<% @groups.each do |group| %>
+  <div>
+    <input type = 'checkbox' data-id = '<%= group.id %>' class = 'group-checkbox' data-type = 'default' id = '<%= group.id %>-default'>
+    <%= link_to group.get_name, "/go?group_id=#{group.id}" %>
+  </div>
+<% end %>
+
+<h3>Search Groups</h3>
+<p>PBL Links will search through these groups to find urls corresponding to your key</p>
+<p><i>Highly recommended</i> that you keep all selected</p>
+<% @groups.each do |group| %>
+  <div>
+    <input type = 'checkbox' data-id = '<%= group.id %>' class = 'group-checkbox' data-type = 'search' id = '<%= group.id %>-search'>
+    <%= link_to group.get_name, "/go?group_id=#{group.id}" %>
+  </div>
+<% end %>
+
+<div class = 'btn btn-info' id = 'save-preferences-btn'>Save Preferences</div>
+
+<script type = 'text/javascript'>
+var default_ids = <%= raw(@default_group_ids) %>;
+var search_ids = <%= raw(@search_group_ids) %>;
+function setCurrentIds(){
+	_.each(default_ids, function(id){
+		$('#'+id+'-default').prop('checked', true);
+	});
+	_.each(search_ids, function(id){
+		$('#'+id+'-search').prop('checked', true);
+	});
+}
+setCurrentIds();
+function getCheckedGroups(type){
+	var ids = [];
+	$('.group-checkbox').each(function(){
+		if($(this).is(':checked') && $(this).attr('data-type')== type){
+			ids.push($(this).attr('data-id'));
+		}
+	});
+	return ids;
+}
+$('#save-preferences-btn').click(function(){
+	$.ajax({
+		url: '/go/update_preferences',
+		type: 'post',
+		data:{
+			default_groups: getCheckedGroups('default'),
+			search_groups: getCheckedGroups('search')
+		},
+		success:function(data){
+			location.reload();
+		}
+
+	});
+});
+</script>

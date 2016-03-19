@@ -23,7 +23,7 @@
 		<% golinks.each do |golink| %>
 		<tr id = '<%= golink[:id] %>-tr' class = 'golink-row' data-id = '<%= golink[:id] %>'>
 			<td>
-				<input type = 'checkbox' class = 'golink-checkbox' data-id = '<%= golink[:id] %>'>
+				<input type = 'checkbox' id = '<%= golink[:id] %>-checkbox'  class = 'golink-checkbox' data-id = '<%= golink[:id] %>' >
 				&nbsp;
 				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
 			</td>
@@ -35,8 +35,10 @@
 			<td>
 				<span class = 'smalltext text-muted'>
 					<%= golink[:time_string] %>
-				</span>&nbsp;|
-				<%= golink[:description] %>
+				</span>
+				<% if golink[:description].present? %>
+				&nbsp;&nbsp;<%= golink[:description] %>
+				<% end %>
 
 			</td>
 			<td>
