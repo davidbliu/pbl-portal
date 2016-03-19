@@ -45,14 +45,10 @@ tr:hover{
 }
 #pref-link-div{
 	display:inline-block;
-	/*right:0px;*/
 	text-align: right;
 }
 </style>
 <%= stylesheet_link_tag 'flickr_pagination' %>
-
-<input type = 'checkbox' id = 'check-check'>
-<div id = 'div-div'>div-div</div>
 
 <div class = 'row'>
 
@@ -83,6 +79,9 @@ tr:hover{
 	<input type = 'text' class = 'form-control' placeholder = 'Search  |  Paste your long url here' id = 'search-input'>
 	<div id = 'pref-link-div'>
 		<a href = '/go/preferences'>Preferences</a>
+	</div>
+	<div id = 'trash-link-div'>
+		<a href = '/go/trash'>Trash</a>
 	</div>
 	<div id = 'checked-div'>
 		<span>
@@ -194,12 +193,4 @@ $('#search-input').keypress(function(e) {
     }
 });
 
-$('#check-check').click(function(){
-	// $(body).prepend("<h1>HI THERE</h1>");
-	window.location.href = '/'
-});
-$('#div-div').click(function(){
-	// $(body).prepend("<h1>HI THERE</h1>");
-	window.location.href = '/'
-});
 </script>

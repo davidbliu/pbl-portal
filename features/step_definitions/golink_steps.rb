@@ -40,3 +40,30 @@ Given(/^I click the id "([^"]*)"$/) do |id|
 	find('#'+id).click
 end
 
+Given(/^I delete checked links$/) do
+	visit '/go/delete_checked'
+end
+
+Given(/^I check the default box for "(.*)"$/) do |group_key|
+	group = Group.where(key: group_key).first
+	check("#{group.id}-default")
+end
+
+Given(/^I add a link: "(.*)" "(.*)"$/) do |key, url|
+	visit "/go/add?key=#{key}&url=#{url}"
+end
+
+Given(/^I save my preferences$/) do
+	find('#save-preferences-btn').click
+end
+
+Given(/^I restore "(.*)"$/) do |key|
+	copy = GoLinkCopy.where(key: key).last
+	click_link(copy.id.to_s+'-restore-link')
+end
+
+Given(/I select "(.*)" as my landing page$/) do |key|
+	group = Group.where(key: key).first
+	find("option[value='"+group.id.to_s+"-landing']").click
+end
+

@@ -49,6 +49,18 @@ class Group < ActiveRecord::Base
   			"%,#{self.key},%").order('created_at desc')
   	end
 
+  	def copies
+  		GoLinkCopy.where(
+  			'groups like ? 
+  			or groups like ? 
+  			or groups like ? 
+  			or groups like ?', 
+  			"#{self.key}", 
+  			"#{self.key},%", 
+  			"%,#{self.key}", 
+  			"%,#{self.key},%").order('created_at desc')
+  	end
+
   
   	def get_type
   		self.group_type ? self.group_type : 'private'

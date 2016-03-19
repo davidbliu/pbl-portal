@@ -65,6 +65,14 @@ class GoController < ApplicationController
   end
 
   def index
+    # handle landing group
+    if not request.path == '/go/menu' and not params[:group_id]
+      landing_group = GoPreference.landing_group(myEmail)
+      if landing_group
+        redirected = true
+        redirect_to "/go?group_id=#{landing_group.id}" 
+      end
+    end
     if params[:group_id]
       @group = Group.find(params[:group_id])
       @group_editing = true
@@ -197,6 +205,7 @@ class GoController < ApplicationController
   end
   
   def preferences
+    @landing_group_id = GoPreference.landing_group_id(myEmail)
     @default_group_ids = GoPreference.default_group_ids(myEmail)
     @search_group_ids = GoPreference.search_group_ids(myEmail)
     @groups = Group.groups_by_email(myEmail)
@@ -204,6 +213,7 @@ class GoController < ApplicationController
   def update_preferences
     GoPreference.set_default_group_ids(myEmail, params[:default_groups])
     GoPreference.set_search_group_ids(myEmail, params[:search_groups])
+    GoPreference.set_landing_group_id(myEmail, params[:landing_group_id])
     render nothing: true, status: 200
   end
 

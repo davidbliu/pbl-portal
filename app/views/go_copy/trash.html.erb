@@ -1,0 +1,27 @@
+<style type = 'text/css'>
+td{
+	width:20%;
+}
+</style>
+<h1>Recently Deleted Links</h1>
+<table class = 'table table-condensed table-hover'>
+	<% @copies.each do |copy| %>
+	<tr>
+		<td>
+			<img src = 'http://www.google.com/s2/favicons?domain=<%= copy.url %>'>
+			<%= link_to copy.key, copy.url %>
+		</td>
+		<td>
+			<%= copy.description %>
+		</td>
+		<td>
+			To: <%= copy.groups %>
+		</td>
+		<td><%= copy.time_string %></td>
+		<td>
+			<%= link_to 'Restore', "/go/restore_copy/#{copy.id}", id: "#{copy.id}-restore-link" %>
+			<%= link_to 'Discard', "/go/destroy_copy/#{copy.id}", id: "#{copy.id}-destroy-link" %>
+		</td>
+	</tr>
+	<% end %>
+</table>
