@@ -66,7 +66,7 @@ class GoController < ApplicationController
 
   def index
     # handle landing group
-    if not request.path == '/go/menu' and not params[:group_id]
+    if not request.path == '/go/menu' and not params[:group_id] and not params[:q]
       landing_group = GoPreference.landing_group(myEmail)
       if landing_group
         redirected = true
@@ -78,7 +78,6 @@ class GoController < ApplicationController
       @group_editing = true
       viewable = GoLink.can_view(myEmail)
       @golinks = @group.golinks.where('id in (?)', viewable)
-      @golinks = @golinks.map{|x| x.to_json}
     elsif params[:q]
       if params[:q].include?('http://') or params[:q].include?('https://')
         redirected = true
@@ -86,15 +85,14 @@ class GoController < ApplicationController
       end
       @search_term = params[:q]
       @golinks = GoLink.email_search(params[:q], myEmail)
-      @golinks = @golinks.map{|x| x.to_json}
     else
       viewable = GoLink.can_view(myEmail)
       @golinks = GoLink.order('created_at desc')
         .where('id in (?)',viewable)
         .where.not(key: 'change-this-key')
-        .map{|x| x.to_json}
     end
     @groups = Group.groups_by_email(myEmail)
+    @golinks.map{|x| x.to_json}
     @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
     if not redirected
       render :new_index
