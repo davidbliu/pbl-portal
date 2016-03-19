@@ -29,6 +29,7 @@ Scenario: group permissions work on index page
   Given I am on the go_menu page
   Then I should not see "key1"
   Then I should see "key2"
+  Then I should see "key3"
 
 Scenario: removing a group removes group from golink groups and resets to anyone if none
   Given I am logged in as "e1@gmail.com"
@@ -53,5 +54,10 @@ Scenario: group substring superstring permissions working
   Then I should not see "key1" 
 
 Scenario: should not see groups you are not a part of
+  Given I am logged in as "e2@gmail.com"
+  Given I am on the go_menu page
+  Then I should not see "g1-name"
+
+
 
 
