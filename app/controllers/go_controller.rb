@@ -69,7 +69,7 @@ class GoController < ApplicationController
     redirect_to :back
   end
 
-  def index2
+  def index
     if params[:group_id]
       @group = Group.find(params[:group_id])
       @group_editing = true
@@ -119,29 +119,6 @@ class GoController < ApplicationController
     GoLink.checked_golinks(myEmail).destroy_all
     GoLink.deselect_links(myEmail)
     redirect_to '/go'
-  end
-
-  def index
-    if params[:q]
-      @golinks = GoLink.email_search(params[:q], myEmail)
-    else
-      viewable = GoLink.can_view(myEmail)
-    	@golinks = GoLink.order('created_at desc')
-        .where('id in (?)',viewable)
-        .where.not(key: 'change-this-key')
-        .map{|x| x.to_json}
-    end
-    # paginate golinks
-    @golinks = @golinks.paginate(:page => params[:page], :per_page => 100)
-    @groups = GoLink.get_groups_by_email(myEmail)
-    @tags = params[:q] ? [] : GoTag.all 
-    @pinned = @tags.select{|x| x.name == 'Pinned'}#where(name:'Pinned')
-  end
-
-  def insights
-    @clicks = GoLinkClick.where(golink_id: params[:id])
-      .where.not(member_email:'davidbliu@gmail.com').to_a
-    @members = Member.current_members.where.not(committee: 'GM').to_a
   end
 
 

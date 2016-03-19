@@ -18,8 +18,8 @@ Rails.application.routes.draw do
 
   # pbl links
   get ':key/go' => 'go#redirect'
-  get 'go' => 'go#index2'
-  get 'go/menu' => 'go#index2'
+  get 'go' => 'go#index'
+  get 'go/menu' => 'go#index'
   get 'go/show/:id' => 'go#show'
   get 'go/batch_show' => 'go#batch_show'
   get 'go/search' => 'go#search'
