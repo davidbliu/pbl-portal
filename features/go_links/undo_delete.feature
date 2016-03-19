@@ -18,10 +18,10 @@ Background: golinks have been added to the database
 
 @javascript
 Scenario: deleted links show up in trash
-	Given I am on the cookie_hack page
+	Given I log in as "e1@g"
 	Given I am on the go_menu page
 	Given I check the box for "key1"
-	And I check the box for "key2"
+	Given I check the box for "key2"
 	And I delete checked links
 
 	Given I am on the go_trash page
@@ -29,8 +29,30 @@ Scenario: deleted links show up in trash
 	And I should see "key2"
 	And I should not see "key3"
 
+@javascript
 Scenario: trash permissions work
+  Given I log in as "e1@g"
+  Given I am on the go_menu page
+  Given I check the box for "key1"
+  Given I check the box for "key2"
+  And I delete checked links
 
+  Given I am on the go_trash page
+  Then I should see "key1"
+  And I should see "key2"
+
+@javascript
 Scenario: can restore links from trash
+  Given I log in as "e1@g"
+  Given I am on the go_menu page
+  Given I check the box for "key1"
+  Given I delete checked links
+  Given I am on the go_menu page
+  Then I should not see "key1"
+
+  Given I am on the go_trash page
+  And I restore "key1"
+  And I am on the go_menu page
+  Then I should see "key1"
 
 Scenario: can discard links from trash

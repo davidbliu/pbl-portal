@@ -18,7 +18,7 @@ Background: golinks have been added to the database
 
 @javascript
 Scenario: clicking checkboxes selects golinks
-  Given I am on the cookie_hack page
+  Given I log in as "e1@g"
   Given I am on the go_menu page
   Given I check the box for "key1"
   And I check the box for "key2"
@@ -34,7 +34,7 @@ Scenario: clicking checkboxes selects golinks
 
 @javascript
 Scenario: editing groups changes their groups
-  Given I am on the cookie_hack page
+  Given I log in as "e1@g"
   Given I am on the go_menu page
   Given I check the box for "key1"
   And I check the box for "key2"

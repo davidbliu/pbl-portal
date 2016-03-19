@@ -13,7 +13,7 @@ class MainController < ApplicationController
   end
 
   def cookie_hack
-  	cookies[:email] = 'e1@g'
-  	render json: 'hacked da cookie'
+  	cookies[:email] = params[:email]
+  	render json: "email set to #{params[:email]}"
   end
 end

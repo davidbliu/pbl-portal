@@ -19,8 +19,8 @@ td{
 		</td>
 		<td><%= copy.time_string %></td>
 		<td>
-			<%= link_to 'Restore', "/go/restore_copy/#{copy.id}" %>
-			<%= link_to 'Discard', "/go/destroy_copy/#{copy.id}" %>
+			<%= link_to 'Restore', "/go/restore_copy/#{copy.id}", id: "#{copy.id}-restore-link" %>
+			<%= link_to 'Discard', "/go/destroy_copy/#{copy.id}", id: "#{copy.id}-destroy-link" %>
 		</td>
 	</tr>
 	<% end %>
