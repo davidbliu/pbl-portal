@@ -15,11 +15,32 @@ Background: golinks have been added to the database
 	  | g3k | g3n | e2@g | e2@g |
 	  | g4k | g4n | e2@g | e2@g |
 
+@javascript
 Scenario: preferences page is editable
-	Given I am logged in as "e1@g"
+	Given I log in as "e1@g"
 	Given I am on the go_preferences page
 	Given I check the default box for "g1k"
 	Given I save my preferences
 	Given I add a link: "new-key" "http://google.com"
 	Given I am on the go_menu page
 	Then I should see "new-key"
+
+Scenario: search preferences restrict search groups
+
+@javascript
+Scenario: can set landing group
+	Given I log in as "e1@g"
+	Given I am on the go_preferences page
+	Given I select "g1k" as my landing page
+	Given I save my preferences
+	Given I am on the go page
+	Then I should see "g1n"
+	And I should see "key1"
+	And I should not see "key2"
+
+	Given I am on the go_menu page
+	Then I should see "key1"
+	And I should see "key2"
+	And I should see "key3"
+	And I should not see "key4"
+

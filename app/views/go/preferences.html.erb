@@ -1,13 +1,35 @@
 <h1>Preferences</h1>
 
-<h3>Default Group</h3>
-<p>When you create a PBL Link, it will be added into these group(s) by default</p>
-<% @groups.each do |group| %>
-  <div>
-    <input type = 'checkbox' data-id = '<%= group.id %>' class = 'group-checkbox' data-type = 'default' id = '<%= group.id %>-default'>
-    <%= link_to group.get_name, "/go?group_id=#{group.id}" %>
-  </div>
-<% end %>
+<div class = 'row'>
+<div class = 'col-md-4'>
+	<h3>Default Group</h3>
+	<p>When you create a PBL Link, it will be added into these group(s) by default</p>
+	<% @groups.each do |group| %>
+	  <div>
+	    <input type = 'checkbox' data-id = '<%= group.id %>' class = 'group-checkbox' data-type = 'default' id = '<%= group.id %>-default'>
+	    <%= link_to group.get_name, "/go?group_id=#{group.id}" %>
+	  </div>
+	<% end %>
+</div>
+
+<div class = 'col-md-4'>
+	<h3>Landing Group</h3>
+
+	<p>Change the default group you see when you visit pbl.link (By default when you visit pbl.link, you see the full catalogue of links)</p>
+
+	<select id = 'landing-select' class = 'form-control'>
+		<option id = 'default-landing-option' data-id = '' value = '' >
+			Default
+		</option>
+		<% @groups.each do |group| %>
+			<option id = '<%= group.id %>-landing-option' data-id = '<%= group.id %>' value = '<%= group.id %>-landing'
+				<% if @landing_group_id == group.id %> selected <% end %>>
+				<%= group.get_name %>
+			</option>
+		<% end %>
+	</select>
+
+</div>
 
 <div style = 'display:none'>
 	<h3>Search Groups</h3>
@@ -21,7 +43,11 @@
 	<% end %>
 </div>
 
+</div><!-- end of row -->
+
+<div class = 'row centered'>
 <div class = 'btn btn-info' id = 'save-preferences-btn'>Save Preferences</div>
+</div>
 
 <script type = 'text/javascript'>
 var default_ids = <%= raw(@default_group_ids) %>;
@@ -44,13 +70,17 @@ function getCheckedGroups(type){
 	});
 	return ids;
 }
+function getLandingGroup(){
+	return $('#landing-select option:selected').attr('data-id');
+}
 $('#save-preferences-btn').click(function(){
 	$.ajax({
 		url: '/go/update_preferences',
 		type: 'post',
 		data:{
 			default_groups: getCheckedGroups('default'),
-			search_groups: getCheckedGroups('search')
+			search_groups: getCheckedGroups('search'),
+			landing_group_id: getLandingGroup()
 		},
 		success:function(data){
 			location.reload();

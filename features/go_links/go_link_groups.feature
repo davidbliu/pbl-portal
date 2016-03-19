@@ -52,5 +52,6 @@ Scenario: group substring superstring permissions working
   And I am on the go_menu page
   Then I should not see "key1" 
 
+Scenario: should not see groups you are not a part of
 
 

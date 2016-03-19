@@ -62,3 +62,8 @@ Given(/^I restore "(.*)"$/) do |key|
 	click_link(copy.id.to_s+'-restore-link')
 end
 
+Given(/I select "(.*)" as my landing page$/) do |key|
+	group = Group.where(key: key).first
+	find("option[value='"+group.id.to_s+"-landing']").click
+end
+
