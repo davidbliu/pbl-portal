@@ -40,3 +40,7 @@ Given(/^I click the id "([^"]*)"$/) do |id|
 	find('#'+id).click
 end
 
+Given(/^I delete checked links$/) do
+	visit '/go/delete_checked'
+end
+

@@ -22,10 +22,15 @@ Scenario: deleted links show up in trash
 	Given I am on the go_menu page
 	Given I check the box for "key1"
 	And I check the box for "key2"
-	Given I visit the checked links page
-	Then I should see "key1"
-	And I click the id "delete-all-btn"
+	And I delete checked links
+
 	Given I am on the go_trash page
 	Then I should see "key1"
 	And I should see "key2"
 	And I should not see "key3"
+
+Scenario: trash permissions work
+
+Scenario: can restore links from trash
+
+Scenario: can discard links from trash

@@ -21,7 +21,7 @@ class GoLinkCopy < ActiveRecord::Base
 		groups = Group.groups_by_email(email)
 		ids = []
 		groups.each do |group|
-			ids += group.golinks.pluck(:id)
+			ids += group.copies.pluck(:id)
 		end
 		ids += GoLinkCopy.where('groups like ?', "%Anyone%").pluck(:id)
 		ids += GoLinkCopy.where(member_email: email).pluck(:id)
