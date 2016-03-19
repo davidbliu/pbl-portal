@@ -2,6 +2,7 @@ require 'elasticsearch/model'
 class GoLink < ActiveRecord::Base
 
 	before_save :fix_groups
+	before_destroy :create_copy
 	include Elasticsearch::Model
  	include Elasticsearch::Model::Callbacks
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
@@ -14,6 +15,18 @@ class GoLink < ActiveRecord::Base
 			gps = 'Anyone'
 		end
 		self.groups = gps
+	end
+
+	def create_copy
+		if self.key.present? and self.url.present?
+			GoLinkCopy.create(
+				key: self.key,
+				url: self.url,
+				member_email: self.member_email,
+				groups: self.groups,
+				description: self.description,
+				golink_id: self.id)
+		end
 	end
 
 	def self.handle_redirect(key, email)
