@@ -1,0 +1,1 @@
+Feature: I want to be able to restore deleted golinks

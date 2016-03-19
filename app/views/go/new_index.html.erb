@@ -51,6 +51,9 @@ tr:hover{
 </style>
 <%= stylesheet_link_tag 'flickr_pagination' %>
 
+<input type = 'checkbox' id = 'check-check'>
+<div id = 'div-div'>div-div</div>
+
 <div class = 'row'>
 
 <div class = 'col-md-7' id = 'col6'>
@@ -143,8 +146,8 @@ tr:hover{
 				<%= group.key %>
 			</span>
 		</td>
-		<td><input class = 'batch-group-checkbox' type = 'checkbox' data-type = 'add' data-id = '<%= group.id %>'>&nbsp;Add</td>
-		<td><input class = 'batch-group-checkbox' type = 'checkbox' data-type = 'remove' data-id = '<%= group.id %>'>&nbsp;Remove</td>
+		<td><input id = 'add-group-<%= group.id %>-checkbox' class = 'batch-group-checkbox' type = 'checkbox' data-type = 'add' data-id = '<%= group.id %>'>&nbsp;Add</td>
+		<td><input id = 'remove-group-<%= group.id %>-checkbox'  class = 'batch-group-checkbox' type = 'checkbox' data-type = 'remove' data-id = '<%= group.id %>'>&nbsp;Remove</td>
 	</tr>
 	<% end %>
 </table>
@@ -191,4 +194,12 @@ $('#search-input').keypress(function(e) {
     }
 });
 
+$('#check-check').click(function(){
+	// $(body).prepend("<h1>HI THERE</h1>");
+	window.location.href = '/'
+});
+$('#div-div').click(function(){
+	// $(body).prepend("<h1>HI THERE</h1>");
+	window.location.href = '/'
+});
 </script>
