@@ -56,3 +56,11 @@ Scenario: can restore links from trash
   Then I should see "key1"
 
 Scenario: can discard links from trash
+  Given I log in as "e1@g"
+  Given I am on the go_menu page
+  Given I check the box for "key1"
+  Given I delete checked links
+  Given I am on the go_trash page
+  Given I destroy the copy of "key1"
+  Then I should be on the go_trash page
+  Then I should not see "key1"
