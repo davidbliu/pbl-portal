@@ -9,6 +9,19 @@ Given(/^the following golinks exist:$/) do |table|
   end
 end
 
+
+Given(/^the following preferences exist:$/) do |table|
+  # table is a Cucumber::Core::Ast::DataTable
+  table.hashes.each do |row|
+  	row[:default] ||= ''
+  	row[:landing] ||= nil
+  	GoPreference.create(
+  		email: row[:key],
+  		default_group_ids: row[:default].split(','),
+  		landing_group_id: row[:landing])
+  end
+end
+
 Given(/^I am batch editing "([^"]*)"$/) do |keys|
 	ids = GoLink.where('key in (?)', keys.split(',').map{|x| x.strip}).pluck(:id)
 	visit '/go/batch_edit?ids='+ids.to_json.to_s
@@ -62,8 +75,17 @@ Given(/^I restore "(.*)"$/) do |key|
 	click_link(copy.id.to_s+'-restore-link')
 end
 
+Given(/^I destroy the copy of "(.*)"$/) do |key|
+	copy = GoLinkCopy.where(key: key).last
+	click_link(copy.id.to_s+'-destroy-link')
+end
+
 Given(/I select "(.*)" as my landing page$/) do |key|
 	group = Group.where(key: key).first
 	find("option[value='"+group.id.to_s+"-landing']").click
+end
+
+Given(/I should be on the trash page$/) do
+	assert page.current_path == go_trash_path
 end
 

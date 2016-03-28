@@ -42,3 +42,7 @@ Scenario: editing groups changes their groups
   And I check the box to "add" "g1k"
   And I check the box to "add" "g2k"
   And I click the id "update-groups-btn"
+
+@javascript
+Scenario: batch deleting links works
+  

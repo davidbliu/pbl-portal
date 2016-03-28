@@ -66,7 +66,7 @@ class GoController < ApplicationController
 
   def index
     # handle landing group
-    if not request.path == '/go/menu' and not params[:group_id] and not params[:q]
+    if not request.path == '/go/menu' and not params[:group_id] and not params[:q] and not params[:page]
       landing_group = GoPreference.landing_group(myEmail)
       if landing_group
         redirected = true

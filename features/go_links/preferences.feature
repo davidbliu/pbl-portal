@@ -15,6 +15,12 @@ Background: golinks have been added to the database
 	  | g3k | g3n | e2@g | e2@g |
 	  | g4k | g4n | e2@g | e2@g |
 
+
+	 Given the following preferences exist:
+	 | email | default | landing |
+	 | e1@g | | |
+	 | e2@g | g2k | g2k |
+
 @javascript
 Scenario: preferences page is editable
 	Given I log in as "e1@g"
@@ -43,4 +49,6 @@ Scenario: can set landing group
 	And I should see "key2"
 	And I should see "key3"
 	And I should not see "key4"
+
+Scenario: landing group doesn't break pagination, redirects, adding links, etc
 

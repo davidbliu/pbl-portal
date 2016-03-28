@@ -1,4 +1,9 @@
 class TablingManager
+
+	def self.tabling_admin
+		['davidbliu@gmail.com', 'harukoayabe@gmail.com']
+	end
+
 	def self.default_slots
 		slots = []
 		interval = 3
