@@ -33,7 +33,9 @@ def self.get_name(sender_id)
     puts fb_url
     r = RestClient.get fb_url, :content_type => :json, :accept => :json
     r = JSON.parse(r)
-    return r["first_name"]+' '+r["last_name"]
+    name = r["first_name"]+' '+r["last_name"]
+    puts 'name was '+name
+    return name
   end
 
   def self.handle_go(member, msg)
@@ -172,11 +174,13 @@ def self.get_name(sender_id)
         #end
         #me = me.first
         name = self.get_name(sender_id)
+        puts 'got name'
         me = Member.where(name: name)
         if me.length == 0
           return {:text => "I dont recognize you, are you in PBL? If so plz send an email to davidbliu@gmail.com"}
         end
         me = me.first
+        puts 'got nember object'
         case splits[0]
         when 'help'
           return {:text=> 'Here are some commands you can use: "go KEY" for PBL Links, "tabling" for your schedule, "blog" for recent posts, "points", and "events" for the calendar. You can also type anything in here and I will search the wiki for you :)'}
