@@ -19,3 +19,4 @@
 # david
 setenv.sh
 *.DS_Store
+public/assets
