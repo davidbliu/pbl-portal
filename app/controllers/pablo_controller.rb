@@ -18,9 +18,10 @@ class PabloController < ApplicationController
     puts 'pablo'
     messaging_events = params[:entry][0][:messaging]
     mhash = {}
-    messaging_events[-2..-1].each do |event|
+    messaging_events.each do |event|
       puts event
       begin
+        message = ''
         sender_id = event["sender"]["id"]
         if event.keys.include?("postback")
           message = event["postback"]["payload"]
@@ -33,10 +34,13 @@ class PabloController < ApplicationController
             message = "I can't respond to that kind of message"
           end
         end
-        mhash[message_id] = {sender_id: sender_id, message: message}
+        if message and message != ''
+          mhash[message_id] = {sender_id: sender_id, message: message}
+        end
       rescue
       end
     end
+    puts 'there are '+mhash.keys.length.to_s+' keys!'
     mhash.keys.each do |key|
       m = mhash[key]
       resp = Pablo.get_response(m[:sender_id], m[:message])
