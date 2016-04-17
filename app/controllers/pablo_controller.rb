@@ -18,7 +18,7 @@ class PabloController < ApplicationController
     puts 'pablo'
     messaging_events = params[:entry][0][:messaging]
     mhash = {}
-    messaging_events.each do |event|
+    messaging_events[-2..-1].each do |event|
       puts event
       begin
         sender_id = event["sender"]["id"]

@@ -29,15 +29,10 @@ class Pablo
 def self.get_name(sender_id)
     puts 'getting name'
     token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
-    puts 'slfjslkdfj'
     fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+token.to_s
-    puts 'fb url'
-    puts fb_url
-    puts 'that was fb url'
     r = RestClient.get fb_url, :content_type => :json, :accept => :json
     r = JSON.parse(r)
     name = r["first_name"]+' '+r["last_name"]
-    puts 'name was '+name
     return name
   end
 
