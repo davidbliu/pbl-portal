@@ -9,6 +9,7 @@ gem 'pg'
 gem 'thin'
 gem 'therubyracer'
 gem 'parse_resource', github: 'adelevie/parse_resource'
+gem 'rest-client'
 
 # oauth
 gem 'omniauth-google-oauth2', :git => 'https://github.com/zquestz/omniauth-google-oauth2.git'

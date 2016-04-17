@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   get '/track_clicks'=>'main#clicks'
   get '/cookie_hack' => 'main#cookie_hack'
 
+  post '/pablo' => 'pablo#pablo'
+
   # authentication 
   get "/auth/google_oauth2/callback", to: "auth#google_callback"
   get '/auth/email', to:'auth#email'
