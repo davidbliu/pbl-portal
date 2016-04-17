@@ -9,6 +9,7 @@ class PabloController < ApplicationController
     sender_id = '95113959167371'
     resp = Pablo.get_response(sender_id, q)
     Pablo.send("951139591673712", resp)
+    # r = Pablo.get_me(sender_id)
     render json: resp
   end
 
@@ -19,11 +20,16 @@ class PabloController < ApplicationController
     messaging_events.each do |event|
       begin
         sender_id = event["sender"]["id"]
-        message_id = event["message"]["seq"]
-        if event["message"].keys.include?("text")
-          message = event["message"]["text"]
-        else
-          message = "I can't respond to that kind of message"
+        if event.keys.include?("postback")
+          message = event["postback"]["payload"]
+          message_id = "POSTBACK"
+        elsif event.keys.include?("message")
+          message_id = event["message"]["seq"]
+          if event["message"].keys.include?("text")
+            message = event["message"]["text"]
+          else
+            message = "I can't respond to that kind of message"
+          end
         end
         mhash[message_id] = {sender_id: sender_id, message: message}
       rescue

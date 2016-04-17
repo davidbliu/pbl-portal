@@ -27,6 +27,13 @@ class Pablo
   #   msg.split(' ')[0] == 'go'
   # end
 
+  def self.get_me(sender_id)
+    token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
+    fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+token
+    r = RestClient.get fb_url
+    return r
+  end
+
   def self.handle_go(member, msg)
     key = msg.split('go ')[1]
     urls = GoLink.where(key: key).where('id in (?)', GoLink.can_view(member.email)).pluck(:url)
@@ -96,13 +103,13 @@ class Pablo
     buttons = []
     buttons << {
       type: 'web_url',
-      url: 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+text,
+      url: 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+URI.encode(text),
       title: 'Search the wiki'
     }
     buttons << {
-      type: 'web_url',
-      url: 'https://www.google.com/?gws_rd=ssl#q='+text,
-      title: 'Google it'
+      type: 'postback',
+      payload: 'help',
+      title: 'Help'
     }
 
     return {
