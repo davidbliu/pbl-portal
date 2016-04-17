@@ -38,8 +38,8 @@ def self.get_name(sender_id)
 
   def self.handle_go(member, msg)
     key = msg.split('go ')[1]
-    urls = GoLink.where(key: key).where('id in (?)', GoLink.can_view(member.email)).pluck(:url)
-    if urls.length == 0
+    golinks = GoLink.where(key: key).where('id in (?)', GoLink.can_view(member.email))
+    if golinks.length == 0
       search = GoLink.email_search(key, member.email).first(3)
       buttons = []
       search.each do |golink|
@@ -50,20 +50,30 @@ def self.get_name(sender_id)
         }
         buttons << btn
       end
-      return {
+      text = 'Couldnt find "'+key+'", did you mean one of these?'
+      
+    else
+      buttons = []
+      golinks.each do |golink|
+        buttons << {
+          type:'web_url',
+          url: golink.url,
+          title: golink.url
+        }
+      end
+      text = 'Found "'+key+'", click to go'
+    end
+
+    return {
         attachment: {
           type: 'template',
           payload: {
             template_type: 'button', 
-            text: 'Couldnt find "'+key+'", did you mean one of these?', 
+            text: text, 
             buttons: buttons
           }
         }
       }
-    else
-      msg = urls.join(', ')
-    end
-    return {:text=>msg}
   end
 
   def self.handle_tabling(member, msg)
