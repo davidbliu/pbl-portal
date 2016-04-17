@@ -27,18 +27,38 @@ class Pablo
   #   msg.split(' ')[0] == 'go'
   # end
 
-  def self.get_me(sender_id)
+def self.get_name(sender_id)
     token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
     fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+token
-    r = RestClient.get fb_url
-    return r
+    r = RestClient.get fb_url, :content_type => :json, :accept => :json
+    r = JSON.parse(r)
+    return r["first_name"]+' '+r["last_name"]
   end
 
   def self.handle_go(member, msg)
     key = msg.split('go ')[1]
     urls = GoLink.where(key: key).where('id in (?)', GoLink.can_view(member.email)).pluck(:url)
     if urls.length == 0
-      msg = 'Did you mean one of these?: '+GoLink.email_search(key, member.email).map{|x| x[:key]}.join(', ')
+      search = GoLink.email_search(key, member.email).first(3)
+      buttons = []
+      search.each do |golink|
+        btn = {
+          type: 'web_url',
+          url: golink[:url],
+          title: golink[:key]
+        }
+        buttons << btn
+      end
+      return {
+        attachment: {
+          type: 'template',
+          payload: {
+            template_type: 'button', 
+            text: 'Couldnt find "'+key+'", did you mean one of these?', 
+            buttons: buttons
+          }
+        }
+      }
     else
       msg = urls.join(', ')
     end
@@ -106,6 +126,11 @@ class Pablo
       url: 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+URI.encode(text),
       title: 'Search the wiki'
     }
+    #buttons << {
+      #type:'postback',
+      #payload: 'go '+text,
+      #title: 'go '+text
+    #}
     buttons << {
       type: 'postback',
       payload: 'help',
@@ -125,27 +150,33 @@ class Pablo
   end
 
   def self.get_response(sender_id, text)
-    text = text.downcase
+    text = text ? text.downcase : ''
     splits = text.split(' ')
     begin
-      if splits[0].include?('@') and splits[0].include?('.')
-        BotMember.where(sender_id: sender_id).destroy_all
-        BotMember.where(email: splits[0], sender_id: sender_id).first_or_create!
-        return {:text => 'You are '+text}
-      else
-        bot_member = BotMember.where(sender_id: sender_id)
-        if bot_member.length == 0
-          return {:text =>'First things first! whats your email?'}
-        end
-        bot_member = bot_member.first
-        me = Member.where(email: bot_member.email)
+      #if splits[0].include?('@') and splits[0].include?('.')
+        #BotMember.where(sender_id: sender_id).destroy_all
+        #BotMember.where(email: splits[0], sender_id: sender_id).first_or_create!
+        #return {:text => 'You are '+text+'. Type "help" to see what I can do'}
+      #else
+        #bot_member = BotMember.where(sender_id: sender_id)
+        #if bot_member.length == 0
+          #return {:text =>'First things first! whats your email?'}
+        #end
+        #bot_member = bot_member.first
+        #me = Member.where(email: bot_member.email)
+        #if me.length == 0
+          #return {:text => 'This email doesnt have an account on the portal, try a different email'}
+        #end
+        #me = me.first
+        name = self.get_name(sender_id)
+        me = Member.(name: name)
         if me.length == 0
-          return {:text => 'This email doesnt have an account on the portal, try a different email'}
+          return {:text => "I dont recognize you, are you in PBL? send an email to davidbliu@gmail.com"}
         end
         me = me.first
         case splits[0]
         when 'help'
-          return {:text=> 'random random helptext'}
+          return {:text=> 'Here are some commands you can use: "go KEY" for PBL Links, "tabling" for your schedule, "blog" for recent posts, "points", and "events" for the calendar. You can also type anything in here and I will search the wiki for you :)'}
         when 'whoami'
           return {:text => me.name.to_s}
         when 'generate'
@@ -168,9 +199,10 @@ class Pablo
           return {:text=>names}
         end
         return self.default_btns(text)
-      end
+      #end
     rescue => error
-      return {:text => error.to_s}
+      return false
+      #return {:text => error.to_s}
     end
   end
 end

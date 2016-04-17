@@ -15,9 +15,11 @@ class PabloController < ApplicationController
 
 
   def pablo
+    puts 'pablo'
     messaging_events = params[:entry][0][:messaging]
     mhash = {}
     messaging_events.each do |event|
+      puts event
       begin
         sender_id = event["sender"]["id"]
         if event.keys.include?("postback")
@@ -38,7 +40,9 @@ class PabloController < ApplicationController
     mhash.keys.each do |key|
       m = mhash[key]
       resp = Pablo.get_response(m[:sender_id], m[:message])
-      Pablo.send(m[:sender_id], resp)
+      if resp
+        Pablo.send(m[:sender_id], resp)
+      end
     end
 
     render nothing: true, status: 200
