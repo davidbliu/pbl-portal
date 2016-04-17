@@ -1,5 +1,4 @@
 require "uri"
-require "net/http"
 require 'rest-client'
 
 class Pablo
@@ -28,8 +27,10 @@ class Pablo
   # end
 
 def self.get_name(sender_id)
+    puts 'getting name'
     token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
-    fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+token
+    fb_url = 'https://graph.facebook.com/v2.6/'+sender_id+'?fields=first_name,last_name,profile_pic&access_token='+token
+    puts fb_url
     r = RestClient.get fb_url, :content_type => :json, :accept => :json
     r = JSON.parse(r)
     return r["first_name"]+' '+r["last_name"]
@@ -126,16 +127,18 @@ def self.get_name(sender_id)
       url: 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+URI.encode(text),
       title: 'Search the wiki'
     }
-    #buttons << {
-      #type:'postback',
-      #payload: 'go '+text,
-      #title: 'go '+text
-    #}
+    
     buttons << {
       type: 'postback',
       payload: 'help',
       title: 'Help'
     }
+
+    # buttons << {
+    #   type:'postback',
+    #   payload: 'ask '+text, 
+    #   title: 'Ask'
+    # }
 
     return {
       attachment: {
@@ -169,9 +172,9 @@ def self.get_name(sender_id)
         #end
         #me = me.first
         name = self.get_name(sender_id)
-        me = Member.(name: name)
+        me = Member.where(name: name)
         if me.length == 0
-          return {:text => "I dont recognize you, are you in PBL? send an email to davidbliu@gmail.com"}
+          return {:text => "I dont recognize you, are you in PBL? If so plz send an email to davidbliu@gmail.com"}
         end
         me = me.first
         case splits[0]
@@ -179,6 +182,8 @@ def self.get_name(sender_id)
           return {:text=> 'Here are some commands you can use: "go KEY" for PBL Links, "tabling" for your schedule, "blog" for recent posts, "points", and "events" for the calendar. You can also type anything in here and I will search the wiki for you :)'}
         when 'whoami'
           return {:text => me.name.to_s}
+        when 'ask'
+          return {:text => 'I will find out the answer and let you know!'}
         when 'generate'
           TablingManager.gen_tabling
           return {:text => 'You generated tabling, check it out at http://pbl.link/tabling'}
@@ -199,10 +204,8 @@ def self.get_name(sender_id)
           return {:text=>names}
         end
         return self.default_btns(text)
-      #end
     rescue => error
       return false
-      #return {:text => error.to_s}
     end
   end
 end

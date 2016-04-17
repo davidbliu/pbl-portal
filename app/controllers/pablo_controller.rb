@@ -6,7 +6,7 @@ class PabloController < ApplicationController
 
   def pablo_test
     q = params[:q]
-    sender_id = '95113959167371'
+    sender_id = '951139591673712'
     resp = Pablo.get_response(sender_id, q)
     Pablo.send("951139591673712", resp)
     # r = Pablo.get_me(sender_id)
