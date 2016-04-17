@@ -6,6 +6,9 @@ class Post < ActiveRecord::Base
  	include Elasticsearch::Model::Callbacks
  	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
+ 	def self.list(member)
+ 		Post.order('created_at desc').where('id in (?)', Post.can_view(member))
+ 	end
 
  	def self.channel_to_emails(channel)
  		email_dict = {}
