@@ -2,39 +2,8 @@ require "uri"
 require 'rest-client'
 
 class Pablo
-  # def self.get_response(member, msg)
-  #   msg = msg.downcase
-  #   if self.blog_message?(msg)
-  #     return 'this is a blog message'
-  #   elsif self.tabling_message?(msg)
-  #     return self.handle_tabling(member, msg)
-  #   elsif self.go_message?(msg)
-  #     return self.handle_go(member, msg)
-  #   end
-  #   return {:text=>msg}
-  # end
 
-  # def self.blog_message?(msg)
-  #   msg.include?('blog')
-  # end
 
-  # def self.tabling_message?(msg)
-  #   msg.include?('tabling')
-  # end
-
-  # def self.go_message?(msg)
-  #   msg.split(' ')[0] == 'go'
-  # end
-
-def self.get_name(sender_id)
-    puts 'getting name'
-    token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
-    fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+token.to_s
-    r = RestClient.get fb_url, :content_type => :json, :accept => :json
-    r = JSON.parse(r)
-    name = r["first_name"]+' '+r["last_name"]
-    return name
-  end
 
   def self.handle_go(member, msg)
     key = msg.split('go ')[1]
@@ -63,20 +32,14 @@ def self.get_name(sender_id)
       end
       text = 'Found "'+key+'", click to go'
     end
-
-    return {
-        attachment: {
-          type: 'template',
-          payload: {
-            template_type: 'button', 
-            text: text, 
-            buttons: buttons
-          }
-        }
-      }
+    if buttons.length == 0
+      return {:text => "I couldn't find any results for that :("}
+    else
+      return self.get_button_msg(text, buttons)
+    end
   end
 
-  def self.handle_tabling(member, msg)
+  def self.tabling_string(member)
     tabling_msg = ''
     slots = TablingSlot.all.select{|x| x.member_emails.include?(member.email)}
     slots.each do |slot|
@@ -87,13 +50,36 @@ def self.get_name(sender_id)
     if tabling_msg == ''
       tabling_msg = 'You dont have to table'
     end
-    return {:text => tabling_msg}
+    return tabling_msg
   end
 
-#   def self.send_text_message(sender_id, text)
-#     msg = {:text=> text}
-#     self.send_message(sender_id, text)
-#   end
+  def self.points_string(member)
+    'Your points: '+Event.get_score(member.email).to_s
+  end
+
+  def self.trending_golink_buttons(member)
+    golinks = GoLink.order('created_at desc').where('id in (?)', GoLink.can_view(member.email)).first(3)
+    buttons = []
+    golinks.each do |golink|
+      buttons << {
+        type: 'web_url',
+        title: golink.key,
+        url: golink.url
+      }
+    end
+    return buttons
+  end
+
+  def self.handle_tabling(member, msg)
+    tabling_msg = self.tabling_string(member)
+    buttons = [{
+      type:'web_url',
+      url:'http://pbl.link/tabling',
+      title:'Full tabling schedule'
+      }]
+    return self.get_button_msg(tabling_msg, buttons)
+  end
+
 
   def self.send(recipient_id, msg)
     token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
@@ -102,7 +88,7 @@ def self.get_name(sender_id)
     begin
     RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
     rescue => e
-      puts 'the response was '
+      puts '>>> ERROR in Pablo::send, the rest client response was '
       puts e.response
     end
   end
@@ -117,16 +103,109 @@ def self.get_name(sender_id)
       }
       buttons << btn
     end
+    return self.get_button_msg('Here are some recent blog posts, for more ask me for "go blog"', buttons)
+  end
+
+  def self.get_button_msg(title, buttons)
     return {
       attachment: {
         type: 'template',
         payload: {
           template_type: 'button', 
-          text: 'Here are '+buttons.length.to_s+' recent blogposts', 
+          text: title,
           buttons: buttons
         }
       }
     }
+  end
+
+  def self.event_buttons
+    buttons = []
+    buttons << {
+      type:'web_url',
+      url:'http://pbl.link/calendar',
+      title: 'View Calendar'
+    }
+    buttons << {
+      type:'web_url',
+      url: 'https://calendar.google.com/calendar/render?eid=OTNrMjlmZDRzdGJwdDA4ZjNqZWdtMDJqbDggOGJvMnJwZjRqb2VtMmtxOXEybjk0MHAxc3NAZw&ctz=America/Los_Angeles&sf=true&output=xml#eventpage_6',
+      title: 'PD Apprentice Challenge'
+    }
+    buttons << {
+      type: 'web_url',
+      url: 'https://calendar.google.com/calendar/render?eid=Z2kwYWQyb2Zta3NvMnA1b2hzN3BmdTIzZXMgOGJvMnJwZjRqb2VtMmtxOXEybjk0MHAxc3NAZw&ctz=America/Los_Angeles&sf=true&output=xml#main_7',
+      title: 'Fourth General Meeting'
+    }
+    return buttons
+  end
+
+  def self.get_generic_message(member)
+    return {
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: [
+          {
+            title: "Blog",
+            image_url:"http://www.ifla.org/files/assets/library-theory-and-research/images/blog-3.jpg",
+            subtitle:"View the blog",
+            buttons:[
+              {
+                type:"web_url",
+                url:"http://pbl.link/blog",
+                title:"Go to the blog"
+              },
+              {
+                type:"postback",
+                payload:"blog",
+                title:"View recent posts"
+              }          
+            ]
+          },
+          {
+            title:"Tabling",
+            image_url:"http://insidescoopsf.sfgate.com/wp-content/blogs.dir/732/files/cheap-eats-around-cal/cal-campus_0.jpg",
+            subtitle: self.tabling_string(member),
+            buttons:[
+              {
+                type:"web_url",
+                url:"http://pbl.link/tabling",
+                title:"View full tabling schedule"
+              }            
+            ]
+          },
+          {
+            title:"Events",
+            image_url:"http://www.fairviewparkschools.org/wp-content/uploads/2015/06/calendar.png",
+            subtitle: 'There are 4 events happening this week',
+            buttons: self.event_buttons
+          },
+          {
+            title:"Points",
+            subtitle: self.points_string(member),
+            buttons:[
+              {
+                type:"web_url",
+                url:"http://pbl.link/points",
+                title:"Attendance"
+              },
+              {
+                type:"web_url",
+                url:"http://pbl.link/scoreboard",
+                title:"Scoreboard"
+              },
+              {
+                type:"web_url",
+                url:"http://pbl.link/distribution",
+                title:"Distribution"
+              }         
+            ]
+          }
+        ]
+      }
+    }
+  }
   end
 
 
@@ -137,78 +216,46 @@ def self.get_name(sender_id)
       url: 'http://wd.berkeley-pbl.com/wiki/index.php/Special:Search/'+URI.encode(text),
       title: 'Search the wiki'
     }
-    
     buttons << {
       type: 'postback',
       payload: 'help',
       title: 'Help'
     }
-
-    # buttons << {
-    #   type:'postback',
-    #   payload: 'ask '+text, 
-    #   title: 'Ask'
-    # }
-
-    return {
-      attachment: {
-        type: 'template',
-        payload: {
-          template_type: 'button', 
-          text: 'I dont know how to do "'+text+'", here are some suggestions', 
-          buttons: buttons
-        }
-      }
-    }
+    title = 'I dont know how to do "'+text+'", here are some suggestions'
+    return self.get_button_msg(title, buttons)
   end
 
-  def self.get_response(sender_id, text)
-    text = text ? text.downcase : ''
+  def self.get_response(member, text)
+    text = text.downcase
     splits = text.split(' ')
+    puts 'getting response'
     begin
-      #if splits[0].include?('@') and splits[0].include?('.')
-        #BotMember.where(sender_id: sender_id).destroy_all
-        #BotMember.where(email: splits[0], sender_id: sender_id).first_or_create!
-        #return {:text => 'You are '+text+'. Type "help" to see what I can do'}
-      #else
-        #bot_member = BotMember.where(sender_id: sender_id)
-        #if bot_member.length == 0
-          #return {:text =>'First things first! whats your email?'}
-        #end
-        #bot_member = bot_member.first
-        #me = Member.where(email: bot_member.email)
-        #if me.length == 0
-          #return {:text => 'This email doesnt have an account on the portal, try a different email'}
-        #end
-        #me = me.first
-        name = self.get_name(sender_id)
-        puts 'got name'
-        me = Member.where(name: name)
-        if me.length == 0
-          return {:text => "I dont recognize you, are you in PBL? If so plz send an email to davidbliu@gmail.com"}
-        end
-        me = me.first
-        puts 'got nember object'
         case splits[0]
         when 'help'
-          return {:text=> 'Here are some commands you can use: "go KEY" for PBL Links, "tabling" for your schedule, "blog" for recent posts, "points", and "events" for the calendar. You can also type anything in here and I will search the wiki for you :)'}
+          return self.get_generic_message(member)
+          # return {:text=> 'Here are some commands you can use: "go KEY" for PBL Links, "tabling" for your schedule, "blog" for recent posts, "points", and "events" for the calendar. You can also type anything in here and I will search the wiki for you :)'}
         when 'whoami'
-          return {:text => me.name.to_s}
+          return {:text => member.name.to_s}
         when 'ask'
           return {:text => 'I will find out the answer and let you know!'}
         when 'generate'
           TablingManager.gen_tabling
           return {:text => 'You generated tabling, check it out at http://pbl.link/tabling'}
         when 'points'
-          return {:text=> 'Your points: '+Event.get_score(me.email).to_s}
+          return {:text=> self.points_string(member)}
         when 'tabling'
-          return self.handle_tabling(me, text)
+          return self.handle_tabling(member, text)
         when 'go'
-          return self.handle_go(me, text)
+          return self.handle_go(member, text)
         when 'blog'
-          return self.handle_blog(me)
+          return self.handle_blog(member)
         when 'events', 'c', 'calendar', 'cal'
-          return {:text=>'http://pbl.link/calendar'}
+          buttons << {
+            type: 'web_url',
+            url: 'http://pbl.link/calendar',
+            title: 'pbl.link/calendar'
+          }
+          return self.get_button_msg('Here is a link to the calendar', buttons)
         end
 
         if Member.committees.include?(text.upcase)
@@ -217,7 +264,7 @@ def self.get_name(sender_id)
         end
         return self.default_btns(text)
     rescue => error
-      return false
+      # return {:text => 'error'}
     end
   end
 end
