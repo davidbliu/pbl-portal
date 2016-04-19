@@ -6,7 +6,6 @@ class FBMessage
 		blog: [/^blog$/, /^posts$/, /^blogposts$/],
 		events: [/^events$/, /^cal$/, /^c$/, /^calendar$/],
 		go: [/^go (.*)$/],
-		all: [/^all (.*)$/],
 		help: [/^help$/],
 		points: [/^points$/],
 		more_blog: [/^more blog$/],
@@ -79,6 +78,11 @@ class FBMessage
 			return {:text => sender_alias +': '+ self.text}
 		when 'image'
 			return self.image_msg
+		else
+			begin
+				return self.image_msg
+			rescue
+			end
 		end
 		return false
 	end

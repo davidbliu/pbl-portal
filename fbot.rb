@@ -9,7 +9,8 @@ sticker_params = {"object"=>"page", "entry"=>[{"id"=>1725116921106681, "time"=>1
 like_params = {"object"=>"page", "entry"=>[{"id"=>1725116921106681, "time"=>1460927519247, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1725116921106681}, "timestamp"=>1460927519219, "message"=>{"mid"=>"mid.1460927519209:2d667cda3db4ff8910", "seq"=>12, "sticker_id"=>369239263222822, "attachments"=>[{"type"=>"image", "payload"=>{"url"=>"https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xfa1/t39.1997-6/851557_369239266556155_759568595_n.png"}}]}}]}], "controller"=>"application", "action"=>"hook", "application"=>{"object"=>"page", "entry"=>[{"id"=>1725116921106681, "time"=>1460927519247, "messaging"=>[{"sender"=>{"id"=>1055216967870621}, "recipient"=>{"id"=>1725116921106681}, "timestamp"=>1460927519219, "message"=>{"mid"=>"mid.1460927519209:2d667cda3db4ff8910", "seq"=>12, "sticker_id"=>369239263222822, "attachments"=>[{"type"=>"image", "payload"=>{"url"=>"https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xfa1/t39.1997-6/851557_369239266556155_759568595_n.png"}}]}}]}]}}
 postback_params = {"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}], "controller"=>"pablo", "action"=>"pablo", "pablo"=>{"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}]}}
 
-params = text_params
+params = sticker_params
+
 
 def controller_action(params)
 	messaging_events = FBParser.messaging_events(params)
@@ -18,20 +19,22 @@ def controller_action(params)
       if event.is_pablo_command?
       	Pablo.execute(event)
       else
-      	partner_id = event.sender_id
-      	# TODO partner_id = BotMember.get_partner_id(event.sender_id)
-      	if event.message
-      		Pablo.send(partner_id, event.message)
-      	else
-      		Pablo.send(event.sender_id, {:text => 'I cant send that type of message'})
-      	end
+      	puts params
+      	# partner_id = event.sender_id
+      	# if event.message
+      	# 	Pablo.send(partner_id, event.message)
+      	# else
+      	# 	Pablo.send(event.sender_id, {:text => 'I cant send that type of message'})
+      	# end
       end
     end
 end
 
-controller_action(params)
+# controller_action(params)
 
 # BotMember.all.each do |bm|
-# 	Pablo.send(bm.sender_id, {:text => "Dont forget to attend [EX] Workshop #5: Business Evaluations today! It starts at 7:00 pm in Dwinelle 88 :)"})
-# 	Pablo.send(bm.sender_id, {:text => "Ask me for events for more upcoming stuff"})
+# 	name = bm.group_aliases.join(', ')
+# 	Pablo.send(bm.sender_id, {:text => "Hi Friend! Because my knowledge is limited, I've decided to pair you up with a secret PBL friend, #{name}, who can help me respond"})
+# 	Pablo.send(bm.sender_id, {:text => "Your typical commands (tabling, blog, points, etc) will still go to me but I'll be forwarding rest to #{name}. You can even just chat with #{name} anonymously if you wish!"})
+# 	Pablo.send(bm.sender_id, {:text => "Try it out by sending a random message to me, and check my menu by (Y) for more details!"})
 # end

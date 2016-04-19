@@ -3,6 +3,7 @@ require 'rest-client'
 
 class Pablo
   def self.go_response(member, msg)
+    msg = msg.downcase
     key = msg.split('go ')[1]
     golinks = GoLink.where(key: key).where('id in (?)', GoLink.can_view(member.email))
     if golinks.length == 0
@@ -26,7 +27,11 @@ class Pablo
           title: golink.url
         }
       end
-      text = 'Found "'+key+'", click to go'
+      if key
+        text = 'Found "'+key+'", click to go'
+      else
+        text = 'click to go'
+      end
     end
     if buttons.length == 0
       return {:text => "I couldn't find any results for that :("}
@@ -186,6 +191,28 @@ class Pablo
         template_type: "generic",
         elements: [
           {
+            title: "Secret Pairings",
+            subtitle: "I've partnered you with a secret friend to help me respond.",
+            buttons: [
+              {
+                type: 'postback',
+                payload: 'group',
+                title: "Who's My Partner?"
+              },
+              {
+                type: 'postback',
+                payload: 'skip',
+                title: 'Skip Partner'
+              },
+              {
+                type:'postback',
+                payload:'info_pair',
+                title:'More Info'
+              }
+            ]
+
+          },
+          {
             title: "Blog",
             subtitle:"Check out recent blogposts",
             buttons:[
@@ -243,28 +270,6 @@ class Pablo
                 title:"Distribution"
               }         
             ]
-          },
-          {
-            title: "Secret Pairings",
-            subtitle: "Since I am brainless, I've partnered you up with a friend in PBL who can respond on my behalf! This is only if I dont understand, of course. I still respond to the regular old commands",
-            buttons: [
-              {
-                type: 'postback',
-                payload: 'group',
-                title: "My partner(s)"
-              },
-              {
-                type: 'postback',
-                payload: 'skip',
-                title: 'Get New Partner'
-              },
-              {
-                type:'postback',
-                payload:'info_pair',
-                title:'More Info'
-              }
-            ]
-
           },
           {
             title: 'More',
@@ -397,7 +402,7 @@ class Pablo
         self.send(event.sender_id, {:text=> 'Unable to perform pairing'})
       end
     when :group
-      self.send(event.sender_id, {:text => "You are in a group with #{event.bot.group_aliases.join(', ')}"})
+      event.bot.alert_group
     when :whoami
       self.send(event.sender_id, {:text => event.bot.alias})
     when :info_pair

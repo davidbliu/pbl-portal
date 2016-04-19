@@ -62,27 +62,37 @@ class BotMember < ActiveRecord::Base
 
 	def swap_groups(other)
 		my_group = self.group
-		self.group = other.group
+		other_group = other.group
+		self.group = other_group
 		other.group = my_group
 		self.save!
 		other.save!
+		BotMember.where(group: [my_group, other_group]).each do |bm|
+			puts bm.alias
+			bm.alert_group
+		end
 	end
 
 	def skip
 		other = BotMember.where.not(sender_id: self.sender_id).sample
 		self.swap_groups(other)
-		self.alert_group
 	end
 
 	def alert_group
 		names = BotMember.where(group: self.group).pluck(:alias).select{|x| x != self.alias}
-		txt = "Let me introduce you to "+names.join(', ')+". When I dont know how to respond, I'll send your message along to "+names.join(', ')+ " for help"
+		txt = "You are paired with "+names.join(', ')
 		Pablo.send(self.sender_id, {:text => txt})
 	end
 
 	def pair(bot_alias)
+		bot_alias = bot_alias.capitalize
 		if bot_alias != self.alias
-			gp = BotMember.find_by_alias(bot_alias).group
+			gp = BotMember.find_by_alias(bot_alias)
+			if gp
+				gp = gp.group
+			else
+				return false
+			end
 			if self.group == gp
 				return true
 			end
