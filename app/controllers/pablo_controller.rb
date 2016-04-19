@@ -18,27 +18,24 @@ def pablo
 
   messaging_events = FBParser.messaging_events(params)
     messaging_events.each do |event|
-      event = FBMessage.new(event)
-      if event.member == nil
-        Pablo.send(event.sender_id, {:text => 'Sorry I dont recognize you, are you in PBL?'})
-      elsif event.is_pablo_command?
-        begin
-          Pablo.execute(event)
-        rescue => e
-          puts 'error in pablo controller'
-          puts e
-          Pablo.send(event.sender_id, {:text => "error"})
-        end
-      else
-        if event.forwarded_message and event.bot.group
-          event.bot.group_ids.each do |id|
-            Pablo.send(id, event.forwarded_message)
+      begin
+        event = FBMessage.new(event)
+        if event.member == nil
+          Pablo.send(event.sender_id, {:text => 'Sorry I dont recognize you, are you in PBL?'})
+        elsif event.is_pablo_command?
+          begin
+            Pablo.execute(event)
+          rescue => e
+            Pablo.send(event.sender_id, {:text => "error"})
           end
         else
-          Pablo.send(event.sender_id, "Heres a joke instead")
-          Pablo.send(event.sender_id, Pablo.joke_response)
-          # can't send this type of message (sticker)
+          if event.forwarded_message and event.bot.group
+            event.bot.group_ids.each do |id|
+              Pablo.send(id, event.forwarded_message)
+            end
+          end
         end
+      rescue
       end
     end
     render nothing: true, status: 200

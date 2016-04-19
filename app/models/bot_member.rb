@@ -32,10 +32,14 @@ class BotMember < ActiveRecord::Base
 	def self.get_name_from_fb(sender_id)
 		token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
 		fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+token.to_s
-		r = RestClient.get fb_url, :content_type => :json, :accept => :json
-		r = JSON.parse(r)
-		name = r["first_name"]+' '+r["last_name"]
-		return name
+		begin
+			r = RestClient.get fb_url, :content_type => :json, :accept => :json
+			r = JSON.parse(r)
+			name = r["first_name"]+' '+r["last_name"]
+			return name
+		rescue => e
+			puts e.response
+		end
 	end
 
 	def group_aliases
@@ -104,9 +108,8 @@ class BotMember < ActiveRecord::Base
 		end
 	end
 
-	def self.generate_groups
-		bms = BotMember.all.to_a
-		bms = bms.shuffle
+	def self.generate_groups(bms)
+		min_i = BotMember.all.pluck(:group).map{|x| x.to_i}.max+1
 		if bms.length % 2 == 0
 			pairings = bms.each_slice(2).to_a
 		else
@@ -117,7 +120,7 @@ class BotMember < ActiveRecord::Base
 		end
 		pairings.each_with_index do |gp, index|
 			gp.each do |bm|
-				bm.group = index
+				bm.group = index+min_i
 				bm.save!
 			end
 		end
