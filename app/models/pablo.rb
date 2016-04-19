@@ -245,6 +245,28 @@ class Pablo
             ]
           },
           {
+            title: "Secret Pairings",
+            subtitle: "Since I am brainless, I've partnered you up with a friend in PBL who can respond on my behalf! This is only if I dont understand, of course. I still respond to the regular old commands",
+            buttons: [
+              {
+                type: 'postback',
+                payload: 'group',
+                title: "My partner(s)"
+              },
+              {
+                type: 'postback',
+                payload: 'skip',
+                title: 'Get New Partner'
+              },
+              {
+                type:'postback',
+                payload:'info_pair',
+                title:'More Info'
+              }
+            ]
+
+          },
+          {
             title: 'More',
             subtitle: 'I can also...',
             buttons:[
@@ -252,11 +274,6 @@ class Pablo
                 type: 'postback',
                 payload: 'joke',
                 title: 'Tell you a joke'
-              },
-              {
-                type: 'postback',
-                payload: 'skip',
-                title: 'Next Partner'
               }
             ]
           }
@@ -326,6 +343,17 @@ class Pablo
   #   end
   # end
 
+  def self.send_pairing_info(id)
+    p1 = {:text => "I've paired you up with a secret friend in PBL who can help answer questions on my behalf. You'll known them by an alias only"}
+    p2 ={:text => "Of course you can still ask me the same old same old: tabling, blog, points, go, etc..."}
+    p3 = {:text => "If you want to try a new secret friend, just type skip. If you remember the alias of someone you want to pair with, type pair {{the alias}}"}
+    p4 = {:text => "I can remind you who you're paired with if you type group. ask my whoami to see your own alias"}
+    self.send(id, p1)
+    self.send(id, p2)
+    self.send(id, p3)
+    self.send(id, p4)
+  end
+
   def self.joke_response
     joke_url = 'http://tambal.azurewebsites.net/joke/random'
     r = RestClient.get joke_url, :content_type => :json, :accept => :json
@@ -372,6 +400,8 @@ class Pablo
       self.send(event.sender_id, {:text => "You are in a group with #{event.bot.group_aliases.join(', ')}"})
     when :whoami
       self.send(event.sender_id, {:text => event.bot.alias})
+    when :info_pair
+      self.send_pairing_info(event.sender_id)
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end

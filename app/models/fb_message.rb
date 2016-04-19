@@ -15,7 +15,8 @@ class FBMessage
 		skip: [/^skip$/],
 		pair: [/^pair (.*)$/],
 		group: [/^group$/],
-		whoami: [/^whoami$/]
+		whoami: [/^whoami$/],
+		info_pair: [/^info_pair$/]
 	}
 	@@pablo_commands = @@command_map.values.flatten
 	@@pablo_map = {}
