@@ -35,6 +35,8 @@ def pablo
             Pablo.send(id, event.forwarded_message)
           end
         else
+          Pablo.send(event.sender_id, "Heres a joke instead")
+          Pablo.send(event.sender_id, Pablo.joke_response)
           # can't send this type of message (sticker)
         end
       end
