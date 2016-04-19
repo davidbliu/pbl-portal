@@ -66,7 +66,24 @@ class FBParser
 		end
 	end
 
+	def self.get_message(message_event)
+		begin 
+			return message_event["message"]
+		rescue
+			return false
+		end
+	end
+
 	def self.get_image_url(message_event)
 		return message_event["message"]["attachments"][0]["payload"]["url"]
+	end
+
+	def self.is_pablo_command(message_event)
+		type = self.message_type(message_event)
+		case type
+		when 'text'
+		when 'payload'
+		else
+		end
 	end
 end

@@ -74,6 +74,7 @@ GEM
       xpath (~> 2.0)
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
+    cleverbot-api (0.0.4)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.1.x)
@@ -311,6 +312,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  cleverbot-api
   coffee-rails (~> 4.1.0)
   cucumber-rails
   database_cleaner
@@ -338,3 +340,6 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
   will_paginate
+
+BUNDLED WITH
+   1.10.6

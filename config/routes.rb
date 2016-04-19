@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   get '/cookie_hack' => 'main#cookie_hack'
 
   post '/pablo' => 'pablo#pablo'
-  get '/pablo_test' => 'pablo#pablo_test'
+  get '/pablo_test' => 'pablo#pablo'
 
   # authentication 
   get "/auth/google_oauth2/callback", to: "auth#google_callback"

@@ -29,6 +29,7 @@ gem 'haml'
 
 # google drive gem
 gem 'google_drive'
+gem 'cleverbot-api'
 
 
 # Use SCSS for stylesheets
