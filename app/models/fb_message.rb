@@ -11,7 +11,11 @@ class FBMessage
 		points: [/^points$/],
 		more_blog: [/^more blog$/],
 		joke: [/^joke$/],
-		wiki: [/^wiki (.*)$/]
+		wiki: [/^wiki (.*)$/],
+		skip: [/^skip$/],
+		pair: [/^pair (.*)$/],
+		group: [/^group$/],
+		whoami: [/^whoami$/]
 	}
 	@@pablo_commands = @@command_map.values.flatten
 	@@pablo_map = {}
@@ -23,6 +27,22 @@ class FBMessage
 
 	def initialize(p)
 		@params = p
+		@bm = BotMember.find_by_sender_id(self.sender_id)
+		if not @bm
+			@bm = BotMember.create_from_id(self.sender_id)
+		end
+		@bm.last_active = Time.now
+		@bm.save!
+		@member = Member.find_by_name(@bm.name)
+	end
+
+	def member
+		@member
+	end
+
+	def bot
+		@bm
+
 	end
 
 	def sender_id
@@ -51,14 +71,10 @@ class FBMessage
 		end
 	end
 
-	def message
+	def forwarded_message
 		case self.type
 		when 'text'
-			bm = BotMember.find_by_sender_id(sender_id)
-			sender_alias = ''
-			if bm
-				sender_alias = bm.alias
-			end
+			sender_alias = @bm.alias ? @bm.alias : 'Anon'
 			return {:text => sender_alias +': '+ self.text}
 		when 'image'
 			return self.image_msg
@@ -71,24 +87,17 @@ class FBMessage
 	end
 
 	def pablo_method
-		puts 'checking if pablo command'
-		puts self.type
 		if self.type == 'postback' or self.type == 'text'
 			command = self.msg
 		else
-			puts 'here i am'
 			if self.type == 'like'
 				command = 'help'
 			else
 				return false
 			end
 		end
-		puts command
-		puts 'the command was '+command
 		command = command.strip.downcase
-		puts @@pablo_commands
 		matches = @@pablo_commands.select{|x| (command =~ x) != nil}
-		puts 'my maches are '+matches.to_s
 		if matches.length > 0
 			return @@pablo_map[matches[0]]
 		end

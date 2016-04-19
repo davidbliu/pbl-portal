@@ -252,6 +252,11 @@ class Pablo
                 type: 'postback',
                 payload: 'joke',
                 title: 'Tell you a joke'
+              },
+              {
+                type: 'postback',
+                payload: 'skip',
+                title: 'Next Partner'
               }
             ]
           }
@@ -329,9 +334,8 @@ class Pablo
   end
 
   def self.execute(event)
-    member = BotMember.get_member_from_id(event.sender_id)
-    puts 'executing event'
-    puts event.stringify
+    # member = BotMember.get_member_from_id(event.sender_id)
+    member = event.member
     case event.pablo_method
     when :go
       self.send(event.sender_id, self.go_response(member, event.msg))
@@ -354,6 +358,20 @@ class Pablo
       self.send(event.sender_id, self.joke_response)
     when :wiki
       self.send(event.sender_id, self.wiki_response(event.msg))
+    when :skip
+      self.send(event.sender_id, {:text => 'finding you a new partner'})
+      event.bot.skip
+    when :pair
+      bot_alias = event.msg.split('pair ')[1]
+      if event.bot.pair(bot_alias)
+        event.bot.alert_group
+      else
+        self.send(event.sender_id, {:text=> 'Unable to perform pairing'})
+      end
+    when :group
+      self.send(event.sender_id, {:text => "You are in a group with #{event.bot.group_aliases.join(', ')}"})
+    when :whoami
+      self.send(event.sender_id, {:text => event.bot.alias})
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end
