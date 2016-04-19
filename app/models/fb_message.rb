@@ -54,7 +54,12 @@ class FBMessage
 	def message
 		case self.type
 		when 'text'
-			return {:text => self.text}
+			bm = BotMember.find_by_sender_id(sender_id)
+			sender_alias = ''
+			if bm
+				sender_alias = bm.alias
+			end
+			return {:text => sender_alias +': '+ self.text}
 		when 'image'
 			return self.image_msg
 		end

@@ -23,7 +23,23 @@ class BotMember < ActiveRecord::Base
 	end
 
 	def self.get_partner_id(sender_id)
-		951139591673712
+		kevin = 1176216605723368
+		david = 951139591673712
+		if sender_id == david
+			return kevin
+		elsif sender_id == kevin
+			return david
+		end
+	end
+
+	def self.generate_names
+		names = ['r2d2', 'obi', 'vader', 'lucy', 'shan', 'mulan', 'oz', 'ash', 'misty', 'brock', 'belle', 'aurora', 'mickey', 'gaston', 'pluto', 'pooh', 'dopey', 'ariel', 'harry', 'ron', 'nemo', 'dory', 'meg', 'simba', 'sully', 'mike', 'merida', 'jasmine', 'hans', 'sven', 'elsa', 'olaf', 'anna', 'hops', 'lilo', 'stitch', 'joy', 'anger', 'disgust', 'peter', 'hook', 'nala', 'pluto', 'woody', 'buzz']
+		names = names.shuffle
+		bots = BotMember.all.to_a
+		bots.each_with_index do |bm, index|
+			bm.alias = names[index % names.length]
+			bm.save
+		end
 	end
 
 end
