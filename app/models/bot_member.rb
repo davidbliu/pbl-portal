@@ -60,17 +60,17 @@ class BotMember < ActiveRecord::Base
 		end
 	end
 
-	def swap_groups(bm)
+	def swap_groups(other)
 		my_group = self.group
-		self.group = bm.group
-		bm.group = my_group
+		self.group = other.group
+		other.group = my_group
 		self.save!
-		bm.save!
+		other.save!
 	end
 
 	def skip
-		least_active = BotMember.order('last_active asc').where.not(group: self.group).first
-		self.swap_groups(least_active)
+		other = BotMember.where.not(sender_id: self.sender_id).sample
+		self.swap_groups(other)
 		self.alert_group
 	end
 
