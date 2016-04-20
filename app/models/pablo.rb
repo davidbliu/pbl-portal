@@ -2,7 +2,7 @@ require "uri"
 require 'rest-client'
 
 class Pablo
-  def david_id
+  def self.david_id
     951139591673712
   end
   def self.go_response(member, msg)

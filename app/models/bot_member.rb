@@ -2,9 +2,22 @@ class BotMember < ActiveRecord::Base
 	before_save :generate_alias
 
 	@@aliases = ['R2D2', 'Obi', 'Vader', 'Lucy', 'Shan', 'Mulan', 'Oz', 'Ash', 'Misty', 'Brock', 'Belle', 'Aurora', 'Mickey', 'Gaston', 'Pluto', 'Pooh', 'Dopey', 'Ariel', 'Harry', 'Ron', 'Nemo', 'Dory', 'Meg', 'Simba', 'Sully', 'Mike', 'Merida', 'Jasmine', 'Hans', 'Sven', 'Elsa', 'Olaf', 'Anna', 'Hops', 'Lilo', 'Stitch', 'Joy', 'Anger', 'Disgust', 'Peter', 'Hook', 'Nala', 'Pluto', 'Woody', 'Buzz', 'Bird', 'Dim', 'Dot', 'Flik', 'Francis', 'Gypsy', 'Heimlich', 'Hopper', 'Manny', 'Molt', 'Rosie', 'Slim', 'Alice', 'Bill', 'Dinah', 'Dodo', 'Doorknob', 'Dormouse', 'Mad hatter', 'Chicha', 'Kronk', 'Kuzco', 'Pacha', 'Yzma', 'Edna', 'Bob', 'Elastigirl', 'Violet', 'Syndrome', 'Scar', 'Bashful', 'Doc', 'Dopey', 'Grumpy', 'Happy']
-
+	@@adjectives = ["admiring","adoring","agitated","amazing","angry","awesome","backstabbing","berserk","big","boring","clever","cocky","compassionate","condescending","cranky","desperate","determined","distracted","dreamy","drunk","ecstatic","elated","elegant","evil","fervent","focused","furious","gigantic","gloomy","goofy","grave","happy","high","hopeful","hungry","insane","jolly","jovial","kickass","lonely","loving","mad","modest","naughty","nauseous","nostalgic",
+		"pedantic","pensive","prickly","reverent","romantic","sad","serene","sharp","sick","silly","sleepy","small","stoic","stupefied","suspicious","tender","thirsty","tiny","trusting"]
+	@@nouns = ['Corn', 'Peas', 'Pepper', 'Acorn', 'Bokchoy', 'Taro', 'Potato', 'Spinach', 'Melon', 'Apple', 'Grape', 'Lemon', 'Pear', 'Pineapple', 'Tomato', 'Lychee', 'Lime', 'Turkey', 'Cow', 'Turtle', 'Lamb', 'Boba', 'Salad', 'Tree', 'Grass', 'Pizza', 'Fries', 'Burger', 'Nose', 'Eye', 'Ear', 'Hair', 'Balls', 'Fork', 'Spoon', 'Door', 'Straw', 'Hat', 'Shirt', 'Rose', 'Tulip', 'Rice', 'Noodle']
 	def get_alias
 		self.alias ? self.alias : ''
+	end
+
+	def random_alias
+		used = BotMember.select(:alias).map(&:alias)
+		rand = nil
+		while rand.nil? or used.include?(rand)
+			adj = @@adjectives.sample.capitalize
+			noun = @@nouns.sample
+			rand = "#{adj} #{noun}"
+		end
+		return rand
 	end
 	def group_ids
 		BotMember.where(group_id: self.group_id).where.not(sender_id: self.sender_id).pluck(:sender_id)
@@ -36,9 +49,7 @@ class BotMember < ActiveRecord::Base
 
 	def generate_alias
 		if not self.alias
-			used = BotMember.select(:alias).map(&:alias).uniq
-			unused = @@aliases.select{|x| used.exclude?(x)}
-			self.alias = unused.sample
+			self.alias = self.random_alias
 		end
 	end
 
@@ -125,6 +136,15 @@ class BotMember < ActiveRecord::Base
 		d = self.dup
 		d.sender_id = self.sender_id+'1'
 		d.save!
+	end
+
+	def self.announce_namechange
+		BotMember.all.each do |bm|
+			Pablo.send(bm.sender_id, {:text => "Hey #{bm.name}, to make aliases less gender specific, I've changed your alias to \"#{bm.alias}\""})
+			if not bm.group_id.nil?
+				Pablo.send(bm.sender_id, {:text => "Your partner is still the same, but he/she is now to be known as \"#{bm.group_aliases.join(',')}\"! Have fun a great rest of your Wednesday :)"})
+			end
+		end
 	end
 
 
