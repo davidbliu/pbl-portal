@@ -17,6 +17,7 @@ def pablo
     # params = text_params  
 
   messaging_events = FBParser.messaging_events(params)
+  messaging_events = messaging_events.select{|x| not x.is_delivery?}
     messaging_events.each do |event|
       begin
         event = FBMessage.new(event)

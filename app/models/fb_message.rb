@@ -112,6 +112,10 @@ class FBMessage
 		@params.has_key?("postback")
 	end
 
+	def is_delivery?
+		@params.kas_key?("delivery")
+	end
+
 	def is_text?
 		@params.has_key?("message") and @params["message"].has_key?("text")
 	end
