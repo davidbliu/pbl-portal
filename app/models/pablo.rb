@@ -2,6 +2,9 @@ require "uri"
 require 'rest-client'
 
 class Pablo
+  def david_id
+    951139591673712
+  end
   def self.go_response(member, msg)
     msg = msg.downcase
     key = msg.split('go ')[1]
@@ -105,6 +108,7 @@ class Pablo
     rescue => e
       puts '>>> ERROR in Pablo::send, the rest client response was '
       puts e.response
+      puts 'id: '+recipient_id.to_s
     end
   end
 
@@ -305,58 +309,15 @@ class Pablo
     return self.get_button_msg(title, buttons)
   end
 
-  # def self.get_response(member, text)
-  #   text = text.downcase
-  #   splits = text.split(' ')
-  #   puts 'getting response'
-  #   begin
-  #       case splits[0]
-  #       when 'help'
-  #         return self.get_generic_message(member)
-  #         # return {:text=> 'Here are some commands you can use: "go KEY" for PBL Links, "tabling" for your schedule, "blog" for recent posts, "points", and "events" for the calendar. You can also type anything in here and I will search the wiki for you :)'}
-  #       when 'whoami'
-  #         return {:text => member.name.to_s}
-  #       when 'ask'
-  #         return {:text => 'I will find out the answer and let you know!'}
-  #       when 'generate'
-  #         TablingManager.gen_tabling
-  #         return {:text => 'You generated tabling, check it out at http://pbl.link/tabling'}
-  #       when 'points'
-  #         return {:text=> self.points_string(member)}
-  #       when 'tabling'
-  #         return self.handle_tabling(member, text)
-  #       when 'go'
-  #         return self.handle_go(member, text)
-  #       when 'blog'
-  #         return self.handle_blog(member)
-  #       when 'events', 'c', 'calendar', 'cal'
-  #         buttons = [{
-  #           type: 'web_url',
-  #           url: 'http://pbl.link/calendar',
-  #           title: 'pbl.link/calendar'
-  #         }]
-  #         return self.get_button_msg('Here is a link to the calendar', buttons)
-  #       end
 
-  #       if Member.committees.include?(text.upcase)
-  #         names = Member.get_group(text).pluck(:name).join(', ')
-  #         return {:text=>names}
-  #       end
-  #       return self.default_btns(text)
-  #   rescue => error
-  #     # return {:text => 'error'}
-  #   end
-  # end
 
-  def self.send_pairing_info(id)
-    p1 = {:text => "I've paired you up with a secret friend in PBL who can help answer questions on my behalf. You'll known them by an alias only"}
-    p2 ={:text => "Of course you can still ask me the same old same old: tabling, blog, points, go, etc..."}
-    p3 = {:text => "If you want to try a new secret friend, just type skip. If you remember the alias of someone you want to pair with, type pair {{the alias}}"}
-    p4 = {:text => "I can remind you who you're paired with if you type group. ask my whoami to see your own alias"}
+  def self.send_pairing_info(id, bot)
+    p1 = {:text => "Hey #{bot.get_alias}, I've paired you up with a secret friend in PBL who can help answer questions on my behalf. You'll known them by an alias only"}
+    p2 = {:text => "Your name is #{bot.get_alias} and #{bot.pairing_info}"}
+    p3 = {:text => "If you want a new secret friend, just type skip."}
     self.send(id, p1)
     self.send(id, p2)
     self.send(id, p3)
-    self.send(id, p4)
   end
 
   def self.joke_response
@@ -392,7 +353,7 @@ class Pablo
     when :wiki
       self.send(event.sender_id, self.wiki_response(event.msg))
     when :skip
-      self.send(event.sender_id, {:text => 'finding you a new partner'})
+      self.send(event.sender_id, {:text => 'Finding you a new partner'})
       event.bot.skip
     when :pair
       bot_alias = event.msg.split('pair ')[1]
@@ -406,7 +367,7 @@ class Pablo
     when :whoami
       self.send(event.sender_id, {:text => event.bot.alias})
     when :info_pair
-      self.send_pairing_info(event.sender_id)
+      self.send_pairing_info(event.sender_id, event.bot)
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end

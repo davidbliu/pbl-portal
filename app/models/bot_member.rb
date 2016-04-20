@@ -2,24 +2,12 @@ class BotMember < ActiveRecord::Base
 	before_save :generate_alias
 
 	@@aliases = ['R2D2', 'Obi', 'Vader', 'Lucy', 'Shan', 'Mulan', 'Oz', 'Ash', 'Misty', 'Brock', 'Belle', 'Aurora', 'Mickey', 'Gaston', 'Pluto', 'Pooh', 'Dopey', 'Ariel', 'Harry', 'Ron', 'Nemo', 'Dory', 'Meg', 'Simba', 'Sully', 'Mike', 'Merida', 'Jasmine', 'Hans', 'Sven', 'Elsa', 'Olaf', 'Anna', 'Hops', 'Lilo', 'Stitch', 'Joy', 'Anger', 'Disgust', 'Peter', 'Hook', 'Nala', 'Pluto', 'Woody', 'Buzz', 'Bird', 'Dim', 'Dot', 'Flik', 'Francis', 'Gypsy', 'Heimlich', 'Hopper', 'Manny', 'Molt', 'Rosie', 'Slim', 'Alice', 'Bill', 'Dinah', 'Dodo', 'Doorknob', 'Dormouse', 'Mad hatter', 'Chicha', 'Kronk', 'Kuzco', 'Pacha', 'Yzma', 'Edna', 'Bob', 'Elastigirl', 'Violet', 'Syndrome', 'Scar', 'Bashful', 'Doc', 'Dopey', 'Grumpy', 'Happy']
-	# def self.get_member_from_id(sender_id)
-	# 	bm = BotMember.where(sender_id: sender_id)
-	# 	if bm.length != 0
-	# 		bm = bm.first
-	# 		bm.last_active = Time.now
-	# 		bm.save!
-	# 		name = bm.name
-	# 	else
-	# 		name = self.get_name_from_fb(sender_id)
-	# 		BotMember.where(sender_id: sender_id).destroy_all
-	# 		BotMember.create!(sender_id: sender_id, name: name)
-	# 	end
-	# 	puts 'Name: '+name
-	# 	return Member.where(name: name).first
-	# end
 
+	def get_alias
+		self.alias ? self.alias : ''
+	end
 	def group_ids
-		BotMember.where(group: self.group).where.not(sender_id: self.sender_id).pluck(:sender_id)
+		BotMember.where(group_id: self.group_id).where.not(sender_id: self.sender_id).pluck(:sender_id)
 	end
 
 	def self.create_from_id(sender_id)
@@ -43,13 +31,13 @@ class BotMember < ActiveRecord::Base
 	end
 
 	def group_aliases
-		BotMember.where(group: self.group).where.not(alias: self.alias).pluck(:alias)
+		BotMember.where(group_id: self.group_id).where.not(alias: self.alias).pluck(:alias)
 	end
 
 	def generate_alias
 		if not self.alias
-			used = BotMember.all.pluck(:alias)
-			unused = @@aliases.select{|x| not used.include?(x)}
+			used = BotMember.select(:alias).map(&:alias).uniq
+			unused = @@aliases.select{|x| used.exclude?(x)}
 			self.alias = unused.sample
 		end
 	end
@@ -64,66 +52,73 @@ class BotMember < ActiveRecord::Base
 		end
 	end
 
-	def swap_groups(other)
-		my_group = self.group
-		other_group = other.group
-		self.group = other_group
-		other.group = my_group
-		self.save!
-		other.save!
-		BotMember.where(group: [my_group, other_group]).each do |bm|
-			puts bm.alias
-			bm.alert_group
-		end
-	end
-
 	def skip
-		other = BotMember.where.not(sender_id: self.sender_id).sample
-		self.swap_groups(other)
+		if self.group_id.nil?
+			return
+		end
+		curr_group_id = self.group_id
+		BotMember.where(group_id: self.group_id).each do |bm|
+			bm.last_group_id = curr_group_id
+			bm.group_id = nil
+			bm.save!
+		end
+		BotMember.fix_unpaired
 	end
 
+	def self.fix_unpaired
+		unpaired = BotMember.where(group_id: nil)
+		done = []
+		pairings = []
+		unpaired.each do |bm1|
+			unpaired.each do |bm2|
+				if bm1.id != bm2.id and
+					(bm1.last_group_id != bm2.last_group_id or bm1.last_group_id.nil? or bm2.last_group_id.nil?) and
+					done.exclude?(bm1.id) and
+					done.exclude?(bm2.id)
+					
+					pairings << [bm1, bm2]
+					done << bm1.id
+					done << bm2.id
+				end
+			end
+		end
+		pairings.each do |p|
+			puts p.map{|x| x.alias}.to_s
+			self.pair(p[0], p[1])
+		end
+	end
+
+	def self.print_pairings
+		pairings = []
+		BotMember.where.not(group_id: nil).select(:group_id).map(&:group_id).uniq.each do |group_id|
+			pairings << BotMember.where(group_id: group_id).pluck(:alias)
+		end
+		pairings.each do |p|
+			puts p.to_s
+		end
+	end
+
+	def self.pair(bm1, bm2)
+		group_id = BotMember.all.pluck(:group_id).map{|x| x.to_i}.max.to_i + 1
+		bm1.group_id = group_id
+		bm2.group_id = group_id
+		bm1.save!
+		bm2.save!
+		bm1.alert_group
+		bm2.alert_group
+	end
+	def pairing_info
+		names = BotMember.where(group_id: self.group_id).where.not(group_id: nil).where.not(id: self.id).pluck(:alias)
+		if names.length == 0
+			txt = "I'm still looking for a good pair for you..."
+		else
+			txt = "You are paired with "+names.join(', ')
+		end
+		return txt
+	end
 	def alert_group
-		names = BotMember.where(group: self.group).pluck(:alias).select{|x| x != self.alias}
-		txt = "You are paired with "+names.join(', ')
-		Pablo.send(self.sender_id, {:text => txt})
-	end
-
-	def pair(bot_alias)
-		bot_alias = bot_alias.capitalize
-		if bot_alias != self.alias
-			gp = BotMember.find_by_alias(bot_alias)
-			if gp
-				gp = gp.group
-			else
-				return false
-			end
-			if self.group == gp
-				return true
-			end
-			other = BotMember.where.not(alias: bot_alias).where(group: gp).first
-			self.swap_groups(other)
-			return true
-		else
-			return false
-		end
-	end
-
-	def self.generate_groups(bms)
-		min_i = BotMember.all.pluck(:group).map{|x| x.to_i}.max+1
-		if bms.length % 2 == 0
-			pairings = bms.each_slice(2).to_a
-		else
-			first = bms[0]
-			bms = bms[1..-1]
-			pairings = bms.each_slice(2).to_a
-			pairings[0] << first
-		end
-		pairings.each_with_index do |gp, index|
-			gp.each do |bm|
-				bm.group = index+min_i
-				bm.save!
-			end
-		end
+		
+		Pablo.send(self.sender_id, {:text => self.pairing_info})
 	end
 
 	def duplicate

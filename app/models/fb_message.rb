@@ -12,7 +12,6 @@ class FBMessage
 		joke: [/^joke$/],
 		wiki: [/^wiki (.*)$/],
 		skip: [/^skip$/],
-		pair: [/^pair (.*)$/],
 		group: [/^group$/],
 		whoami: [/^whoami$/],
 		info_pair: [/^info_pair$/]
