@@ -113,7 +113,13 @@ class FBMessage
 	end
 
 	def is_delivery?
-		@params.kas_key?("delivery")
+		@params.has_key?("delivery")
+	end
+
+	def seq
+		if @params.has_key?("message") and @params["message"].has_key?("seq")
+			return @params["message"]["seq"]
+		end
 	end
 
 	def is_text?
