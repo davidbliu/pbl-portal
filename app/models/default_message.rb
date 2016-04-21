@@ -13,7 +13,7 @@ class DefaultMessage
 			title: 'Profile'
 		}
 	end
-	def self.platform_btn(url)
+	def self.platform_btn(name)
 		{
 		type:'postback',
 		payload: "platform_for #{name}",
