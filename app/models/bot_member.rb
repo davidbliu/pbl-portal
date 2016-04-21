@@ -176,7 +176,7 @@ class BotMember < ActiveRecord::Base
 
 		BotMember.all.each do |bm|
 			s1 = {:text => "Happy Thursday #{bm.name} :) :) I'm thuper excited for Fourth Gen, are you? Heres some info about the candidates"}
-			s2 = {:text => "You can bring up this menu by asking me \"candidates\" if you need it later!"}
+			s2 = {:text => "You can bring up this menu by asking me \"candidates\" if you need it later! See you tonight 6-10 PM at VLSB 2060!"}
 			Pablo.send(bm.sender_id, s1)
 			Pablo.send(bm.sender_id, DefaultMessage.platforms)
 			Pablo.send(bm.sender_id, s2)
