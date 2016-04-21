@@ -63,6 +63,31 @@ class BotMember < ActiveRecord::Base
 		end
 	end
 
+	def send_topic
+		ids = BotMember.where(group_id: self.group_id).pluck(:sender_id)
+		if self.group_id.nil? or ids.length < 2
+			Pablo.send(self.sender_id, {:text => "Looks like you dont have a partner yet"})
+		else
+			topic_body = Topic.random_topic
+			aliases = BotMember.where(group_id: self.group_id).pluck(:alias).join(' and ')
+			ids.each do |id|
+				Pablo.send(id, {:text => "Hey #{aliases}, #{topic_body}"})
+			end
+		end
+	end
+
+	def advertise_topic
+		ids = BotMember.where(group_id: self.group_id).pluck(:sender_id)
+		if self.group_id.nil? or ids.length < 2
+		else
+			topic_body = Topic.random_topic
+			aliases = BotMember.where(group_id: self.group_id).pluck(:alias).join(' and ')
+			ids.each do |id|
+				Pablo.send(id, {:text => "Hey #{aliases}, heres something that might spice up your conversation: If any of you types \"topic\" to me, I will find an interesting topic for two to chat about ;)"})
+			end
+		end
+	end
+
 	def skip
 		if self.group_id.nil?
 			return

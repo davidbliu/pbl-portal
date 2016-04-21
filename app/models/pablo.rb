@@ -368,6 +368,8 @@ class Pablo
       self.send(event.sender_id, {:text => event.bot.alias})
     when :info_pair
       self.send_pairing_info(event.sender_id, event.bot)
+    when :topic
+      event.bot.send_topic
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end
