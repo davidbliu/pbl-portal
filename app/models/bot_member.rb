@@ -172,5 +172,16 @@ class BotMember < ActiveRecord::Base
 		end
 	end
 
+	def self.announce_4gen
+
+		BotMember.all.each do |bm|
+			s1 = {:text => "Happy Thursday #{bm.name} :) :) I'm thuper excited for Fourth Gen, are you? Heres some info about the candidates"}
+			s2 = {:text => "You can bring up this menu by asking me \"candidates\" if you need it later!"}
+			Pablo.send(bm.sender_id, s1)
+			Pablo.send(bm.sender_id, DefaultMessage.platforms)
+			Pablo.send(bm.sender_id, s2)
+		end
+	end
+
 
 end

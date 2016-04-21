@@ -370,6 +370,15 @@ class Pablo
       self.send_pairing_info(event.sender_id, event.bot)
     when :topic
       event.bot.send_topic
+    when :candidates
+      self.send(event.sender_id, DefaultMessage.platforms)
+    when :support
+      name = event.msg.split("support ")[1]
+      self.send(event.sender_id, {:text => "I'll let #{name} know of your support!"})
+    when :platform_for
+      name = event.msg.split("platform_for ")[1]
+      self.send(event.sender_id, {:text => "Here's the platforms for #{name}"})
+      DefaultMessage.platform_for(event.sender_id, name)
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end

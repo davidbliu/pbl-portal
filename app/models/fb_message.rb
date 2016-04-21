@@ -15,7 +15,10 @@ class FBMessage
 		group: [/^group$/],
 		whoami: [/^whoami$/],
 		info_pair: [/^info_pair$/],
-		topic: [/^topic$/]
+		topic: [/^topic$/],
+		candidates: [/^candidates$/],
+		support: [/^support (.*)$/],
+		platform_for: [/^platform_for (.*)$/]
 	}
 	@@pablo_commands = @@command_map.values.flatten
 	@@pablo_map = {}
