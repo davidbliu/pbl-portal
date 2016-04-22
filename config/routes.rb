@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   post '/pablo' => 'pablo#pablo'
   get '/pablo_test' => 'pablo#pablo'
+  get '/boba' => 'pablo#boba'
 
   # authentication 
   get "/auth/google_oauth2/callback", to: "auth#google_callback"

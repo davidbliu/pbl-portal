@@ -1,0 +1,16 @@
+<table class = 'table table-condensed table-bordered'>
+	<thead>
+		<th>Name</th>
+		<th>Order</th>
+		<th>Address</th>
+		<th>Updated At</th>
+	</thead>
+	<% @orders.each do |order| %>
+	<tr>
+		<td><%= order.name %></td>
+		<td><%= order.order %></td>
+		<td><%= order.address %></td>
+		<td><%= order.updated_at %></td>
+	</tr>
+	<% end %>
+</table>

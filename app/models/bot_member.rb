@@ -201,7 +201,12 @@ class BotMember < ActiveRecord::Base
     def send_pokemon_msg
     	Pablo.send(self.sender_id, DefaultMessage.pokemon_message)
     	Pablo.send(self.sender_id, {:text => "#{self.name.split(' ')[0]}, Who's that pokemon?!"})
+    end
 
+    def announce_boba
+    	firstname = self.name.split(' ')[0]
+    	Pablo.send(self.sender_id, {:text => "Hey #{firstname} u thirsty? Well my elves are in town so if you want I can deliver ShareTea to you tonight ~9pm today with no delivery fee!"})
+    	Pablo.send(self.sender_id, {:text => "Just type \"#boba\" if you're interested and I'll hook it up with whatever u order! Who needs postmates when you got Pablo right?"})
     end
 
 

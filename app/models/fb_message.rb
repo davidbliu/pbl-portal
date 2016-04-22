@@ -19,7 +19,13 @@ class FBMessage
 		candidates: [/^candidates$/],
 		support: [/^support (.*)$/],
 		platform_for: [/^platform_for (.*)$/],
-		pokemon: [/squirtle/]
+		pokemon: [/squirtle/],
+		boba_example: [/^boba_example$/],
+		cancel_boba: [/^cancel boba$/],
+		boba: [/^#boba$/],
+		boba_order: [/^order:(.*)$/],
+		boba_address: [/^address:(.*)$/],
+		order_confirmation: [/^order_confirmation$/]
 	}
 	@@pablo_commands = @@command_map.values.flatten
 	@@pablo_map = {}

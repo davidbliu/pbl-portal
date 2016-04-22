@@ -1,5 +1,77 @@
 class DefaultMessage
 
+	def self.order_confirmation(bot)
+		boba = Boba.find_by_name(bot.name)
+		if boba.nil?
+			return {:text => "You didnt order anything, #{bot.name}"}
+		else
+			return {
+				attachment:{
+
+					type:'template',
+					payload: {
+						template_type: 'generic',
+						elements: [
+							{
+								title: 'Your order:',
+								subtitle: "#{boba.order} delivered to #{boba.address}",
+								buttons:[
+									{
+										type:'postback',
+										payload: 'cancel boba',
+										title: 'Cancel Boba'
+									},
+									{
+										type:'postback',
+										payload: 'boba_example',
+										title: 'Update Order'
+									}
+									
+								]
+							}
+						]
+					}
+				}
+			}
+		end
+	end
+
+	def self.boba_msg
+		{ 
+			attachment: {
+				type: 'template',
+				payload: {
+					template_type: "generic",
+					elements: [
+						{
+							title: 'Bobaaa MMMmmm',
+							subtitle: 'Get boba today at ~9pm. No delivery cost because friendship.',
+							image_url: 'http://s3-media4.fl.yelpcdn.com/bphoto/Z3m1_1Jwx8JP04tBPGac_w/348s.jpg',
+							buttons:[
+								{
+									type: 'postback',
+									payload: 'boba_example',
+									title: 'How to request'
+								},
+								{
+									type:'postback',
+									payload: 'order_confirmation',
+									title: 'My Order'
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	end
+	def self.boba_order_example
+		{:text => "order: High mountain milk tea with 50% sugar, less ice, and boba"}
+	end
+	def self.boba_address_example
+		{:text => "address: 123 the north pole"}
+	end
+
 	def self.pokemon_message
 		msg = {
 			attachment: {
