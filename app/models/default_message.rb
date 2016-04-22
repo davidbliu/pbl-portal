@@ -1,5 +1,14 @@
 class DefaultMessage
-
+	def self.boba_pic
+		{
+			attachment: {
+				type: 'image',
+				payload: {
+					url: 'http://static.au.groupon-content.net/54/24/1384231452454.jpg',
+				}
+			}
+		}
+	end
 	def self.order_confirmation(bot)
 		boba = Boba.find_by_name(bot.name)
 		if boba.nil?
