@@ -62,6 +62,11 @@ class DefaultMessage
 									type:'postback',
 									payload: 'order_confirmation',
 									title: 'My Order'
+								},
+								{
+									type:'web_url',
+									url:'https://b.zmtcdn.com/data/menus/629/17741629/7f26b89b8bc5aff3f8fe1ab7236992b0.jpg',
+									title: 'ShareTea Menu'
 								}
 							]
 						}
