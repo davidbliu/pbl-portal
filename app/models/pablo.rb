@@ -393,15 +393,28 @@ class Pablo
       b = Boba.where(name: event.bot.name).first_or_create!
       b.order = order
       b.save!
-      self.send(event.sender_id, {:text => "Got it! I'll get you an order of \"#{order}\""})
-      self.send(event.sender_id, {:text => "Check your order by sending me \"Boba Order\""})
+      buttons = [{
+        type:'postback',
+        payload: 'Boba Order',
+        title:"Check my order"
+        }]
+      self.send(event.sender_id, self.get_button_msg("Got it! I'll get you an order of \"#{order}\"", buttons))
+      # self.send(event.sender_id, {:text => "Got it! I'll get you an order of \"#{order}\""})
+      # self.send(event.sender_id, {:text => "Check your order by sending me \"Boba Order\""})
     when :boba_address
       address = event.msg.downcase.split('address:')[1]
       b = Boba.where(name: event.bot.name).first_or_create!
       b.address = address
       b.save!
-      self.send(event.sender_id, {:text => "Got it! I'll send your order of \"#{b.order}\" to \"#{address}\""})
-      self.send(event.sender_id, {:text => "Check your order by sending me \"Boba Order\""})
+      buttons = [{
+        type:'postback',
+        payload: 'Boba Order',
+        title:"Check my order"
+        }]
+      self.send(event.sender_id, self.get_button_msg("Got it! I'll send your order of \"#{b.order}\" to \"#{address}\"", buttons))
+
+      # self.send(event.sender_id, {:text => "Got it! I'll send your order of \"#{b.order}\" to \"#{address}\""})
+      # self.send(event.sender_id, {:text => "Check your order by sending me \"Boba Order\""})
     when :order_confirmation
       self.send(event.sender_id, DefaultMessage.order_confirmation(event.bot))
     when :cancel_boba

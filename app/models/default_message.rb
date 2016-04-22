@@ -5,41 +5,81 @@ class DefaultMessage
 		if boba.nil?
 			return {:text => "You didnt order anything, #{bot.name}"}
 		else
-			return {
-				attachment:{
 
-					type:'template',
-					payload: {
-						template_type: 'generic',
-						elements: [
-							{
-								title: "Your Order",
-								subtitle: "If you change your order, just type \"Boba Order\" to see this screen again",
-								buttons:[
-									{
-										type:'postback',
-										payload: 'show_order',
-										title: "Show Order"
+		{
+	      attachment: {
+	        type: 'template',
+	        payload: {
+	          template_type: 'button', 
+	          text: "You ordered #{boba.order} to be sent to #{boba.address}",
+	          buttons: [
+	          	{
+	          	type:'postback',
+	          	payload:'cancel boba',
+	          	title:"Cancel Order"
+	          	},
+	          	{
+	          	type:'postback',
+	          	payload:'boba_example',
+	          	title:"Update Order"
+	          	}
 
-									},
-									{
-										type:'postback',
-										payload: 'cancel boba',
-										title: 'Cancel Boba'
-									},
-									{
-										type:'postback',
-										payload: 'boba_example',
-										title: 'Update Order'
-									}
+	      	]
+	        }
+	      }
+	    }
+			# return {
+			# 	attachment:{
+
+			# 		type:'template',
+			# 		payload: {
+			# 			template_type: 'generic',
+			# 			elements: [
+			# 				{
+			# 					title: "Your Order",
+			# 					subtitle: "If you change your order, just type \"Boba Order\" to see this screen again",
+			# 					buttons:[
+			# 						{
+			# 							type:'postback',
+			# 							payload: 'show_order',
+			# 							title: "Show Order"
+
+			# 						},
+			# 						{
+			# 							type:'postback',
+			# 							payload: 'cancel boba',
+			# 							title: 'Cancel Boba'
+			# 						},
+			# 						{
+			# 							type:'postback',
+			# 							payload: 'boba_example',
+			# 							title: 'Update Order'
+			# 						}
 									
-								]
-							}
-						]
-					}
-				}
-			}
+			# 					]
+			# 				}
+			# 			]
+			# 		}
+			# 	}
+			# }
 		end
+	end
+
+	def self.boba_interest
+		{
+	      attachment: {
+	        type: 'template',
+	        payload: {
+	          template_type: 'button', 
+	          text: 'Hey David want boba? Your friendly neighborhood PabloMate is delivering ShareTea at 8pm tonight for FREE!',
+	          buttons: [{
+	          	type:'postback',
+	          	payload:'#boba',
+	          	title:"I'm Interested"
+	          }]
+	        }
+	      }
+	    }
 	end
 
 	def self.boba_msg
