@@ -406,6 +406,13 @@ class Pablo
     when :cancel_boba
       Boba.find_by_name(event.bot.name).destroy
       self.send(event.sender_id, {:text => "Okay!"})
+    when :show_order 
+      boba = Boba.find_by_name(event.bot.name)
+      if boba.nil?
+        self.send(event.sender_id, {:text => "You didn't place an order, #{event.bot.name}"})
+      else
+        self.send(event.sender_id, {:text => "You ordered #{boba.order} to be sent to #{boba.address}"})
+      end
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end

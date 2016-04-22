@@ -13,9 +13,15 @@ class DefaultMessage
 						template_type: 'generic',
 						elements: [
 							{
-								title: 'You ordered #{boba.order}',
-								subtitle: "Delivered to #{boba.address}. If you change your order, just type \"Boba Order\" to see this screen again",
+								title: "Your Order",
+								subtitle: "If you change your order, just type \"Boba Order\" to see this screen again",
 								buttons:[
+									{
+										type:'postback',
+										payload: 'show_order',
+										title: "Show Order"
+
+									},
 									{
 										type:'postback',
 										payload: 'cancel boba',
