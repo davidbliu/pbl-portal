@@ -25,7 +25,7 @@ class FBMessage
 		boba: [/^#boba$/],
 		boba_order: [/^order:(.*)$/],
 		boba_address: [/^address:(.*)$/],
-		order_confirmation: [/^order_confirmation$/, /^Boba Order$/]
+		order_confirmation: [/^order_confirmation$/, /^boba order$/]
 	}
 	@@pablo_commands = @@command_map.values.flatten
 	@@pablo_map = {}
