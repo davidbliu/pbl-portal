@@ -44,9 +44,8 @@ class DefaultMessage
 					template_type: "generic",
 					elements: [
 						{
-							title: 'Bobaaa MMMmmm',
-							subtitle: 'Get boba today at ~9pm. No delivery cost because friendship.',
-							image_url: 'http://s3-media4.fl.yelpcdn.com/bphoto/Z3m1_1Jwx8JP04tBPGac_w/348s.jpg',
+							title: 'Boba!',
+							subtitle: 'Get ShareTea today at 8pm. No delivery cost because friendship :)',
 							buttons:[
 								{
 									type: 'postback',
