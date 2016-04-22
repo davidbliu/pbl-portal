@@ -13,8 +13,8 @@ class DefaultMessage
 						template_type: 'generic',
 						elements: [
 							{
-								title: 'Your order:',
-								subtitle: "#{boba.order} delivered to #{boba.address}",
+								title: 'You ordered #{boba.order}',
+								subtitle: "Delivered to #{boba.address}. If you change your order, just type \"Boba Order\" to see this screen again",
 								buttons:[
 									{
 										type:'postback',
@@ -45,7 +45,7 @@ class DefaultMessage
 					elements: [
 						{
 							title: 'Boba!',
-							subtitle: 'Get ShareTea today at 8pm. No delivery cost because friendship :)',
+							subtitle: 'Get ShareTea today at 8pm. Free Delivery.',
 							buttons:[
 								{
 									type: 'postback',
@@ -65,10 +65,10 @@ class DefaultMessage
 		}
 	end
 	def self.boba_order_example
-		{:text => "order: High mountain milk tea with 50% sugar, less ice, and boba"}
+		{:text => "\"Order: High mountain milk tea with 50% sugar, less ice, and boba\""}
 	end
 	def self.boba_address_example
-		{:text => "address: 123 the north pole"}
+		{:text => "\"Address: 123 the north pole\""}
 	end
 
 	def self.pokemon_message
