@@ -50,7 +50,7 @@ class DefaultMessage
 								{
 									type: 'postback',
 									payload: 'boba_example',
-									title: 'How to request'
+									title: 'How to Order'
 								},
 								{
 									type:'postback',

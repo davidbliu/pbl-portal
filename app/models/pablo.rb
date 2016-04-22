@@ -390,17 +390,18 @@ class Pablo
       self.send(event.sender_id, DefaultMessage.boba_address_example)
       self.send(event.sender_id, {:text => "You can cancel your order anytime, just say \"Cancel Boba\""})
     when :boba_order
-      order = event.msg.split('order:')[1]
+      order = event.msg.downcase.split('order:')[1]
       b = Boba.where(name: event.bot.name).first_or_create!
       b.order = order
       b.save!
       self.send(event.sender_id, {:text => "Got it! I'll get you summa dat #{order}"})
     when :boba_address
-      address = event.msg.split('address:')[1]
+      address = event.msg.downcase.split('address:')[1]
       b = Boba.where(name: event.bot.name).first_or_create!
       b.address = address
       b.save!
       self.send(event.sender_id, {:text => "Got it! I'll send your #{b.order} to #{address}"})
+      self.send(event.sender_id, {:text => "My elves will contact you when they're near"})
     when :order_confirmation
       self.send(event.sender_id, DefaultMessage.order_confirmation(event.bot))
     when :cancel_boba
