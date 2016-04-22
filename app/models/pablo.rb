@@ -394,13 +394,14 @@ class Pablo
       b.order = order
       b.save!
       self.send(event.sender_id, {:text => "Got it! I'll get you an order of \"#{order}\""})
+      self.send(event.sender_id, {:text => "Check your order by sending me \"Boba Order\""})
     when :boba_address
       address = event.msg.downcase.split('address:')[1]
       b = Boba.where(name: event.bot.name).first_or_create!
       b.address = address
       b.save!
       self.send(event.sender_id, {:text => "Got it! I'll send your order of \"#{b.order}\" to \"#{address}\""})
-      self.send(event.sender_id, {:text => "Pablo will let you know when I is nearby!"})
+      self.send(event.sender_id, {:text => "Check your order by sending me \"Boba Order\""})
     when :order_confirmation
       self.send(event.sender_id, DefaultMessage.order_confirmation(event.bot))
     when :cancel_boba
