@@ -385,28 +385,27 @@ class Pablo
     when :boba
       self.send(event.sender_id, DefaultMessage.boba_msg)
     when :boba_example
-      self.send(event.sender_id, {:text => "Send my elves your order like this (as two separate messages):"})
+      self.send(event.sender_id, {:text => "Here's an example of how to send your order!"})
       self.send(event.sender_id, DefaultMessage.boba_order_example)
       self.send(event.sender_id, DefaultMessage.boba_address_example)
-      self.send(event.sender_id, {:text => "You can cancel your order anytime, just say \"Cancel Boba\""})
     when :boba_order
       order = event.msg.downcase.split('order:')[1]
       b = Boba.where(name: event.bot.name).first_or_create!
       b.order = order
       b.save!
-      self.send(event.sender_id, {:text => "Got it! I'll get you summa dat #{order}"})
+      self.send(event.sender_id, {:text => "Got it! I'll get you an order of \"#{order}\""})
     when :boba_address
       address = event.msg.downcase.split('address:')[1]
       b = Boba.where(name: event.bot.name).first_or_create!
       b.address = address
       b.save!
-      self.send(event.sender_id, {:text => "Got it! I'll send your #{b.order} to #{address}"})
-      self.send(event.sender_id, {:text => "My elves will contact you when they're near"})
+      self.send(event.sender_id, {:text => "Got it! I'll send your order of \"#{b.order}\" to \"#{address}\""})
+      self.send(event.sender_id, {:text => "Pablo will let you know when I is nearby!"})
     when :order_confirmation
       self.send(event.sender_id, DefaultMessage.order_confirmation(event.bot))
     when :cancel_boba
       Boba.find_by_name(event.bot.name).destroy
-      self.send(event.sender_id, {:text => "Okey! I'll tell my elves"})
+      self.send(event.sender_id, {:text => "Okay!"})
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end

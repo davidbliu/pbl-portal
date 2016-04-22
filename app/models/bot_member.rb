@@ -205,8 +205,8 @@ class BotMember < ActiveRecord::Base
 
     def announce_boba
     	firstname = self.name.split(' ')[0]
-    	Pablo.send(self.sender_id, {:text => "Hey #{firstname} u thirsty? Well my elves are in town so if you want I can deliver ShareTea to you tonight 8pm today with no delivery fee!"})
-    	Pablo.send(self.sender_id, {:text => "Just type \"#boba\" if you're interested and I'll hook it up with whatever u order! Who needs postmates when you got Pablo right?"})
+    	Pablo.send(self.sender_id, {:text => "Hey #{firstname} want boba? Your friendly neighborhood PabloMate is delivering ShareTea at 8pm today!"})
+    	Pablo.send(self.sender_id, {:text => "If you're interested, type \"#boba\""})
     end
 
 
