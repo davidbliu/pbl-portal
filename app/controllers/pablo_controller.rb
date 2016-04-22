@@ -20,7 +20,7 @@ def pablo
   seen_seq = []
   messaging_events = params["entry"][0]["messaging"]
     messaging_events.each do |event|
-      # begin
+      begin
         event = FBMessage.new(event)
         if event.is_delivery?
         elsif (event.seq.nil? and not event.is_postback?) or seen_seq.include?(event.seq)
@@ -46,11 +46,11 @@ def pablo
             end
           end
         end
-      # rescue => e
-      #   puts 'error in pablo_controller with this message'
-      #   puts e
-      #   puts params
-      # end
+      rescue => e
+        puts 'error in pablo_controller with this message'
+        puts e
+        puts params
+      end
     end
     render nothing: true, status: 200
 end

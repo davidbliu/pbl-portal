@@ -403,6 +403,9 @@ class Pablo
       self.send(event.sender_id, {:text => "Got it! I'll send your #{b.order} to #{address}"})
     when :order_confirmation
       self.send(event.sender_id, DefaultMessage.order_confirmation(event.bot))
+    when :cancel_boba
+      Boba.find_by_name(event.bot.name).destroy
+      self.send(event.sender_id, {:text => "Okey! I'll tell my elves"})
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end
