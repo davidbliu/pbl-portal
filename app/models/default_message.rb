@@ -1,4 +1,26 @@
 class DefaultMessage
+
+	def self.pokemon_message
+		msg = {
+			attachment: {
+				type: 'image',
+				payload: {
+					url: 'https://i.ytimg.com/vi/GzxCAzp0hpU/hqdefault.jpg'
+				}
+			}
+		}
+	end
+
+	def self.puppy_msg
+		msg = {
+			attachment: {
+				type: 'image',
+				payload: {
+					url: 'http://41.media.tumblr.com/cf8cd327f9a0b329351b55b998140cb2/tumblr_nz10tuNhfp1rbibvmo1_500.jpg'
+				}
+			}
+		}
+	end
 	def self.support_btn(name)
 		{
 			type:'postback',

@@ -183,5 +183,27 @@ class BotMember < ActiveRecord::Base
 		end
 	end
 
+	def self.send_supports(name, names, num)
+      names = names.split(',')
+      aliases = BotMember.where('name in (?)', names).pluck(:alias)
+      msg = "#{name}, good luck tonight at elections! #{aliases.join(', ')} and others send their support and #{num} people have checked out your platforms!"
+      puts msg
+      bm1 = BotMember.find_by_name(name)
+      Pablo.send(bm1.sender_id, {:text => msg})
+    end
+
+    def self.send_clap_msg
+      BotMember.all.each do |bm|
+        Pablo.send(bm.sender_id, {:text => "If you can hear me clap once. If you can hear me clap twice."})
+      end
+    end
+
+    def send_pokemon_msg
+    	Pablo.send(self.sender_id, DefaultMessage.pokemon_message)
+    	Pablo.send(self.sender_id, {:text => "#{self.name.split(' ')[0]}, Who's that pokemon?!"})
+
+    end
+
+
 
 end

@@ -18,7 +18,8 @@ class FBMessage
 		topic: [/^topic$/],
 		candidates: [/^candidates$/],
 		support: [/^support (.*)$/],
-		platform_for: [/^platform_for (.*)$/]
+		platform_for: [/^platform_for (.*)$/],
+		pokemon: [/squirtle/]
 	}
 	@@pablo_commands = @@command_map.values.flatten
 	@@pablo_map = {}

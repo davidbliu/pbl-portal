@@ -379,6 +379,9 @@ class Pablo
       name = event.msg.split("platform_for ")[1]
       self.send(event.sender_id, {:text => "Here's the platforms for #{name}"})
       DefaultMessage.platform_for(event.sender_id, name)
+    when :pokemon
+      self.send(event.sender_id, {:text => "Correct! Here's a puppy"})
+      self.send(event.sender_id, DefaultMessage.puppy_msg)
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end
