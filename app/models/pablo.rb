@@ -5,6 +5,112 @@ class Pablo
   def self.david_id
     951139591673712
   end
+
+   def self.help_response(member)
+    return {
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: [
+          {
+            title: "Secret Pairings",
+            subtitle: "I've partnered you with a secret friend to help me respond.",
+            buttons: [
+              {
+                type: 'postback',
+                payload: 'group',
+                title: "Who's My Partner?"
+              },
+              {
+                type: 'postback',
+                payload: 'skip',
+                title: 'Skip Partner'
+              },
+              {
+                type:'postback',
+                payload:'info_pair',
+                title:'More Info'
+              }
+            ]
+
+          },
+          {
+            title: "Blog",
+            subtitle:"Check out recent blogposts",
+            buttons:[
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/blog",
+                title:"pbl.link/blog"
+              },
+              {
+                type:"postback",
+                payload:"blog",
+                title:"Recent posts"
+              }          
+            ]
+          },
+          {
+            title:"Tabling",
+            subtitle: 'I can tell you when your tabling slot is',
+            buttons:[
+              {
+                type:'postback',
+                payload:'tabling',
+                title:'My Slot'
+              },
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/tabling",
+                title:"Full schedule"
+              }
+
+            ]
+          },
+          {
+            title:"Events",
+            subtitle: 'Here are some events happening this week',
+            buttons: self.event_buttons
+          },
+          {
+            title:"Points",
+            subtitle: self.points_string(member),
+            buttons:[
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/points",
+                title:"Attendance"
+              },
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/points/scoreboard",
+                title:"Scoreboard"
+              },
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/points/distribution",
+                title:"Distribution"
+              }         
+            ]
+          },
+          {
+            title: 'More',
+            subtitle: 'I can also...',
+            buttons:[
+              {
+                type: 'postback',
+                payload: 'joke',
+                title: 'Tell you a joke'
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+  end
+
   def self.go_response(member, msg)
     msg = msg.downcase
     key = msg.split('go ')[1]
@@ -238,7 +344,7 @@ class Pablo
       self.send(event.sender_id, more_blog_responses[1])
       self.send(event.sender_id, more_blog_responses[2])
     when :help
-      self.send(event.sender_id, DefaultMessage.help_response(member))
+      self.send(event.sender_id, self.help_response(member))
     when :joke
       self.send(event.sender_id, self.joke_response)
     when :wiki
