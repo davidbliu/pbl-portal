@@ -99,7 +99,6 @@ class Pablo
 
 
   def self.send(recipient_id, msg)
-    # token = 'EAAQg2xCDnjoBAGf4ezOpcmmCwAJCOkGZCaCvSog822oeZCLeReOBOZCZAp5CcLJ5fomQFimo1MeLxaezY6cnSiPZCsOMDaBZAI5utX5dYSiFOur5nILgljqWKcpZBGvJi8U7h4ZCij9nZAHRJyUNGBvQiDq2ThqvNZCMC1Y6ta5HZBBZAAZDZD'
     token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
     body = {:recipient => {:id => recipient_id}, :message => msg}
     fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
@@ -185,114 +184,6 @@ class Pablo
     }
     return buttons
   end
-
-
-  def self.help_response(member)
-    return {
-    attachment: {
-      type: "template",
-      payload: {
-        template_type: "generic",
-        elements: [
-          {
-            title: "Secret Pairings",
-            subtitle: "I've partnered you with a secret friend to help me respond.",
-            buttons: [
-              {
-                type: 'postback',
-                payload: 'group',
-                title: "Who's My Partner?"
-              },
-              {
-                type: 'postback',
-                payload: 'skip',
-                title: 'Skip Partner'
-              },
-              {
-                type:'postback',
-                payload:'info_pair',
-                title:'More Info'
-              }
-            ]
-
-          },
-          {
-            title: "Blog",
-            subtitle:"Check out recent blogposts",
-            buttons:[
-              {
-                type:"web_url",
-                url:"http://portal.berkeley-pbl.com/blog",
-                title:"pbl.link/blog"
-              },
-              {
-                type:"postback",
-                payload:"blog",
-                title:"Recent posts"
-              }          
-            ]
-          },
-          {
-            title:"Tabling",
-            subtitle: 'I can tell you when your tabling slot is',
-            buttons:[
-              {
-                type:'postback',
-                payload:'tabling',
-                title:'My Slot'
-              },
-              {
-                type:"web_url",
-                url:"http://portal.berkeley-pbl.com/tabling",
-                title:"Full schedule"
-              }
-
-            ]
-          },
-          {
-            title:"Events",
-            subtitle: 'Here are some events happening this week',
-            buttons: self.event_buttons
-          },
-          {
-            title:"Points",
-            subtitle: self.points_string(member),
-            buttons:[
-              {
-                type:"web_url",
-                url:"http://portal.berkeley-pbl.com/points",
-                title:"Attendance"
-              },
-              {
-                type:"web_url",
-                url:"http://portal.berkeley-pbl.com/points/scoreboard",
-                title:"Scoreboard"
-              },
-              {
-                type:"web_url",
-                url:"http://portal.berkeley-pbl.com/points/distribution",
-                title:"Distribution"
-              }         
-            ]
-          },
-          {
-            title: 'More',
-            subtitle: 'I can also...',
-            buttons:[
-              {
-                type: 'postback',
-                payload: 'joke',
-                title: 'Tell you a joke'
-              }
-            ]
-          }
-        ]
-      }
-    }
-  }
-  end
-
-
   def self.default_btns(text)
     buttons = []
     buttons << {
@@ -347,7 +238,7 @@ class Pablo
       self.send(event.sender_id, more_blog_responses[1])
       self.send(event.sender_id, more_blog_responses[2])
     when :help
-      self.send(event.sender_id, self.help_response(member))
+      self.send(event.sender_id, DefaultMessage.help_response(member))
     when :joke
       self.send(event.sender_id, self.joke_response)
     when :wiki
@@ -380,8 +271,11 @@ class Pablo
       self.send(event.sender_id, {:text => "Here's the platforms for #{name}"})
       DefaultMessage.platform_for(event.sender_id, name)
     when :pokemon
-      self.send(event.sender_id, {:text => "Correct! Here's a puppy"})
-      self.send(event.sender_id, DefaultMessage.puppy_msg)
+      correct_guesses = ["squirtle", "snorlax"]
+      correctgex = Regexp.new(correct_guesses.join('|'))
+      if (event.msg.downcase =~ correctgex) != nil
+        event.bot.send_puppy
+      end
     when :boba
       self.send(event.sender_id, DefaultMessage.boba_msg)
     when :boba_example
@@ -399,8 +293,6 @@ class Pablo
         title:"Check my order"
         }]
       self.send(event.sender_id, self.get_button_msg("Got it! I'll get you an order of \"#{order}\"", buttons))
-      # self.send(event.sender_id, {:text => "Got it! I'll get you an order of \"#{order}\""})
-      # self.send(event.sender_id, {:text => "Check your order by sending me \"Boba Order\""})
     when :boba_address
       address = event.msg.downcase.split('address:')[1]
       b = Boba.where(name: event.bot.name).first_or_create!

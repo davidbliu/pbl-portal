@@ -37,40 +37,6 @@ class DefaultMessage
 	        }
 	      }
 	    }
-			# return {
-			# 	attachment:{
-
-			# 		type:'template',
-			# 		payload: {
-			# 			template_type: 'generic',
-			# 			elements: [
-			# 				{
-			# 					title: "Your Order",
-			# 					subtitle: "If you change your order, just type \"Boba Order\" to see this screen again",
-			# 					buttons:[
-			# 						{
-			# 							type:'postback',
-			# 							payload: 'show_order',
-			# 							title: "Show Order"
-
-			# 						},
-			# 						{
-			# 							type:'postback',
-			# 							payload: 'cancel boba',
-			# 							title: 'Cancel Boba'
-			# 						},
-			# 						{
-			# 							type:'postback',
-			# 							payload: 'boba_example',
-			# 							title: 'Update Order'
-			# 						}
-									
-			# 					]
-			# 				}
-			# 			]
-			# 		}
-			# 	}
-			# }
 		end
 	end
 
@@ -131,23 +97,25 @@ class DefaultMessage
 		{:text => "\"Address: 123 the north pole\""}
 	end
 
-	def self.pokemon_message
+	def self.pokemon_message(url)
 		msg = {
 			attachment: {
 				type: 'image',
 				payload: {
-					url: 'https://i.ytimg.com/vi/GzxCAzp0hpU/hqdefault.jpg'
+					url: url
 				}
 			}
 		}
 	end
 
 	def self.puppy_msg
+		puppy_img = 'http://41.media.tumblr.com/cf8cd327f9a0b329351b55b998140cb2/tumblr_nz10tuNhfp1rbibvmo1_500.jpg'
+		puppy_img2 = 'http://cdn1.theodysseyonline.com/files/2016/01/10/635880403615266094-892416457_pup.jpeg'
 		msg = {
 			attachment: {
 				type: 'image',
 				payload: {
-					url: 'http://41.media.tumblr.com/cf8cd327f9a0b329351b55b998140cb2/tumblr_nz10tuNhfp1rbibvmo1_500.jpg'
+					url: puppy_img2
 				}
 			}
 		}
@@ -238,6 +206,112 @@ class DefaultMessage
 		puts ps
 		return ps
 	end
+
+	 def self.help_response(member)
+    return {
+    attachment: {
+      type: "template",
+      payload: {
+        template_type: "generic",
+        elements: [
+          {
+            title: "Secret Pairings",
+            subtitle: "I've partnered you with a secret friend to help me respond.",
+            buttons: [
+              {
+                type: 'postback',
+                payload: 'group',
+                title: "Who's My Partner?"
+              },
+              {
+                type: 'postback',
+                payload: 'skip',
+                title: 'Skip Partner'
+              },
+              {
+                type:'postback',
+                payload:'info_pair',
+                title:'More Info'
+              }
+            ]
+
+          },
+          {
+            title: "Blog",
+            subtitle:"Check out recent blogposts",
+            buttons:[
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/blog",
+                title:"pbl.link/blog"
+              },
+              {
+                type:"postback",
+                payload:"blog",
+                title:"Recent posts"
+              }          
+            ]
+          },
+          {
+            title:"Tabling",
+            subtitle: 'I can tell you when your tabling slot is',
+            buttons:[
+              {
+                type:'postback',
+                payload:'tabling',
+                title:'My Slot'
+              },
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/tabling",
+                title:"Full schedule"
+              }
+
+            ]
+          },
+          {
+            title:"Events",
+            subtitle: 'Here are some events happening this week',
+            buttons: self.event_buttons
+          },
+          {
+            title:"Points",
+            subtitle: self.points_string(member),
+            buttons:[
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/points",
+                title:"Attendance"
+              },
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/points/scoreboard",
+                title:"Scoreboard"
+              },
+              {
+                type:"web_url",
+                url:"http://portal.berkeley-pbl.com/points/distribution",
+                title:"Distribution"
+              }         
+            ]
+          },
+          {
+            title: 'More',
+            subtitle: 'I can also...',
+            buttons:[
+              {
+                type: 'postback',
+                payload: 'joke',
+                title: 'Tell you a joke'
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+  end
+
 
 	def self.fourth_gen
 	end

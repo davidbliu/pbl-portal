@@ -198,10 +198,24 @@ class BotMember < ActiveRecord::Base
       end
     end
 
-    def send_pokemon_msg
-    	Pablo.send(self.sender_id, DefaultMessage.pokemon_message)
+    def send_pokemon_msg(name)
+    	url = Pokemon.pokemap[name]
+    	Pablo.send(self.sender_id, DefaultMessage.pokemon_message(url))
     	Pablo.send(self.sender_id, {:text => "#{self.name.split(' ')[0]}, Who's that pokemon?!"})
     end
+
+    def send_puppy
+    	if self.group_id.nil?
+    		Pablo.send(self.sender_id, {:text => "Right! Heres a puppy"})
+			Pablo.send(bm.sender_id, {:text => "You got it! Heres a puppy for both of you"})
+		else    		
+    		BotMember.where(group_id: self.group_id).each do |bm|
+    			Pablo.send(bm.sender_id, {:text => "#{self.alias} got it! Heres a puppy"})
+    			Pablo.send(bm.sender_id, DefaultMessage.puppy_msg)
+    		end
+    	end
+    end
+
 
     def announce_boba
     	firstname = self.name.split(' ')[0]

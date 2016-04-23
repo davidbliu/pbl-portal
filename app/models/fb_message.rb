@@ -19,7 +19,7 @@ class FBMessage
 		candidates: [/^candidates$/],
 		support: [/^support (.*)$/],
 		platform_for: [/^platform_for (.*)$/],
-		pokemon: [/squirtle/],
+		pokemon: [Pokemon.pokegex],
 		boba_example: [/^boba_example$/],
 		cancel_boba: [/^cancel boba$/],
 		boba: [/^#boba$/],
