@@ -223,7 +223,22 @@ class BotMember < ActiveRecord::Base
     	Pablo.send(self.sender_id, DefaultMessage.boba_pic)
     	Pablo.send(self.sender_id, DefaultMessage.boba_interest)
     end
+	def self.p(name1, name2)
+      puts "pairing #{name1} and #{name2}"
+      BotMember.pair(BotMember.find_by_name(name1), BotMember.find_by_name(name2))
+    end
 
+    def self.n(name)
+      bm= BotMember.find_by_name(name)
+      BotMember.where(group_id:bm.group_id).each do |bot|
+        bot.group_id = nil
+        bot.save!
+      end
+    end
+
+    def self.unpaired
+      puts BotMember.where(group_id:nil).pluck(:name).to_s
+    end
 
 
 end
