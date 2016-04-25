@@ -80,7 +80,7 @@ class FBMessage
 		elsif is_text?
 			return self.text
 		else
-			return 'hi'
+			return 'unrecognized'
 		end
 	end
 

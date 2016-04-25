@@ -203,7 +203,6 @@ class Pablo
     return self.get_button_msg(tabling_msg, buttons)
   end
 
-
   def self.send(recipient_id, msg)
     token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
     body = {:recipient => {:id => recipient_id}, :message => msg}
@@ -431,7 +430,7 @@ class Pablo
       }]
       self.send(event.sender_id, self.get_button_msg("Tabling generated", buttons))
     when :pablo
-      
+
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end

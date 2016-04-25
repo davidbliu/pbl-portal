@@ -1,6 +1,6 @@
 class BotMember < ActiveRecord::Base
 	before_save :generate_alias
-
+	has_many :messages
 	@@aliases = ['R2D2', 'Obi', 'Vader', 'Lucy', 'Shan', 'Mulan', 'Oz', 'Ash', 'Misty', 'Brock', 'Belle', 'Aurora', 'Mickey', 'Gaston', 'Pluto', 'Pooh', 'Dopey', 'Ariel', 'Harry', 'Ron', 'Nemo', 'Dory', 'Meg', 'Simba', 'Sully', 'Mike', 'Merida', 'Jasmine', 'Hans', 'Sven', 'Elsa', 'Olaf', 'Anna', 'Hops', 'Lilo', 'Stitch', 'Joy', 'Anger', 'Disgust', 'Peter', 'Hook', 'Nala', 'Pluto', 'Woody', 'Buzz', 'Bird', 'Dim', 'Dot', 'Flik', 'Francis', 'Gypsy', 'Heimlich', 'Hopper', 'Manny', 'Molt', 'Rosie', 'Slim', 'Alice', 'Bill', 'Dinah', 'Dodo', 'Doorknob', 'Dormouse', 'Mad hatter', 'Chicha', 'Kronk', 'Kuzco', 'Pacha', 'Yzma', 'Edna', 'Bob', 'Elastigirl', 'Violet', 'Syndrome', 'Scar', 'Bashful', 'Doc', 'Dopey', 'Grumpy', 'Happy']
 	@@adjectives = ["admiring","adoring","agitated","amazing","angry","awesome","backstabbing","berserk","big","boring","clever","cocky","compassionate","condescending","cranky","desperate","determined","distracted","dreamy","drunk","ecstatic","elated","elegant","evil","fervent","focused","furious","gigantic","gloomy","goofy","grave","happy","high","hopeful","hungry","insane","jolly","jovial","kickass","lonely","loving","mad","modest","naughty","nauseous","nostalgic",
 		"pedantic","pensive","prickly","reverent","romantic","sad","serene","sharp","sick","silly","sleepy","small","stoic","stupefied","suspicious","tender","thirsty","tiny","trusting"]
@@ -270,6 +270,36 @@ class BotMember < ActiveRecord::Base
 
     def self.unpaired
       puts BotMember.where(group_id:nil).pluck(:name).to_s
+    end
+
+    def log(msg)
+    	self.messages.create!(
+    		body: msg,
+    		sender: 'self'
+    	)
+    end
+    def log_pablo(msg)
+    	puts 'LOOGGGIGNGGGG PABLO'
+    	self.messages.create!(
+    		body: msg, 
+    		sender: 'pablo'
+    		)
+    end
+
+    def send(msg)
+    	token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
+	    body = {:recipient => {:id => self.sender_id}, :message => msg}
+	    fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
+	    begin
+	    	RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
+	    	if msg.keys.include?(:text)
+		    	log_pablo(msg[:text])
+		    end
+	    rescue => e
+	    	puts 'problem sending message'
+	    	puts e
+	    end
+
     end
 
 

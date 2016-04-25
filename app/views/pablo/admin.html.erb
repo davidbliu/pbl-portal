@@ -1,0 +1,52 @@
+
+<table class = 'table table-bordered'>
+	<thead>
+		<th>name</th>
+		<th>last sent</th>
+		<th>last received</th>
+		<th></th>
+	<% @bots.all.each do |bot| %>
+	<tr>
+		<td>
+			<div><%= bot.name %></div>
+			<div><%= bot.alias %></div>
+			<div><%= bot.sender_id %></div>
+
+		</td>
+		<td>
+			<div>
+				<% bot.messages.where(sender: 'self').each do |msg| %>
+					<div><%= msg.body %></div>
+				<% end %>
+			</div>
+			
+		</td>
+		<td>
+			<div>
+				<% bot.messages.where.not(sender: 'self').each do |msg| %>
+					<div><%= msg.body %></div>
+				<% end %>
+			</div>
+		</td>
+		<td>
+			<input type = 'text' id = '<%= bot.id %>-input'>
+			<button class = 'send-btn' data-id = '<%= bot.id %>'>send</button>
+		</td>
+	</tr>
+	<% end %>
+</table>
+<script type = 'text/javascript'>
+$('.send-btn').click(function(){
+	id = $(this).attr('data-id');
+	$.ajax({
+		url:'/pablo/send/'+id,
+		type:'post',
+		data:{
+			msg: $('#'+id+'-input').val()
+		},
+		success:function(data){
+			$('#'+id+'-input').val('');
+		}
+	});
+})
+</script>
