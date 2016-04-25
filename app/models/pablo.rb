@@ -203,18 +203,18 @@ class Pablo
     return self.get_button_msg(tabling_msg, buttons)
   end
 
-  def self.send(recipient_id, msg)
-    token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
-    body = {:recipient => {:id => recipient_id}, :message => msg}
-    fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
-    begin
-    RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
-    rescue => e
-      puts '>>> ERROR in Pablo::send, the rest client response was '
-      puts e.response
-      puts 'id: '+recipient_id.to_s
-    end
-  end
+  # def self.send(recipient_id, msg)
+  #   token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
+  #   body = {:recipient => {:id => recipient_id}, :message => msg}
+  #   fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
+  #   begin
+  #   RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
+  #   rescue => e
+  #     puts '>>> ERROR in Pablo::send, the rest client response was '
+  #     puts e.response
+  #     puts 'id: '+recipient_id.to_s
+  #   end
+  # end
 
   def self.post_button(post)
     {
@@ -307,13 +307,13 @@ class Pablo
 
 
 
-  def self.send_pairing_info(id, bot)
+  def self.send_pairing_info(bot)
     p1 = {:text => "Hey #{bot.get_alias}, I've paired you up with a secret friend in PBL who can help answer questions on my behalf. You'll known them by an alias only"}
     p2 = {:text => "Your name is #{bot.get_alias} and #{bot.pairing_info}"}
     p3 = {:text => "If you want a new secret friend, just type skip."}
-    self.send(id, p1)
-    self.send(id, p2)
-    self.send(id, p3)
+    bot.send_msg(p1)
+    bot.send_msg(p2)
+    bot.send_msg(p3)
   end
 
   def self.joke_response
@@ -328,98 +328,58 @@ class Pablo
     member = event.member
     case event.pablo_method
     when :go
-      self.send(event.sender_id, self.go_response(member, event.msg))
+      event.bot.send_msg(self.go_response(member, event.msg))
     when :tabling
-      self.send(event.sender_id, self.tabling_response(member))
+      event.bot.send_msg(self.tabling_response(member))
     when :points
-      self.send(event.sender_id, self.points_response(member))
+      event.bot.send_msg(self.points_response(member))
     when :events
-      self.send(event.sender_id, self.events_response)
+      event.bot.send_msg(self.events_response)
     when :blog
-      self.send(event.sender_id, self.blog_response(member))
+      event.bot.send_msg(self.blog_response(member))
     when :more_blog
       more_blog_responses = self.more_blog_responses(member)
-      self.send(event.sender_id, more_blog_responses[0])
-      self.send(event.sender_id, more_blog_responses[1])
-      self.send(event.sender_id, more_blog_responses[2])
+      event.bot.send_msg(more_blog_responses[0])
+      event.bot.send_msg(more_blog_responses[1])
+      event.bot.send_msg(more_blog_responses[2])
     when :help
-      self.send(event.sender_id, self.help_response(member))
+      event.bot.send_msg(self.help_response(member))
     when :joke
-      self.send(event.sender_id, self.joke_response)
+      event.bot.send_msg(self.joke_response)
     when :wiki
-      self.send(event.sender_id, self.wiki_response(event.msg))
+      event.bot.send_msg(self.wiki_response(event.msg))
     when :skip
-      self.send(event.sender_id, {:text => 'Finding you a new partner'})
+      event.bot.send_msg({:text => 'Finding you a new partner'})
       event.bot.skip
     when :pair
       bot_alias = event.msg.split('pair ')[1]
       if event.bot.pair(bot_alias)
         event.bot.alert_group
       else
-        self.send(event.sender_id, {:text=> 'Unable to perform pairing'})
+        event.bot.send_msg({:text=> 'Unable to perform pairing'})
       end
     when :group
       event.bot.alert_group
     when :whoami
-      self.send(event.sender_id, {:text => event.bot.alias})
+      event.bot.send_msg({:text => event.bot.alias})
     when :info_pair
-      self.send_pairing_info(event.sender_id, event.bot)
+      self.send_pairing_info(event.bot)
     when :topic
-      event.bot.send_topic
+      event.bot.send_msg_topic
     when :candidates
-      self.send(event.sender_id, DefaultMessage.platforms)
+      event.bot.send_msg(DefaultMessage.platforms)
     when :support
       name = event.msg.split("support ")[1]
-      self.send(event.sender_id, {:text => "I'll let #{name} know of your support!"})
+      event.bot.send_msg({:text => "I'll let #{name} know of your support!"})
     when :platform_for
       name = event.msg.split("platform_for ")[1]
-      self.send(event.sender_id, {:text => "Here's the platforms for #{name}"})
+      event.bot.send_msg({:text => "Here's the platforms for #{name}"})
       DefaultMessage.platform_for(event.sender_id, name)
     when :pokemon
       correct_guesses = ["squirtle", "snorlax"]
       correctgex = Regexp.new(correct_guesses.join('|'))
       if (event.msg.downcase =~ correctgex) != nil
-        event.bot.send_puppy
-      end
-    when :boba
-      self.send(event.sender_id, DefaultMessage.boba_msg)
-    when :boba_example
-      self.send(event.sender_id, {:text => "Here's an example of how to send your order!"})
-      self.send(event.sender_id, DefaultMessage.boba_order_example)
-      self.send(event.sender_id, DefaultMessage.boba_address_example)
-    when :boba_order
-      order = event.msg.downcase.split('order:')[1]
-      b = Boba.where(name: event.bot.name).first_or_create!
-      b.order = order
-      b.save!
-      buttons = [{
-        type:'postback',
-        payload: 'Boba Order',
-        title:"Check my order"
-        }]
-      self.send(event.sender_id, self.get_button_msg("Got it! I'll get you an order of \"#{order}\"", buttons))
-    when :boba_address
-      address = event.msg.downcase.split('address:')[1]
-      b = Boba.where(name: event.bot.name).first_or_create!
-      b.address = address
-      b.save!
-      buttons = [{
-        type:'postback',
-        payload: 'Boba Order',
-        title:"Check my order"
-        }]
-      self.send(event.sender_id, self.get_button_msg("Got it! I'll send your order of \"#{b.order}\" to \"#{address}\"", buttons))
-    when :order_confirmation
-      self.send(event.sender_id, DefaultMessage.order_confirmation(event.bot))
-    when :cancel_boba
-      Boba.find_by_name(event.bot.name).destroy
-      self.send(event.sender_id, {:text => "Okay!"})
-    when :show_order 
-      boba = Boba.find_by_name(event.bot.name)
-      if boba.nil?
-        self.send(event.sender_id, {:text => "You didn't place an order, #{event.bot.name}"})
-      else
-        self.send(event.sender_id, {:text => "You ordered #{boba.order} to be sent to #{boba.address}"})
+        event.bot.send_msg_puppy
       end
     when :generate
       TablingManager.gen_tabling
@@ -428,11 +388,11 @@ class Pablo
         url:'http://portal.berkeley-pbl.com/tabling',
         title:'pbl.link/tabling'
       }]
-      self.send(event.sender_id, self.get_button_msg("Tabling generated", buttons))
+      event.bot.send_msg(self.get_button_msg("Tabling generated", buttons))
     when :pablo
 
     else
-      self.send(event.sender_id, {:text => 'oops i fudged'})
+      event.bot.send_msg({:text => 'oops i fudged'})
     end
   end
 end

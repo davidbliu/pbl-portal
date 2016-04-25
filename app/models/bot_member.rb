@@ -76,24 +76,12 @@ class BotMember < ActiveRecord::Base
 	def send_topic
 		ids = BotMember.where(group_id: self.group_id).pluck(:sender_id)
 		if self.group_id.nil? or ids.length < 2
-			Pablo.send(self.sender_id, {:text => "Looks like you dont have a partner yet"})
+			self.send_msg({:text => "Looks like you dont have a partner yet"})
 		else
 			topic_body = Topic.random_topic
 			aliases = BotMember.where(group_id: self.group_id).pluck(:alias).join(' and ')
 			ids.each do |id|
-				Pablo.send(id, {:text => "Hey #{aliases}, #{topic_body}"})
-			end
-		end
-	end
-
-	def advertise_topic
-		ids = BotMember.where(group_id: self.group_id).pluck(:sender_id)
-		if self.group_id.nil? or ids.length < 2
-		else
-			topic_body = Topic.random_topic
-			aliases = BotMember.where(group_id: self.group_id).pluck(:alias).join(' and ')
-			ids.each do |id|
-				Pablo.send(id, {:text => "Hey #{aliases}, heres something that might spice up your conversation: If any of you types \"topic\" to me, I will find an interesting topic for two to chat about ;)"})
+				self.send_msg({:text => "Hey #{aliases}, #{topic_body}"})
 			end
 		end
 	end
@@ -186,7 +174,7 @@ class BotMember < ActiveRecord::Base
 		return txt
 	end
 	def alert_group
-		Pablo.send(self.sender_id, {:text => self.pairing_info})
+		self.send_msg({:text => self.pairing_info})
 	end
 
 	def duplicate
@@ -197,21 +185,10 @@ class BotMember < ActiveRecord::Base
 
 	def self.announce_namechange
 		BotMember.all.each do |bm|
-			Pablo.send(bm.sender_id, {:text => "Hey #{bm.name}, to make aliases less gender specific, I've changed your alias to \"#{bm.alias}\""})
+			bm.send_msg({:text => "Hey #{bm.name}, to make aliases less gender specific, I've changed your alias to \"#{bm.alias}\""})
 			if not bm.group_id.nil?
-				Pablo.send(bm.sender_id, {:text => "Your partner is still the same, but he/she is now to be known as \"#{bm.group_aliases.join(',')}\"! Have fun a great rest of your Wednesday :)"})
+				bm.send_msg({:text => "Your partner is still the same, but he/she is now to be known as \"#{bm.group_aliases.join(',')}\"! Have fun a great rest of your Wednesday :)"})
 			end
-		end
-	end
-
-	def self.announce_4gen
-
-		BotMember.all.each do |bm|
-			s1 = {:text => "Happy Thursday #{bm.name} :) :) I'm thuper excited for Fourth Gen, are you? Heres some info about the candidates"}
-			s2 = {:text => "You can bring up this menu by asking me \"candidates\" if you need it later! See you tonight 6-10 PM at VLSB 2060!"}
-			Pablo.send(bm.sender_id, s1)
-			Pablo.send(bm.sender_id, DefaultMessage.platforms)
-			Pablo.send(bm.sender_id, s2)
 		end
 	end
 
@@ -221,40 +198,27 @@ class BotMember < ActiveRecord::Base
       msg = "#{name}, good luck tonight at elections! #{aliases.join(', ')} and others send their support and #{num} people have checked out your platforms!"
       puts msg
       bm1 = BotMember.find_by_name(name)
-      Pablo.send(bm1.sender_id, {:text => msg})
-    end
-
-    def self.send_clap_msg
-      BotMember.all.each do |bm|
-        Pablo.send(bm.sender_id, {:text => "If you can hear me clap once. If you can hear me clap twice."})
-      end
+      bm1.send_msg({:text => msg})
     end
 
     def send_pokemon_msg(name)
     	url = Pokemon.pokemap[name]
-    	Pablo.send(self.sender_id, DefaultMessage.pokemon_message(url))
-    	Pablo.send(self.sender_id, {:text => "#{self.name.split(' ')[0]}, Who's that pokemon?!"})
+    	self.send_msg(DefaultMessage.pokemon_message(url))
+		self.send_msg({:text => "#{self.name.split(' ')[0]}, Who's that pokemon?!"})
     end
 
     def send_puppy
     	if self.group_id.nil?
-    		Pablo.send(self.sender_id, {:text => "Right! Heres a puppy"})
-			Pablo.send(bm.sender_id, {:text => "You got it! Heres a puppy for both of you"})
+    		self.send_msg({:text => "Right! Heres a puppy"})
+			self.send_msg({:text => "You got it! Heres a puppy for both of you"})
 		else    		
     		BotMember.where(group_id: self.group_id).each do |bm|
-    			Pablo.send(bm.sender_id, {:text => "#{self.alias} got it! Heres a puppy"})
-    			Pablo.send(bm.sender_id, DefaultMessage.puppy_msg)
+    			bm.send_msg({:text => "#{self.alias} got it! Heres a puppy"})
+    			bm.send_msg(DefaultMessage.puppy_msg)
     		end
     	end
     end
 
-
-    def announce_boba
-    	firstname = self.name.split(' ')[0]
-    	# Pablo.send(self.sender_id, {:text => "Hey #{firstname} want boba? Your friendly neighborhood PabloMate is delivering ShareTea at 8pm tonight for FREE!"})
-    	Pablo.send(self.sender_id, DefaultMessage.boba_pic)
-    	Pablo.send(self.sender_id, DefaultMessage.boba_interest)
-    end
 	def self.p(name1, name2)
       puts "pairing #{name1} and #{name2}"
       BotMember.pair(BotMember.find_by_name(name1), BotMember.find_by_name(name2))
@@ -286,7 +250,14 @@ class BotMember < ActiveRecord::Base
     		)
     end
 
-    def send(msg)
+    def group
+    	if self.group_id != nil and self.group_id > -1
+    		return BotMember.where(group_id: self.group_id).where.not(id: self.id)
+    	end
+    	return []
+    end
+
+    def send_msg(msg)
     	token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
 	    body = {:recipient => {:id => self.sender_id}, :message => msg}
 	    fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token

@@ -17,7 +17,7 @@ end
 
 def admin_send
   bot = BotMember.find(params[:id])
-  bot.send({:text => params[:msg]})
+  bot.send_msg({:text => params[:msg]})
   render nothing: true, status: 200
   end
 
@@ -37,7 +37,7 @@ def pablo
   seen_seq = []
   messaging_events = params["entry"][0]["messaging"]
     messaging_events.each do |event|
-      begin
+      # begin
         event = FBMessage.new(event)
         event.bot.log(event.msg)
         if event.is_delivery?
@@ -49,26 +49,26 @@ def pablo
           begin
             Pablo.execute(event)
           rescue
-            Pablo.send(event.sender_id, {:text => "error"})
+            event.bot.send_msg({:text => "error"})
           end
         else
           seen_seq << event.seq
           if event.forwarded_message
             if event.bot.group_id
-              event.bot.group_ids.each do |id|
-                Pablo.send(id, event.forwarded_message)
+              event.bot.group.each do |bot|
+                bot.send_msg(event.forwarded_message)
               end
             else
-              Pablo.send(event.sender_id, {:text => 'Looks like theres no one here...how about a joke'})
-              Pablo.send(event.sender_id, Pablo.joke_response)
+              event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
+              event.bot.send_msg(Pablo.joke_response)
             end
           end
         end
-      rescue => e
-        puts 'error in pablo_controller with this message'
-        puts e
-        puts params
-      end
+      # rescue => e
+      #   puts 'error in pablo_controller with this message'
+      #   puts e
+      #   puts params
+      # end
     end
     render nothing: true, status: 200
 end

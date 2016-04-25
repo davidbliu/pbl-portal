@@ -182,7 +182,8 @@ class DefaultMessage
 				}
 			}
 		}
-		Pablo.send(id, msg)
+		BotMember.find_by_sender_id(id).send_msg(msg)
+		# Pablo.send(id, msg)
 	end
 	def self.platforms
 		ps = { 

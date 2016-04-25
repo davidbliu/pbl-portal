@@ -15,7 +15,7 @@
 		</td>
 		<td>
 			<div>
-				<% bot.messages.where(sender: 'self').each do |msg| %>
+				<% bot.messages.order('created_at desc').where(sender: 'self').first(5).each do |msg| %>
 					<div><%= msg.body %></div>
 				<% end %>
 			</div>
@@ -23,7 +23,7 @@
 		</td>
 		<td>
 			<div>
-				<% bot.messages.where.not(sender: 'self').each do |msg| %>
+				<% bot.messages.order('created_at desc').where.not(sender: 'self').first(5).each do |msg| %>
 					<div><%= msg.body %></div>
 				<% end %>
 			</div>
