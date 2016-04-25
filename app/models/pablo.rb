@@ -410,9 +410,6 @@ class Pablo
         title:"Check my order"
         }]
       self.send(event.sender_id, self.get_button_msg("Got it! I'll send your order of \"#{b.order}\" to \"#{address}\"", buttons))
-
-      # self.send(event.sender_id, {:text => "Got it! I'll send your order of \"#{b.order}\" to \"#{address}\""})
-      # self.send(event.sender_id, {:text => "Check your order by sending me \"Boba Order\""})
     when :order_confirmation
       self.send(event.sender_id, DefaultMessage.order_confirmation(event.bot))
     when :cancel_boba
@@ -425,6 +422,14 @@ class Pablo
       else
         self.send(event.sender_id, {:text => "You ordered #{boba.order} to be sent to #{boba.address}"})
       end
+    when :generate
+      TablingManager.gen_tabling
+      buttons = [{
+        type:'web_url',
+        url:'http://portal.berkeley-pbl.com/tabling',
+        title:'pbl.link/tabling'
+      }]
+      self.send(event.sender_id, self.get_button_msg("Tabling generated", buttons))
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end

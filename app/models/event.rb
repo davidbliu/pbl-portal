@@ -126,5 +126,32 @@ class Event < ActiveRecord::Base
 		end
 	end
 
+	def self.tabling_points
+		session = GoogleDrive.saved_session("drive_config.json")
+		key = '1CC5F03uScXVTtGhkLs4cKON8MPbobfxvRe67QWFwvLs'
+		ws = session.spreadsheet_by_key(key).worksheets[0]
+		rows = ws.rows
+		index = 0
+		rows.each do |row|
+			if index != 0
+				name, pts = [row[1], row[2]]
+				member = Member.find_by_name(name)
+				if member.nil?
+					puts "MEMBER IS NIL #{name}"
+				else
+					e = Event.where(
+						name: "extra_tabling_#{member.email}",
+						points: pts.to_i,
+						semester: "Spring 2016"
+					).first_or_create!
+					e.attended = [member.email]
+					e.time = Time.now + 1.year
+					e.save!
+				end
+			end
+			index += 1
+		end
+	end
+
 
 end

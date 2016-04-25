@@ -5,8 +5,18 @@ class BotMember < ActiveRecord::Base
 	@@adjectives = ["admiring","adoring","agitated","amazing","angry","awesome","backstabbing","berserk","big","boring","clever","cocky","compassionate","condescending","cranky","desperate","determined","distracted","dreamy","drunk","ecstatic","elated","elegant","evil","fervent","focused","furious","gigantic","gloomy","goofy","grave","happy","high","hopeful","hungry","insane","jolly","jovial","kickass","lonely","loving","mad","modest","naughty","nauseous","nostalgic",
 		"pedantic","pensive","prickly","reverent","romantic","sad","serene","sharp","sick","silly","sleepy","small","stoic","stupefied","suspicious","tender","thirsty","tiny","trusting"]
 	@@nouns = ['Corn', 'Peas', 'Pepper', 'Acorn', 'Bokchoy', 'Taro', 'Potato', 'Spinach', 'Melon', 'Apple', 'Grape', 'Lemon', 'Pear', 'Pineapple', 'Tomato', 'Lychee', 'Lime', 'Turkey', 'Cow', 'Turtle', 'Lamb', 'Boba', 'Salad', 'Tree', 'Grass', 'Pizza', 'Fries', 'Burger', 'Nose', 'Eye', 'Ear', 'Hair', 'Balls', 'Fork', 'Spoon', 'Door', 'Straw', 'Hat', 'Shirt', 'Rose', 'Tulip', 'Rice', 'Noodle']
+	@@pokemon = ['Bulbasaur', 'Ivysaur', 'Venusaur', 'Charmander', 'Charmeleon', 'Charizard', 'Squirtle', 'Wartortle', 'Blastoise', 'Caterpie', 'Metapod', 'Butterfree', 'Weedle', 'Kakuna', 'Beedrill', 'Pidgey', 'Pidgeotto', 'Pidgeot', 'Rattata', 'Raticate', 'Spearow', 'Fearow', 'Ekans', 'Arbok', 'Pikachu', 'Raichu', 'Sandshrew', 'Sandslash', 'Nidoran', 'Nidorina', 'Nidoqueen', 'Nidorino', 'Nidoking', 'Clefairy', 'Clefable', 'Vulpix', 'Ninetales', 'Jigglypuff', 'Wigglytuff', 'Zubat', 'Golbat', 'Oddish', 'Gloom', 'Vileplume', 'Paras', 'Parasect', 'Venonat', 'Venomoth', 'Diglett', 'Dugtrio', 'Meowth', 'Persian', 'Psyduck', 'Golduck', 'Mankey', 'Primeape', 'Growlithe', 'Arcanine', 'Poliwag', 'Poliwhirl', 'Poliwrath', 'Abra', 'Kadabra', 'Alakazam', 'Machop', 'Machoke', 'Machamp', 'Bellsprout', 'Weepinbell', 'Victreebel', 'Tentacool', 'Tentacruel', 'Geodude', 'Graveler', 'Golem', 'Ponyta', 'Rapidash', 'Slowpoke', 'Slowbro', 'Magnemite', 'Magneton', "Farfetch'd", 'Doduo', 'Dodrio', 'Seel', 'Dewgong', 'Grimer', 'Muk', 'Shellder', 'Cloyster', 'Gastly', 'Haunter', 'Gengar', 'Onix', 'Drowzee', 'Hypno', 'Krabby', 'Kingler', 'Voltorb', 'Electrode', 'Exeggcute', 'Exeggutor', 'Cubone', 'Marowak', 'Hitmonlee', 'Hitmonchan', 'Lickitung', 'Koffing', 'Weezing', 'Rhyhorn', 'Rhydon', 'Chansey', 'Tangela', 'Kangaskhan', 'Horsea', 'Seadra', 'Goldeen', 'Seaking', 'Staryu', 'Starmie', 'Mr. Mime', 'Scyther', 'Jynx', 'Electabuzz', 'Magmar', 'Pinsir', 'Tauros', 'Magikarp', 'Gyarados', 'Lapras', 'Ditto', 'Eevee', 'Vaporeon', 'Jolteon', 'Flareon', 'Porygon', 'Omanyte', 'Omastar', 'Kabuto', 'Kabutops', 'Aerodactyl', 'Snorlax', 'Articuno', 'Zapdos', 'Moltres', 'Dratini', 'Dragonair', 'Dragonite', 'Mewtwo', 'Mew']
 	def get_alias
 		self.alias ? self.alias : ''
+	end
+
+	def random_pokemon
+		used = BotMember.select(:alias).map(&:alias)
+		rand = nil
+		while rand.nil? or used.include?(rand)
+			rand = @@pokemon.sample
+		end
+		return rand
 	end
 
 	def random_alias
@@ -93,10 +103,16 @@ class BotMember < ActiveRecord::Base
 			return
 		end
 		curr_group_id = self.group_id
-		BotMember.where(group_id: self.group_id).each do |bm|
-			bm.last_group_id = curr_group_id
-			bm.group_id = nil
-			bm.save!
+		self.last_group_id = curr_group_id
+		self.group_id = nil
+		self.save!
+		bot_members = BotMember.where(group_id: curr_group_id)
+		if bot_members.length == 1
+			bot_members.each do |bm|
+				bm.last_group_id = curr_group_id
+				bm.group_id = nil
+				bm.save!
+			end
 		end
 		BotMember.fix_unpaired
 	end
@@ -134,8 +150,12 @@ class BotMember < ActiveRecord::Base
 		end
 	end
 
+	def self.get_group_id
+		BotMember.all.pluck(:group_id).map{|x| x.to_i}.max.to_i + 1
+	end
+
 	def self.pair(bm1, bm2)
-		group_id = BotMember.all.pluck(:group_id).map{|x| x.to_i}.max.to_i + 1
+		group_id = BotMember.get_group_id
 		bm1.group_id = group_id
 		bm2.group_id = group_id
 		bm1.save!
@@ -143,6 +163,19 @@ class BotMember < ActiveRecord::Base
 		bm1.alert_group
 		bm2.alert_group
 	end
+
+	def self.group(names)
+		bots = BotMember.where("name in (?)", names)
+		group_id = self.get_group_id
+		bots.each do |bot|
+			bot.group_id = group_id
+			bot.save!
+		end
+		bots.each do |bot|
+			bot.alert_group
+		end
+	end
+
 	def pairing_info
 		names = BotMember.where(group_id: self.group_id).where.not(group_id: nil).where.not(id: self.id).pluck(:alias)
 		if names.length == 0
@@ -153,7 +186,6 @@ class BotMember < ActiveRecord::Base
 		return txt
 	end
 	def alert_group
-		
 		Pablo.send(self.sender_id, {:text => self.pairing_info})
 	end
 
