@@ -237,10 +237,12 @@ class BotMember < ActiveRecord::Base
     end
 
     def log(msg)
-    	self.messages.create!(
-    		body: msg,
-    		sender: 'self'
-    	)
+    	if msg != 'unrecognized'
+    		self.messages.create!(
+    			body: msg,
+    			sender: 'self'
+    		)
+    	end
     end
     def log_pablo(msg)
     	puts 'LOOGGGIGNGGGG PABLO'

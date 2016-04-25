@@ -8,9 +8,9 @@
 	<% @bots.all.each do |bot| %>
 	<tr>
 		<td>
-			<div><%= bot.name %></div>
-			<div><%= bot.alias %></div>
+			<div><%= bot.name %> (<%= bot.alias %>)</div>
 			<div><%= bot.sender_id %></div>
+			<div>Partner: <%= bot.group.map{|x| x.name}.join(', ') %></div>
 
 		</td>
 		<td>
@@ -29,8 +29,14 @@
 			</div>
 		</td>
 		<td>
-			<input type = 'text' id = '<%= bot.id %>-input'>
-			<button class = 'send-btn' data-id = '<%= bot.id %>'>send</button>
+			<div>
+				<input type = 'text' id = '<%= bot.id %>-input'>
+				<button class = 'send-btn' data-id = '<%= bot.id %>'>send</button>
+			</div>
+			<div>
+				<textarea></textarea>
+				<button class = 'send-json-btn' data-id = '<%= bot.id %>'>send json</button>
+			</div>
 		</td>
 	</tr>
 	<% end %>
