@@ -2,6 +2,7 @@ class FBMessage
 
 	@@like_sticker_id = 369239263222822
 	@@command_map = {
+		pablo: [/^pablo (.*)/],
 		tabling: [/^tabling$/],
 		generate: [/^generate$/],
 		blog: [/^blog$/, /^posts$/, /^blogposts$/],

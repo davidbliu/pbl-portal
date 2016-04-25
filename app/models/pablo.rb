@@ -430,6 +430,8 @@ class Pablo
         title:'pbl.link/tabling'
       }]
       self.send(event.sender_id, self.get_button_msg("Tabling generated", buttons))
+    when :pablo
+      
     else
       self.send(event.sender_id, {:text => 'oops i fudged'})
     end
