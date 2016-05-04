@@ -39,7 +39,6 @@ class GoLink < ActiveRecord::Base
 
 	def is_searchable(search_group_keys)
 		true
-		# self.get_groups.select{|x| search_group_keys.include?(x)}
 	end
 
 	def self.per_page
