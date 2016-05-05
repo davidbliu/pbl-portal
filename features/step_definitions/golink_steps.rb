@@ -2,13 +2,19 @@
 Given(/^the following golinks exist:$/) do |table|
   # table is a Cucumber::Core::Ast::DataTable
   table.hashes.each do |golink|
-  	GoLink.create(
+  	gl = GoLink.create(
   		key: golink[:key],
-  		url: golink[:url],
-  		groups: golink[:groups])
+  		url: golink[:url])
+  	golink[:groups].split(',').each do |gname|
+  		group = Group.find_by_name(gname.strip)
+  		gl.groups << group
+  	end
   end
 end
 
+Given /I wait 1 second/ do 
+	sleep(1)
+end
 
 Given(/^the following preferences exist:$/) do |table|
   # table is a Cucumber::Core::Ast::DataTable
@@ -28,11 +34,13 @@ Given(/^I am batch editing "([^"]*)"$/) do |keys|
 end
 
 Given(/^I (.*) the box for "([^"]*)"$/) do |type, key|
-	golink = GoLink.where(key: key).first
+	golink = GoLink.find_by_key(key)
 	if type == 'check'
-		check("#{golink.id}-checkbox")
+		# check("#{golink.id}-checkbox")
+		page.driver.post('/go/add_checked_id', {id: golink.id})
 	else
-		uncheck("#{golink.id}-checkbox")
+		# uncheck("#{golink.id}-checkbox")
+		page.driver.post('/go/remove_checked_id', {id: golink.id})
 	end
 end
 
@@ -44,8 +52,8 @@ Given(/^I wait (\d+) seconds for sign in$/) do |arg1|
 	sleep(arg1.to_i)
 end
 
-Given(/^I check the box to "([^"]*)" "([^"]*)"$/) do |type, groupKey|
-	group = Group.where(key:groupKey).first
+Given(/^I check the box to "([^"]*)" "([^"]*)"$/) do |type, group_name|
+	group = Group.find_by_name(group_name)
 	check("#{type}-group-#{group.id}-checkbox")
 end
 

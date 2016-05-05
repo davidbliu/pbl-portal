@@ -20,3 +20,4 @@
 setenv.sh
 *.DS_Store
 public/assets
+coverage

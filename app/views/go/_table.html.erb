@@ -33,9 +33,6 @@
 				</a>
 			</td>
 			<td>
-				<span class = 'smalltext text-muted'>
-					<%= golink[:time_string] %>
-				</span>
 				<% if golink[:description].present? %>
 				&nbsp;&nbsp;<%= golink[:description] %>
 				<% end %>
@@ -43,9 +40,15 @@
 			</td>
 			<td>
 				<img src = '<%= golink[:gravatar] %>' class = 'gravatar-img'>
-				<span class = 'text-muted smalltext'>
+			</td>
+			<td>
+				<div class = 'text-muted smalltext'><%= golink[:member_email] %></div>
+				<div class = 'text-muted smalltext'>
 					To: <%= golink[:groups] %>
-				</span>
+				</div>
+				<div class = 'text-muted smalltext'>
+					<%= golink[:time_string] %>
+				</div>
 			</td>
 		</tr>
 		<% end %>

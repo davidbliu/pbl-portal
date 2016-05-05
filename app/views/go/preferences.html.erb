@@ -7,7 +7,7 @@
 	<% @groups.each do |group| %>
 	  <div>
 	    <input type = 'checkbox' data-id = '<%= group.id %>' class = 'group-checkbox' data-type = 'default' id = '<%= group.id %>-default'>
-	    <%= link_to group.get_name, "/go?group_id=#{group.id}" %>
+	    <%= link_to group.name, "/go?group_id=#{group.id}" %>
 	  </div>
 	<% end %>
 </div>
@@ -24,7 +24,7 @@
 		<% @groups.each do |group| %>
 			<option id = '<%= group.id %>-landing-option' data-id = '<%= group.id %>' value = '<%= group.id %>-landing'
 				<% if @landing_group_id == group.id %> selected <% end %>>
-				<%= group.get_name %>
+				<%= group.name %>
 			</option>
 		<% end %>
 	</select>
@@ -38,7 +38,7 @@
 	<% @groups.each do |group| %>
 	  <div>
 	    <input type = 'checkbox' data-id = '<%= group.id %>' class = 'group-checkbox' data-type = 'search' id = '<%= group.id %>-search'>
-	    <%= link_to group.get_name, "/go?group_id=#{group.id}" %>
+	    <%= link_to group.name, "/go?group_id=#{group.id}" %>
 	  </div>
 	<% end %>
 </div>

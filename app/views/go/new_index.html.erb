@@ -6,15 +6,13 @@ td{
 tr:hover{
 	cursor:pointer;
 }
-/*.affix{
-	width: 500px;
-    top: 30px;
-}*/
+
 #title-box{
 	background-color:#f2f2f2;
 	padding:15px;
 	margin-bottom:15px;
 }
+
 .hilite{
 	background-color: rgba(27, 255, 0, 0.25);
 }
@@ -58,7 +56,7 @@ tr:hover{
 		<% if @search_term %>
 			Search: <%= @search_term %>
 		<% elsif @group %>
-			<%= @group.get_name %>
+			<%= @group.name %>
 		<% else %>
 			PBL Links
 		<% end %>
@@ -66,20 +64,17 @@ tr:hover{
 	</h1>
 	<% if @group %>
 		<div class = 'centered'>
-			<%= @group.get_type.capitalize %> Group (<%= @group.emails.length %> Members)
+			<%= @group.get_type.capitalize %> Group (<%= @group.group_members.length %> Members)
 			&nbsp;
-			<% if @group.key != @group.get_name %>
-				(<%= @group.key %>)
-			<% end %>
 		<% if @group.creator == myEmail %>
 			<%= link_to 'Edit Group', "/groups/edit/#{@group.id}" %>
 		<% end %>
 		</div>
 	<% end %>
 	<input type = 'text' class = 'form-control' placeholder = 'Search  |  Paste your long url here' id = 'search-input'>
-	<div id = 'pref-link-div'>
-		<a href = '/go/preferences'>Preferences</a>
-	</div>
+	<!-- <div id = 'pref-link-div'> -->
+		<!-- <a href = '/go/preferences'>Preferences</a> -->
+	<!-- </div> -->
 	<div id = 'trash-link-div'>
 		<a href = '/go/trash'>Trash</a>
 	</div>
@@ -118,14 +113,14 @@ tr:hover{
 		<% @groups.each do |group| %>
 			<div>
 				<a href = '/go?group_id=<%= group.id %>'>
-				<%= group.get_name %>
-				</a>&nbsp;
-				<span class = 'smalltext text-area'>
-					<%= group.key %>
-				</span>
-			&nbsp;
+				<%= group.name %>
+				</a>
+				<% if group.is_open %>
+				(open group)
+				<% end %>
 			</div>
 		<% end %>
+		<a href = '/go/menu'>All Groups</a>
 		<div id = 'create-group-div'>
 			<a href = '/groups/new'>Create a group</a>
 		</div>
@@ -139,11 +134,8 @@ tr:hover{
 	<tr>
 		<td>
 			<a href = '/go?group_id=<%= group.id %>'>
-				<%= group.get_name %>
-			</a>&nbsp;
-			<span class = 'smalltext text-muted'>
-				<%= group.key %>
-			</span>
+				<%= group.name %>
+			</a>
 		</td>
 		<td><input id = 'add-group-<%= group.id %>-checkbox' class = 'batch-group-checkbox' type = 'checkbox' data-type = 'add' data-id = '<%= group.id %>'>&nbsp;Add</td>
 		<td><input id = 'remove-group-<%= group.id %>-checkbox'  class = 'batch-group-checkbox' type = 'checkbox' data-type = 'remove' data-id = '<%= group.id %>'>&nbsp;Remove</td>

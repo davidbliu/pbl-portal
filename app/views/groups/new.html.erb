@@ -5,19 +5,16 @@
 	<%= form_tag "/groups/create" %>
 <% end %>
 
-
-Key
-<%= text_field_tag 'key', @group.key, placeholder: 'Group Key (Must be a unique key without spaces)', class: 'form-control', readonly: @editing %>
 Name
-<%= text_field_tag 'name', @group.name, placeholder: 'Group Name (Optional)', class: 'form-control' %>
+<%= text_field_tag 'name', @group.name, placeholder: 'Group Name', class: 'form-control' %>
 
 Members
-<%= text_area_tag 'emails', @group.emails.join(','), placeholder: 'Group Members Emails (comma separated)', class: 'form-control' %>
+<%= text_area_tag 'emails', @group.group_members.pluck(:email).join(','), placeholder: 'Group Members Emails (comma separated)', class: 'form-control' %>
 
 Group Privacy (who can view links in the group)
 <select name = 'group_type' class = 'form-control'>
 	<option value = 'private' >Private: Group Members Only</option>
-	<option value = 'public' <%= @group.group_type == 'public' ? "selected" : "" %>>Public</option>
+	<option value = 'open' <%= @group.is_open ? "selected" : "" %>>Open</option>
 </select>
 <%= submit_tag 'Submit', class: 'btn btn-info' %>
 

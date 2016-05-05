@@ -1,69 +1,24 @@
 class Group < ActiveRecord::Base
 
-	before_destroy :fix_golinks
+	has_many :group_members, dependent: :destroy
+	has_many :go_link_groups, dependent: :destroy
+	has_many :go_link_copy_groups, dependent: :destroy
+	has_many :go_links, :through => :go_link_groups
+	has_many :go_link_copies, :through => :go_link_copy_groups
 
-	def fix_golinks
-		self.golinks.each do |golink|
-			groups = golink.get_groups 
-			groups = groups.select{|x| x != self.key}
-			groups = groups.length > 0 ? groups.join(',') : 'Anyone'
-			golink.groups = groups
-			golink.save
-		end
-	end
-	def members
-		emails = GroupMember.where(group: self.key).pluck(:email)
-		Member.where('email in (?)', emails)
-	end
-
-	def add_member(member)
-		GroupMember.where(group: self.key)
-			.where(email: member.email).first_or_create
-	end
-
-	def emails
-		GroupMember.where(group: self.key).pluck(:email)
-	end
-
-	def get_name
-		(self.name != nil and self.name != '') ? self.name : self.key
-	end
-	def has_name?
-		self.name and self.name.strip != ''
-	end
 
 	def self.groups_by_email(email)
-   		group_keys = GroupMember.where(email: email).pluck(:group).uniq
-		groups = Group.where('key in (?) or group_type = ?', group_keys, 'public')
+		ids = GroupMember.where(email: email).pluck(:group_id)
+		ids += Group.where(is_open: true).pluck(:id)
+		return Group.where('id in (?)', ids)
   	end
-
-  	def golinks
-  		GoLink.where(
-  			'groups like ? 
-  			or groups like ? 
-  			or groups like ? 
-  			or groups like ?', 
-  			"#{self.key}", 
-  			"#{self.key},%", 
-  			"%,#{self.key}", 
-  			"%,#{self.key},%").order('created_at desc')
-  	end
-
-  	def copies
-  		GoLinkCopy.where(
-  			'groups like ? 
-  			or groups like ? 
-  			or groups like ? 
-  			or groups like ?', 
-  			"#{self.key}", 
-  			"#{self.key},%", 
-  			"%,#{self.key}", 
-  			"%,#{self.key},%").order('created_at desc')
-  	end
-
   
   	def get_type
-  		self.group_type ? self.group_type : 'private'
+  		if is_open
+  			return 'Open'
+  		else 
+  			return 'Private'
+  		end
   	end
 
 	# create groups for sp 16 and fa 15

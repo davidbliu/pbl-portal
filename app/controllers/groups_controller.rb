@@ -7,14 +7,13 @@ class GroupsController < ApplicationController
 
 	def create
 		failed = false
-		existing = Group.where(key: params[:key]).first
+		existing = Group.find_by_name(params[:name])
 		if existing
 			failed = true
 		else
-			group = Group.create(
-				key: params[:key], 
+			group = Group.create( 
 				name: params[:name],
-				group_type: params[:group_type],
+				is_open: params[:group_type] != 'private',
 				creator: myEmail)
 		end
 		# fails if group with same key already exists
@@ -24,15 +23,13 @@ class GroupsController < ApplicationController
 			emails = emails.uniq.map{|x| x.strip}
 			emails.each do |email|
 				GroupMember.where(
-					group: group.key,
+					group_id: group.id,
 					email: email).first_or_create
 			end
-			# render nothing: true, status: 200
 			redirect_to '/go'
 		else
-			flash[:warning] = "Cannot create a group with the key #{params[:key]}"
+			flash[:warning] = "Cannot create a group with the name #{params[:name]}"
 			redirect_to :back
-			# render json: 'a group with the same key already exists', status: 500
 		end
 	end
 
@@ -57,15 +54,17 @@ class GroupsController < ApplicationController
 	def update
 		@group = Group.find(params[:id])
 		@group.name = params[:name]
-		@group.key = params[:key]
-		@group.group_type = params[:group_type]
-		@group.save
+		@group.is_open = params[:group_type] != 'private'
+		@group.save!
 		# update members too
-		GroupMember.where(group: @group.key).destroy_all
-		params[:emails].split(',').each do |email|
+		GroupMember.where(group_id: @group.id).destroy_all
+		emails = params[:emails].split(',')
+		emails << myEmail
+		emails = emails.uniq.map{|x| x.strip}
+		emails.each do |email|
 			email = email.strip
 			GroupMember.where(
-				group: @group.key,
+				group_id: @group.id,
 				email: email).first_or_create
 		end
 		redirect_to :back

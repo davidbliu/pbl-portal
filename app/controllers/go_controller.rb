@@ -27,7 +27,7 @@ class GoController < ApplicationController
       @golinks = where
       @golinks = @golinks.map{|x| x.to_json}
       @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
-      @groups = GoLink.get_groups_by_email(myEmail)
+      @groups = Group.groups_by_email(myEmail)
       render :new_index
     else
       redirect_to '/go?q='+params[:key]
@@ -77,7 +77,7 @@ class GoController < ApplicationController
       @group = Group.find(params[:group_id])
       @group_editing = true
       viewable = GoLink.can_view(myEmail)
-      @golinks = @group.golinks.where('id in (?)', viewable)
+      @golinks = @group.go_links.where('go_links.id in (?)', viewable)
     elsif params[:q]
       if params[:q].include?('http://') or params[:q].include?('https://')
         redirected = true
@@ -89,7 +89,7 @@ class GoController < ApplicationController
       viewable = GoLink.can_view(myEmail)
       @golinks = GoLink.order('created_at desc')
         .where('id in (?)',viewable)
-        .where.not(key: 'change-this-key')
+        .includes(:groups)
     end
     @groups = Group.groups_by_email(myEmail)
     @golinks = @golinks.map{|x| x.to_json}
@@ -141,8 +141,6 @@ class GoController < ApplicationController
       url: params[:url],
       description: params[:desc],
       member_email: myEmail,
-      groups: @default_keys.join(','),
-      member_email: myEmail
     )
   end
 
@@ -172,7 +170,7 @@ class GoController < ApplicationController
       golink.description = params[:description].strip
     end
     params[:groups] ||= []
-    golink.groups = params[:groups].join(',')
+    golink.groups = Group.where('id in (?)', params[:groups])
     golink.save!
     render json: golink.to_json
   end
@@ -195,9 +193,11 @@ class GoController < ApplicationController
   def batch_update_groups
     add_groups = Group.where('id in (?)', params[:add])
     remove_groups = Group.where('id in (?)', params[:remove])
+    remove_ids = remove_groups.pluck(:id)
     GoLink.checked_golinks(myEmail).each do |golink|
-      golink.add_groups(add_groups)
-      golink.remove_groups(remove_groups)
+      golink.groups += add_groups
+      golink.groups = golink.groups.select{|x| remove_ids.exclude?(x.id)}
+      golink.groups = golink.groups.uniq
     end
     render nothing: true, status: 200
   end

@@ -40,17 +40,17 @@
 
 	<div class = 'groups-edit' data-id = '<%= @golink.id %>'>
 		<div class = 'groups-toggle'>
-			Shared With: <%= @golink.groups %>
+			Shared With: <%= @golink.group_string %>
 		</div>
 		<div class = 'groups-form'>
 			<% @groups.each do |group| %>
 			<div>
-				<% if @golink.get_groups.include?(group.key) %>
-					<input class = 'group-checkbox' type = 'checkbox' data-key = '<%= group.key %>' checked>
+				<% if @golink.groups.include?(group) %>
+					<input class = 'group-checkbox' type = 'checkbox' data-key = '<%= group.id %>' checked>
 				<% else %>
-					<input class = 'group-checkbox' type = 'checkbox' data-key = '<%= group.key %>'>
+					<input class = 'group-checkbox' type = 'checkbox' data-key = '<%= group.id %>'>
 				<% end %>
-				<%= link_to group.get_name, "/go?group_id=#{group.id}" %>
+				<%= link_to group.name, "/go?group_id=#{group.id}" %>
 			</div>
 			<% end %>
 		</div>

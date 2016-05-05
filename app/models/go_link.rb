@@ -1,31 +1,34 @@
 require 'elasticsearch/model'
 class GoLink < ActiveRecord::Base
-
-	before_save :fix_groups
 	before_destroy :create_copy
+	has_many :go_link_groups, dependent: :destroy
+	has_many :groups, :through => :go_link_groups	
 	include Elasticsearch::Model
  	include Elasticsearch::Model::Callbacks
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
-	
-	def fix_groups
-		gps = self.groups.split(',').map{|x| x.strip}
-		gps = gps.select{|x| x != '' and x != 'Anyone'}.uniq
-		gps = gps.join(',')
-		if gps == ''
-			gps = 'Anyone'
-		end
-		self.groups = gps
-	end
+
+ 	def self.can_view(email)
+ 		ids = GoLink.all.includes(:groups).select{|x| x.member_email == email or x.groups.length == 0}.map{|x| x.id} #TODO: speed up
+ 		groups = GroupMember.where(email: email).map{|x| x.group}
+ 		groups = groups + Group.where(is_open: true)
+ 		groups.each do |group|
+ 			ids = ids + group.go_links.pluck(:id)
+ 		end
+ 		return ids.uniq
+ 	end
 
 	def create_copy
 		if self.key.present? and self.url.present?
-			GoLinkCopy.create(
+			copy = GoLinkCopy.create(
 				key: self.key,
 				url: self.url,
 				member_email: self.member_email,
-				groups: self.groups,
 				description: self.description,
 				golink_id: self.id)
+			gps = self.groups
+			gps.each do |gp|
+				copy.groups << gp
+			end
 		end
 	end
 
@@ -58,6 +61,14 @@ class GoLink < ActiveRecord::Base
 		return "http://gravatar.com/avatar/#{gravatar_id}.png"
 	end
 
+	def group_string
+		if self.groups.length > 0
+			return self.groups.pluck(:name).join(', ')
+		else
+			return 'Anyone'
+		end
+	end
+
 	def to_json
 		return {
 	      key: self.key,
@@ -72,7 +83,7 @@ class GoLink < ActiveRecord::Base
 	      timestamp: self.timestamp,
 	      time_string: self.time_string,
 	      semester:self.semester,
-	      groups: self.groups,
+	      groups: self.group_string,
 	      gravatar: self.creator_gravatar
 	    }
 	end
@@ -157,30 +168,6 @@ class GoLink < ActiveRecord::Base
 	# Group based permissions
 	#
 
-	def get_groups
-		self.groups.split(',').map{|x| x.strip}
-	end
-
-	def self.can_view(email)
-		if GoLink.admin_emails.include?(email)
-			return GoLink.all.pluck(:id)
-		end
-		groups = Group.groups_by_email(email)
-		ids = []
-		groups.each do |group|
-			ids += group.golinks.pluck(:id)
-		end
-		ids += GoLink.where('groups like ?', "%Anyone%").pluck(:id)
-		ids += GoLink.where(member_email: email).pluck(:id)
-		return ids.uniq
-	end
-
-	def self.get_groups_by_email(email)
-		groups = Group.groups_by_email(email)
-    	groups << Group.new(key: 'Only Me', name: 'Only Me')
-	end
-
-
 	def self.get_checked_ids(email)
 		Rails.cache.fetch("#{email}-checked") do 
 			[]
@@ -210,20 +197,6 @@ class GoLink < ActiveRecord::Base
 	def self.checked_golinks(email)
 		return GoLink.where('id in (?)', self.get_checked_ids(email))
 	end
-	
-	def add_groups(groups)
-		group_keys = self.groups.split(',')
-		group_keys = group_keys.concat(groups.map{|x| x.key}).join(',')
-		self.groups = group_keys
-		self.save
-	end
 
-	def remove_groups(groups)
-		group_keys = self.groups.split(',')
-		remove_keys = groups.map{|x| x.key}
-		group_keys = group_keys.select{|x| not remove_keys.include?(x)}.join(',')
-		self.groups = group_keys
-		self.save
-	end
 
 end

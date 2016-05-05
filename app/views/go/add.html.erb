@@ -22,7 +22,7 @@
 		Groups:
 		<% @groups.each do |group| %>
 			<div>
-				<input id = '<%= group.id %>-checkbox' class = 'golink-group-checkbox' data-key = '<%= group.key %>' type = 'checkbox'> <%= group.get_name %>
+				<input id = '<%= group.id %>-checkbox' class = 'golink-group-checkbox' data-key = '<%= group.id %>' type = 'checkbox'> <%= group.name %>
 			</div>
 		<% end %>
 	</div>

@@ -46,7 +46,6 @@ Rails.application.routes.draw do
   get 'go/batch_delete' => 'go#batch_delete'
   post 'go/batch_update_groups' => 'go#batch_update_groups'
   post 'go/batch_update_tags' => 'go#batch_update_tags'
-  post 'go/batch_delete2' => 'go#batch_delete2'
   post 'go/add_checked_id' => 'go#add_checked_id'
   post 'go/remove_checked_id' => 'go#remove_checked_id'
   get 'go/get_checked_ids' => 'go#get_checked_ids'
