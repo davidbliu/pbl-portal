@@ -25,7 +25,6 @@ class GoController < ApplicationController
       end
     elsif where.length > 0
       @golinks = where
-      @golinks = @golinks.map{|x| x.to_json}
       @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
       @groups = Group.groups_by_email(myEmail)
       render :new_index
@@ -51,7 +50,6 @@ class GoController < ApplicationController
 
   def checked_links
     @golinks = GoLink.where('id in (?)', GoLink.get_checked_ids(myEmail))
-    @golinks = @golinks.map{|x| x.to_json}
     @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
     @groups = Group.groups_by_email(myEmail)
     @batch_editing = true
@@ -92,7 +90,7 @@ class GoController < ApplicationController
         .includes(:groups)
     end
     @groups = Group.groups_by_email(myEmail)
-    @golinks = @golinks.map{|x| x.to_json}
+    @golinks = @golinks.to_a
     @golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
     if not redirected
       render :new_index

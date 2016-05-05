@@ -8,12 +8,15 @@ class GoLink < ActiveRecord::Base
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
  	def self.can_view(email)
- 		ids = GoLink.all.includes(:groups).select{|x| x.member_email == email or x.groups.length == 0}.map{|x| x.id} #TODO: speed up
- 		groups = GroupMember.where(email: email).map{|x| x.group}
- 		groups = groups + Group.where(is_open: true)
- 		groups.each do |group|
- 			ids = ids + group.go_links.pluck(:id)
- 		end
+ 		# if GoLink.admin_emails.include?(email)
+ 		# 	return GoLink.all.pluck(:id)
+ 		# end
+ 		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
+ 		gids += Group.where(is_open: true).pluck(:id)
+ 		ids = GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id)
+ 		grouped_ids = GoLinkGroup.all.pluck(:go_link_id).uniq
+ 		ids += GoLink.where(member_email: email).pluck(:id)
+ 		ids += GoLink.where('id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups)').pluck(:id) 
  		return ids.uniq
  	end
 
@@ -55,15 +58,15 @@ class GoLink < ActiveRecord::Base
 		GoLinkTag.where(golink_id: self.id)
 	end
 
-	def creator_gravatar
+	def gravatar
 		email = self.member_email ? self.member_email : 'asdf@gmail.com'
 		gravatar_id = Digest::MD5.hexdigest(email.downcase)
 		return "http://gravatar.com/avatar/#{gravatar_id}.png"
 	end
 
 	def group_string
-		if self.groups.length > 0
-			return self.groups.pluck(:name).join(', ')
+		if groups.length > 0
+			return groups.pluck(:name).join(', ')
 		else
 			return 'Anyone'
 		end
@@ -74,7 +77,7 @@ class GoLink < ActiveRecord::Base
 	      key: self.key,
 	      url: self.url,
 	      description: self.description,
-	      member_email:  self.member_email,
+	      member_email: self.member_email,
 	      permissions: self.permissions,
 	      title: self.title,
 	      num_clicks: self.num_clicks,
@@ -82,9 +85,9 @@ class GoLink < ActiveRecord::Base
 	      created_at: self.created_at,
 	      timestamp: self.timestamp,
 	      time_string: self.time_string,
-	      semester:self.semester,
+	      semester: self.semester,
 	      groups: self.group_string,
-	      gravatar: self.creator_gravatar
+	      gravatar: self.gravatar
 	    }
 	end
 

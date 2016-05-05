@@ -21,33 +21,33 @@
 	
 	<tbody>
 		<% golinks.each do |golink| %>
-		<tr id = '<%= golink[:id] %>-tr' class = 'golink-row' data-id = '<%= golink[:id] %>'>
+		<tr id = '<%= golink.id %>-tr' class = 'golink-row' data-id = '<%= golink.id %>'>
 			<td>
-				<input type = 'checkbox' id = '<%= golink[:id] %>-checkbox'  class = 'golink-checkbox' data-id = '<%= golink[:id] %>' >
+				<input type = 'checkbox' id = '<%= golink.id %>-checkbox'  class = 'golink-checkbox' data-id = '<%= golink.id %>' >
 				&nbsp;
-				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink[:url] %>'>
+				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
 			</td>
 			<td class = 'mute-info'>
-				<a class = 'mute-info' href = '<%= golink[:url] %>'>
-					<%= golink[:key] %>
+				<a class = 'mute-info' href = '<%= golink.url %>'>
+					<%= golink.key %>
 				</a>
 			</td>
 			<td>
-				<% if golink[:description].present? %>
-				&nbsp;&nbsp;<%= golink[:description] %>
+				<% if golink.description.present? %>
+				&nbsp;&nbsp;<%= golink.description %>
 				<% end %>
 
 			</td>
 			<td>
-				<img src = '<%= golink[:gravatar] %>' class = 'gravatar-img'>
+				<img src = '<%= golink.gravatar %>' class = 'gravatar-img'>
 			</td>
 			<td>
-				<div class = 'text-muted smalltext'><%= golink[:member_email] %></div>
+				<div class = 'text-muted smalltext'><%= golink.member_email %></div>
 				<div class = 'text-muted smalltext'>
-					To: <%= golink[:groups] %>
+					To: <%= golink.group_string %>
 				</div>
 				<div class = 'text-muted smalltext'>
-					<%= golink[:time_string] %>
+					<%= golink.time_string %>
 				</div>
 			</td>
 		</tr>
