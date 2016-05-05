@@ -64,4 +64,9 @@ RSpec.describe GoLink, type: :model do
 		expect(GoLink.can_view('m1@gmail.com').include?(@g1.id)).to eq(true)
 	end
 
+	it 'can check for matching urls' do
+		matches = GoLink.url_matches(@g1.url)
+		expect(matches.include?(@g1)).to eq(true)
+	end
+
 end

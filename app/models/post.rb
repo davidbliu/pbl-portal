@@ -1,29 +1,29 @@
 require 'elasticsearch/model'
 class Post < ActiveRecord::Base
 	serialize :tags
-
 	include Elasticsearch::Model
- 	include Elasticsearch::Model::Callbacks
- 	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
+	include Elasticsearch::Model::Callbacks
+	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
- 	def self.list(member)
- 		Post.order('created_at desc').where('id in (?)', Post.can_view(member))
- 	end
+	def self.list(member)
+		Post.order('created_at desc').where('id in (?)', Post.can_view(member))
+	end
 
- 	def self.channel_to_emails(channel)
- 		email_dict = {}
- 		email_dict['GMs'] = 'berkeley-pbl-spring-2016-general-members@googlegroups.com'
- 		email_dict['CMs'] ='berkeley-pbl-spring-2016-committee-members@googlegroups.com'
- 		email_dict['CMs_and_Officers'] = 'berkeleypblcommittees@lists.berkeley.edu'
- 		email_dict['Officers'] = 'berkeleypblofficers@lists.berkeley.edu'
- 		email_dict['Execs'] = 'berkeleypblexecs@lists.berkeley.edu'
- 		email_dict['David'] =  'davidbliu@gmail.com'
- 		return email_dict[channel]
- 	end
- 	def send_mail(channel)
- 		BlogMailer.mail_post(Post.channel_to_emails(channel), self).deliver
- 		# add to feed
- 	end
+	def self.channel_to_emails(channel)
+		email_dict = {}
+		email_dict['GMs'] = 'berkeley-pbl-spring-2016-general-members@googlegroups.com'
+		email_dict['CMs'] ='berkeley-pbl-spring-2016-committee-members@googlegroups.com'
+		email_dict['CMs_and_Officers'] = 'berkeleypblcommittees@lists.berkeley.edu'
+		email_dict['Officers'] = 'berkeleypblofficers@lists.berkeley.edu'
+		email_dict['Execs'] = 'berkeleypblexecs@lists.berkeley.edu'
+		email_dict['David'] =  'davidbliu@gmail.com'
+		return email_dict[channel]
+	end
+
+	def send_mail(channel)
+		BlogMailer.mail_post(Post.channel_to_emails(channel), self).deliver
+		# add to feed
+	end
 
 	def self.channels
 		['CMs_and_Officers', 'Execs', 'Officers', 'CMs', 'GMs', 'David']
@@ -90,10 +90,8 @@ class Post < ActiveRecord::Base
 			nil,
 			'Anyone'
 		).pluck(:id)
-		# semesters.each do |semester|
 		positions = Position.where(member_email: member.email)
 		positions.each do |position|
-			# pos = Position.where(member_email: member.email, semester: semester).first
 			pos = position.position
 			post_ids = Post.where(semester: position.semester)
 				.where('view_permissions in (?)',
@@ -116,7 +114,6 @@ class Post < ActiveRecord::Base
 		self.tags ? self.tags : []
 	end
 	def can_edit(member)
-		# if is admin, return true
 		if Post.is_admin(member)
 			return true
 		end
@@ -165,19 +162,6 @@ class Post < ActiveRecord::Base
 	def words
 		ActionView::Base.full_sanitizer.sanitize(self.content)
 	end
-
-	# def add_to_feed(members, body='')
-	# 	emails = members.map{|x| x.email}
-	# 	item = FeedItem.create(
-	# 		recipients: emails,
-	# 		item_type: Post.feed_type,
-	# 		title: self.title,
-	# 		body: self.words,
-	# 		link: 'http://'+ENV['HOST']+'/blog/post/'+self.id.to_s,
-	# 		timestamp: Time.now
-	# 	)
-	# 	resp = Pusher.push_feed_item(item)
-	# end
 
 	def push_list
 		p = self.get_view_permissions

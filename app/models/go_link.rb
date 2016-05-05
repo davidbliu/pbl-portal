@@ -8,9 +8,9 @@ class GoLink < ActiveRecord::Base
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
  	def self.can_view(email)
- 		# if GoLink.admin_emails.include?(email)
- 		# 	return GoLink.all.pluck(:id)
- 		# end
+ 		if GoLink.admin_emails.include?(email)
+ 			return GoLink.all.pluck(:id)
+ 		end
  		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
  		gids += Group.where(is_open: true).pluck(:id)
  		ids = GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id)
@@ -71,26 +71,7 @@ class GoLink < ActiveRecord::Base
 			return 'Anyone'
 		end
 	end
-
-	def to_json
-		return {
-	      key: self.key,
-	      url: self.url,
-	      description: self.description,
-	      member_email: self.member_email,
-	      permissions: self.permissions,
-	      title: self.title,
-	      num_clicks: self.num_clicks,
-	      id: self.id,
-	      created_at: self.created_at,
-	      timestamp: self.timestamp,
-	      time_string: self.time_string,
-	      semester: self.semester,
-	      groups: self.group_string,
-	      gravatar: self.gravatar
-	    }
-	end
-
+	
 	def time_string
 		self.created_at.strftime('%m-%d-%Y')
 	end
@@ -99,13 +80,13 @@ class GoLink < ActiveRecord::Base
 		self.num_clicks ? self.num_clicks : 0
 	end
 
-	def link
-		'http://pbl.link/'+self.key
-	end
+	# def link
+	# 	'http://pbl.link/'+self.key
+	# end
 
-	def self.cleanup
-		GoLink.where(key: 'change-this-key').destroy_all
-	end
+	# def self.cleanup
+	# 	GoLink.where(key: 'change-this-key').destroy_all
+	# end
 
 	def log_click(email)
 		if self.num_clicks == nil
@@ -159,12 +140,6 @@ class GoLink < ActiveRecord::Base
 		results = GoLink.search(query: q, :size=>100).results
 		ids = results.map{|x| x._source.id}
 		return ids
-	end
-
-
-	def self.search_my_links(search_term, email)
-		results = GoLink.search(query: {multi_match: {query: search_term, fields: ['key^3', 'description', 'text', 'url', 'member_email'], fuzziness:1}}, :size=>100).results
-		return self.search_results_to_golinks(results)
 	end
 
 	#

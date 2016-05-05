@@ -31,10 +31,6 @@
 </div>
 
 <script type = 'text/javascript'>
-default_ids = <%= raw(@default_ids) %>;
-_.each(default_ids, function(id){
-	$('#'+id+'-checkbox').prop('checked', true);
-})
 function getCheckedGroupKeys(){
 	var ids = [];
 	$('.golink-group-checkbox').each(function(){
