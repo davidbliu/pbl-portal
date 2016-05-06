@@ -53,16 +53,6 @@ class GoLink < ActiveRecord::Base
 		['davidbliu@gmail.com']
 	end
 
-	def tags
-		GoLinkTag.where(golink_id: self.id)
-	end
-
-	def gravatar
-		email = self.member_email ? self.member_email : 'asdf@gmail.com'
-		gravatar_id = Digest::MD5.hexdigest(email.downcase)
-		return "http://gravatar.com/avatar/#{gravatar_id}.png"
-	end
-
 	def group_string
 		if groups.length > 0
 			return groups.pluck(:name).join(', ')

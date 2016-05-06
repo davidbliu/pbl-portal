@@ -2,9 +2,14 @@ require 'elasticsearch/model'
 class Post < ActiveRecord::Base
 	has_many :post_groups, dependent: :destroy
 	has_many :groups, :through => :post_groups
+	has_many :post_comments
 
-	def self.list(member)
-		Post.order('created_at desc').where('id in (?)', Post.can_view(member))
+	# def self.list(member)
+	# 	Post.order('created_at desc').where('id in (?)', Post.can_view(member))
+	# end
+
+	def comments
+		return self.post_comments
 	end
 
 	# returns ids of posts this email can view
@@ -17,10 +22,10 @@ class Post < ActiveRecord::Base
 		return ids.uniq
 	end
 
-	def group_string
-		gs = self.groups.pluck(:name).join(', ')
-		gs != '' ? gs : 'Anyone'
-	end
+	# def group_string
+	# 	gs = self.groups.pluck(:name).join(', ')
+	# 	gs != '' ? gs : 'Anyone'
+	# end
 
 	def self.channel_to_emails(channel)
 		email_dict = {}
@@ -35,17 +40,10 @@ class Post < ActiveRecord::Base
 
 	def send_mail(channel)
 		BlogMailer.mail_post(Post.channel_to_emails(channel), self).deliver
-		# add to feed
 	end
 
 	def self.channels
 		['CMs_and_Officers', 'Execs', 'Officers', 'CMs', 'GMs', 'David']
-	end
-
-	def gravatar
-		email = self.author ? self.author : 'asdf@gmail.com'
-		gravatar_id = Digest::MD5.hexdigest(email.downcase)
-		return "http://gravatar.com/avatar/#{gravatar_id}.png"
 	end
 
 	def time_string
@@ -53,49 +51,28 @@ class Post < ActiveRecord::Base
 	end
 
 
-	def self.permissions_list
-		['Only Me', 'Only Execs', 'Only Officers', 'Only PBL', 'Anyone']
-	end
-
-	def self.can_access(position)
-		if position == 'chair'
-			return ['Only Officers', 'Only PBL', 'Anyone']
-		elsif position == 'exec'
-			return ['Only Execs', 'Only Officers', 'Only PBL', 'Anyone']
-		elsif position == 'cm'
-			return ['Only PBL', 'Anyone']
-		else
-			return ['Anyone']
-		end
-	end
-
-	# def self.is_admin(member)
-	# 	admin_emails = ['davidbliu@gmail.com', 'akwan726@gmail.com', 'nathalie.nguyen@berkeley.edu']
-	# 	if member and admin_emails.include?(member.email)
-	# 		return true
-	# 	end
-	# 	return false
+	# def words
+	# 	ActionView::Base.full_sanitizer.sanitize(self.content)
 	# end
 
-	def self.feed_type
-		'blog'
-	end
-
-	def words
-		ActionView::Base.full_sanitizer.sanitize(self.content)
-	end
-
 	def push_list
-		[]
+		if self.groups.length == 0
+			return Member.all
+		elsif self.groups.pluck(:is_open).include?(true)
+			return Member.all
+		else
+			emails = GroupMember.where('group_id in (?)', self.groups.pluck(:id)).pluck(:email)
+			return Member.where('email in (?)', emails)
+		end
 	end
 
 	def push(members = nil, author = nil)
 		Pusher.push_post(members, self, author)
 	end
 
-	def self.feed_test
-		Post.all.sample.add_to_feed([Member.david])
-	end
+	# def self.feed_test
+	# 	Post.all.sample.add_to_feed([Member.david])
+	# end
 
 
 end

@@ -3,28 +3,13 @@
 
 <h3>Title: <%= @post.title %></h3>
 <div>
-	<a href = '/blog/post/<%= @post.id %>'>Back to post</a>
+	<a href = '/blog?post_id=<%= @post.id %>'>Back to post</a>
 </div>
 
 <p>Who should receive the post</p>
 <% @channels.each do |channel| %>
 <div class="channel-btn btn btn-default" id = 'channel'><%= channel %></div>
 <% end %>
-
-
-<!-- <h3>Past Notifications</h3>
-<% if not @notifications or @notifications.length == 0 %>
-	Nothing to show
-<% else %>
-	<ul class = 'list-group'>
-	<% @notifications.each do |notification| %>
-		<li class = 'list-group-item'>
-			<%= notification.created_at %>
-			<%= notification.channels %>
-		</li>
-	<% end %>
-	</ul>
-<% end %> -->
 
 </div><!-- end of email controller -->
 

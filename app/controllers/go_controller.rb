@@ -59,11 +59,7 @@ class GoController < ApplicationController
 
 	def deselect_links
 		GoLink.deselect_links(myEmail)
-		begin
-			redirect_to :back
-		rescue ActionController::RedirectBackError
-			redirect_to '/go/menu'
-		end
+		redirect_to "/go/menu"
 	end
 
 	def index
@@ -71,12 +67,14 @@ class GoController < ApplicationController
 			@group = Group.find(params[:group_id])
 			@group_editing = true
 			viewable = GoLink.can_view(myEmail)
-			@golinks = @group.go_links.where('go_links.id in (?)', viewable)
+			@ajax_params = '?group_id='+params[:group_id].to_s
+			@golinks = @group.go_links.order('created_at desc').where('go_links.id in (?)', viewable)
 		elsif params[:q]
 			if params[:q].include?('http://') or params[:q].include?('https://')
 				redirected = true
 				redirect_to controller: 'go', action: 'add', url: params[:q]
 			end
+			@ajax_params = '?query='+params[:q].to_s
 			@search_term = params[:q]
 			@golinks = GoLink.email_search(params[:q], myEmail)
 		else
@@ -87,9 +85,32 @@ class GoController < ApplicationController
 		end
 		@groups = Group.groups_by_email(myEmail)
 		@golinks = @golinks.to_a
+		@page = params[:page] ? params[:page].to_i : 1
 		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
 		if not redirected
 			render :new_index
+		end
+	end
+
+	def ajax_scroll
+		if params[:query]
+			@golinks = GoLink.email_search(params[:query], myEmail)
+		elsif params[:group_id]
+			@group = Group.find(params[:group_id])
+			viewable = GoLink.can_view(myEmail)
+			@golinks = @group.go_links.order('created_at desc').where('go_links.id in (?)', viewable)
+		else
+			viewable = GoLink.can_view(myEmail)
+			@golinks = GoLink.order('created_at desc')
+				.where('id in (?)',viewable)
+				.includes(:groups)
+		end
+		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
+
+		if @golinks.length == 0
+			render nothing: true, status: 404
+		else
+			render 'go/ajax', layout: false
 		end
 	end
 

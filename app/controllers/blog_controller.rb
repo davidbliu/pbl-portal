@@ -3,8 +3,19 @@ class BlogController < ApplicationController
 	before_filter :is_signed_in
 
 	def index
-		@posts = Post.includes(:groups).order('created_at desc').where('id in (?)', Post.can_view(myEmail)).paginate(:page => params[:page], :per_page => 30)
+		@page = params[:page] ? params[:page] : 1
+		@posts = Post.includes(:groups).order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+
+		if params[:view] == 'list'
+			@list = true
+			@posts = @posts.paginate(:page => params[:page], :per_page => 50)
+		else
+			@posts = @posts.paginate(:page => params[:page], :per_page => 30)
+		end
+		
+		
 		@email_hash = Member.email_hash
+		@post_id = params[:post_id]
 
 		# save it in clicks
 		Thread.new{
@@ -17,6 +28,22 @@ class BlogController < ApplicationController
 		}
 
 		render :template => 'blog/index2'
+	end
+
+	def ajax_scroll
+		@posts = Post.includes(:groups).order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+		
+		if @posts.length == 0
+			render nothing: true, status: 404
+		elsif params[:view] == 'list'
+			@posts = @posts.paginate(:page => params[:page], :per_page => 50)
+			render :list, layout: false
+		else
+			@posts = @posts.paginate(:page => params[:page], :per_page => 30)
+			@email_hash = Member.email_hash
+			render :grid, layout: false
+		end
+
 	end
 
 	def edit
@@ -35,8 +62,13 @@ class BlogController < ApplicationController
 		
 	end
 
-	# view individual post
-	def post
+	def comments
+		@post = Post.find(params[:id])
+		@comments = @post.comments.order('created_at desc')
+		render layout: false
+	end
+
+	def show
 		@post = Post.find(params[:id])
 		@comments = PostComment.where(post_id: params[:id]).order('created_at DESC')
 		@email_hash = Member.email_hash
@@ -49,6 +81,7 @@ class BlogController < ApplicationController
 			)
 			ActiveRecord::Base.connection.close
 		}
+		render layout: false
 	end
 
 	def save
@@ -109,6 +142,11 @@ class BlogController < ApplicationController
 			post_id: params[:id]
 		)
 		c.save!
+		render nothing: true, status: 200
+	end
+
+	def delete_comment
+		PostComment.find(params[:id]).destroy
 		render nothing: true, status: 200
 	end
 

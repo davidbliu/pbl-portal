@@ -1,0 +1,56 @@
+<style type = 'text/css'>
+#post-area{
+	overflow:auto;
+}
+#search-input{
+	width:300px;
+}
+.post-meta{
+	padding:10px;
+	margin:5px;	
+}
+.tag-label>a{
+	color:white;
+}
+#comment-group{
+	margin-top:20px;
+}
+.post-content{
+	line-height: 1.5em;
+}
+</style>
+
+<div class = 'modal-header centered'>
+	<h3><%= @post.title %></h3>
+	<div>Posted By <%= @email_hash[@post.author] ? @email_hash[@post.author].name : @post.author %></div>
+	<div>
+		<a href = '/blog?post_id=<%= @post.id %>'>Link to the post</a>
+	</div>
+	<div>
+		<a href = 'javascript:void(0)' onclick = 'loadComments(<%= @post.id %>)'>See <%= @post.comments.length %> Comments</a>
+	</div>
+</div>
+
+<div class = 'modal-body' id = 'show-modal-body'>
+	<div class = 'post-content'><%= raw(@post.content)%></div>
+</div>
+
+<div class = 'modal-footer'>
+	<div class = 'post-meta'>
+		<div>Posted By <%= @email_hash[@post.author].name %></div>
+		<div>To <%= group_string(@post.groups) %></div>
+		<div>
+			<div>
+				<%= link_to 'Edit Post', "/blog/edit?id=#{@post.id}" %>
+			</div>
+			<% if current_member and current_member.is_officer? %>
+				<div>
+					<%= link_to 'Email Post', "/blog/email/#{@post.id}" %>
+				</div>
+			<% end %>
+			<div>
+				<%= link_to 'Push Post', "/blog/push_post/#{@post.id}" %>
+			</div>
+		</div>
+	</div>
+</div>

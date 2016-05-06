@@ -59,20 +59,24 @@ Rails.application.routes.draw do
   get 'go/delete_checked' => 'go#delete_checked'
   get 'go/preferences' => 'go#preferences'
   post 'go/update_preferences' => 'go#update_preferences'
-
+  get 'go/ajax_scroll/:page' => 'go#ajax_scroll'
   # tags
   post 'go_tag/create' => 'go_tag#create'
   get 'go_tag/show/:id' => 'go_tag#show'
 
   #blog
   get 'blog' => 'blog#index'
+  get 'blog/ajax_scroll/:page' => 'blog#ajax_scroll'
+  get 'blog/show/:id' => 'blog#show'
   get 'blog/edit' => 'blog#edit'
   get 'blog/email/:id' => 'blog#email'
   get 'blog/post/:id' => 'blog#post'
   post 'blog/save' => 'blog#save'
   get 'blog/destroy/:id' => 'blog#destroy'
   post 'blog/send_email/:id' => 'blog#send_email'
+  get 'blog/comments/:id' => 'blog#comments'
   post 'blog/post_comment/:id' => 'blog#post_comment'
+  post 'blog/delete_comment/:id' => 'blog#delete_comment'
   get 'blog/push_post/:id' => 'blog#push_post'
 
   #tabling

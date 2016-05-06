@@ -50,6 +50,26 @@ tr:hover{
 
 <div class = 'row'>
 
+<div class = 'col-md-2'>
+	<div id = 'groups-container'>
+		<div class = 'half-em'>My Groups</div>
+		<a href = '/go/menu'>All Groups</a>
+		<% @groups.each do |group| %>
+			<div>
+				<a href = '/go?group_id=<%= group.id %>'>
+				<%= group.name %>
+				</a>
+				<% if group.is_open %>
+				(open group)
+				<% end %>
+			</div>
+		<% end %>
+		
+		<div id = 'create-group-div'>
+			<a href = '/groups/new'>Create a group</a>
+		</div>
+	</div>
+</div>
 <div class = 'col-md-7' id = 'col6'>
 <div id = 'title-box'>
 	<h1 class = 'centered' id = 'pbl-links-title'>
@@ -95,40 +115,26 @@ tr:hover{
     <%= will_paginate @golinks, :container => false %>
   	</div>
 </div>
-<%= render partial: 'go/table', locals:{golinks: @golinks} %>
-
+<div id = 'go-table-container'>
+	<%= render partial: 'go/table', locals:{golinks: @golinks} %>
+</div>
 
 </div>
 
 
 
 
-<div class = 'col-md-5'>
+<div class = 'col-md-3'>
 <div id = 'right-div' class = ''>
 
 <% if not @batch_editing %>
 	
-	<div id = 'groups-container'>
-		<div class = 'half-em'>My Groups</div>
-		<% @groups.each do |group| %>
-			<div>
-				<a href = '/go?group_id=<%= group.id %>'>
-				<%= group.name %>
-				</a>
-				<% if group.is_open %>
-				(open group)
-				<% end %>
-			</div>
-		<% end %>
-		<a href = '/go/menu'>All Groups</a>
-		<div id = 'create-group-div'>
-			<a href = '/groups/new'>Create a group</a>
-		</div>
-	</div>
+	
 <% else %>
 <h3>Batch Edit these Links</h3>
 
 <div class = 'half-em'>Add/Remove Groups</div>
+
 <table class = 'table table-condensed table-hover'>
 	<% @groups.each do |group| %>
 	<tr>
@@ -142,6 +148,8 @@ tr:hover{
 	</tr>
 	<% end %>
 </table>
+
+
 <div class = 'btn btn-info pull-right' id = 'update-groups-btn'>Update Groups</div>
 <a href = '/go/delete_checked'>
 	<div class = 'btn btn-danger' id = 'delete-all-btn'>Delete All</div>
@@ -151,7 +159,7 @@ tr:hover{
 
 
 </div><!-- end of right-div -->
-</div>
+</div><!--end of col-->
 
 </div> <!-- end of row -->
 
@@ -185,4 +193,54 @@ $('#search-input').keypress(function(e) {
     }
 });
 
+</script>
+<script type  ='text/javascript'>
+var page = <%= @page %>;
+<% if @ajax_params %>
+	var ajax_params = '<%= @ajax_params %>';
+<% else %>
+	var ajax_params = '';
+<% end %>
+var last_scroll_time = 0;
+$(window).scroll(function(){
+	pos = $(window).scrollTop();
+	height = $(document).height()-$(window).height()-10;
+	if(pos > height){
+		now = new Date().getTime() / 1000;
+		if(now-last_scroll_time > 1){
+			getNextPage();
+		}
+	}
+})
+function getNextPage(){
+	last_scroll_time = new Date().getTime() / 1000;
+	page+=1;
+	console.log('getting page /go/ajax_scroll/'+page+ajax_params);
+	$.ajax({
+		url: '/go/ajax_scroll/'+page+ajax_params,
+		type:'get',
+		success:function(data){
+			$('#go-table-container').append(data);
+		}
+	})
+}
+
+// Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
 </script>

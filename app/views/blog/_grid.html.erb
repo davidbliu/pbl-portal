@@ -1,0 +1,20 @@
+<div class = 'row'>
+  <% posts.each do |post| %>
+    <div class = 'post-div post-toggle' id = '<%= post.id %>'>
+    	<div class = 'title'>
+        <img src = '<%= gravatar(post.author) %>' class = 'profile-img pull-right'>
+        <%= post.title %>
+      </div>
+    	
+      <div class = 'text-muted author'>
+        By <%= email_hash[post.author] ? email_hash[post.author].name : post.author %>,
+        <span class = 'text-muted timestring'><%= post.time_string %></span>
+      </div>
+      <div class = 'text-muted author'>
+        To <%= group_string(post.groups) %>
+      </div>
+
+    	<div class = 'post-content'><%= raw(post.content)%></div>
+    </div>
+  <% end %>
+  </div>

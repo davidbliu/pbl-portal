@@ -1,0 +1,25 @@
+<style type = 'text/css'>
+.comment-div{
+	padding:10px;
+}
+.comment-div:hover{
+	background-color:#f0f0f0;
+}
+</style>
+<div>
+	<a href = 'javascript:void(0)' onclick = 'showPostModal(<%= @post.id %>)'>Back to Post</a>
+</div>
+<div>
+	<textarea id = 'comment-textarea' class = 'form-control' placeholder = 'Leave a comment'></textarea>
+	<div class = 'btn btn-default' onclick = 'saveComment(<%= @post.id %>)'>Enter</div>
+</div>
+
+<% @comments.each do |comment| %>
+<div class = 'comment-div' id = '<%= comment.id %>-comment-div'>
+	<% if comment.member_email == myEmail %>
+		<a href = 'javascript:void(0)' class =  'pull-right' onclick = 'deleteComment(<%= comment.id %>)'>Delete</a>
+	<% end %>
+	<div class = 'text-muted smalltext'><%= comment.member_email %></div>
+	<div><%= comment.content %></div>
+</div>
+<% end %>

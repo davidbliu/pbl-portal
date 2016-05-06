@@ -26,7 +26,7 @@ Scenario: clicking checkboxes selects golinks
   Given I visit the checked links page
   Then I should see "key1"
   Then I should see "key2"
-  Then I should not see "key3"
+  Then I should not see "key4"
 
   Given I uncheck the box for "key2"
   And I visit the checked links page
