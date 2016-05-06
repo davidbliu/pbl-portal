@@ -1,22 +1,11 @@
 class BlogController < ApplicationController
 
-	before_filter :is_member
+	before_filter :is_signed_in
+
 	def index
-		@tag = params[:tag]
-		if @tag
-			@posts = Post.order('created_at DESC')
-				.where('id in (?)', Post.can_view(current_member))
-				.to_a
-				.select{|x| x.tags and x.tags.include?(@tag)}
-		else
-			@posts = Post.order('created_at DESC')
-				.where('id in (?)', Post.can_view(current_member))
-				.to_a
-				
-		end
-		@tags = Post.tags
-		@posts = @posts.paginate(:page => params[:page], :per_page => 30)
-		
+		@posts = Post.includes(:groups).order('created_at desc').where('id in (?)', Post.can_view(myEmail)).paginate(:page => params[:page], :per_page => 30)
+		@email_hash = Member.email_hash
+
 		# save it in clicks
 		Thread.new{
 			GoLinkClick.create(
@@ -27,72 +16,62 @@ class BlogController < ApplicationController
 			ActiveRecord::Base.connection.close
 		}
 
-		@email_hash = Member.email_hash
 		render :template => 'blog/index2'
 	end
 
 	def edit
-		@post = Post.new
-		@editing = false
-		@permissions_list = Post.permissions_list
-		@tags = Post.tags
-		if params[:id]
-			@post = Post.find(params[:id])
-			@editing = true
-			if not @post.can_edit(current_member)
-				render :template => 'members/unauthorized'
+		if params[:id] and Post.can_view(myEmail).exclude?(params[:id].to_i)
+			redirect_to '/unauthorized'
+		else
+			@post = Post.new
+			@editing = false
+			@groups = Group.groups_by_email(myEmail)
+			if params[:id]
+				@post = Post.find(params[:id])
+				@editing = true
 			end
+			render :template => "blog/new_edit"
 		end
-		@post = @post.to_json
+		
 	end
 
 	# view individual post
 	def post
-		if myEmail == nil or myEmail == ''
-			cookies[:auth_redirect] = '/blog/post/'+params[:id]
-			redirect_to '/auth/google_oauth2'
-		else
-			@post = Post.find(params[:id])
-			@comments = PostComment.where(post_id: params[:id]).order('created_at DESC')
-			@email_hash = Member.email_hash
-			# save it in clicks
-			Thread.new{
-				GoLinkClick.create(
-					key: '/blog/post/'+params[:id]+':'+@post.title,
-					golink_id: 'post_id',
-					member_email: myEmail
-				)
-				ActiveRecord::Base.connection.close
-			}
-		end
+		@post = Post.find(params[:id])
+		@comments = PostComment.where(post_id: params[:id]).order('created_at DESC')
+		@email_hash = Member.email_hash
+		# save it in clicks
+		Thread.new{
+			GoLinkClick.create(
+				key: '/blog/post/'+params[:id]+':'+@post.title,
+				golink_id: 'post_id',
+				member_email: myEmail
+			)
+			ActiveRecord::Base.connection.close
+		}
 	end
 
 	def save
-
 		is_new = false
 		if params[:id] and params[:id] != ''
 			post = Post.find(params[:id])
 		else
 			post = Post.new
-			post.author = current_member.email
+			post.author = myEmail
 			post.semester = Semester.current_semester
 			is_new = true
 		end
-		post.title = params[:title]
-		post.tags = params[:tags]
-		post.edit_permissions = params[:edit_permissions]
-		post.view_permissions = params[:view_permissions]
-		post.content = params[:content]
-		post.semester = Semester.current_semester
-		post.last_editor = current_member.email
-		post.save!
-
+		post.update(post_params)
 		# push out post to those who can view
-		if is_new
-			post.push(post.push_list, myEmail)
+		# if is_new
+		# 	post.push(post.push_list, myEmail)
+		# end
+		if params[:group_ids] and params[:group_ids] != ''
+			ids = params[:group_ids].split(',').map{|x| x.to_i}
+			groups = Group.where('id in (?)', ids)
+			post.groups = groups
 		end
-
-		render nothing: true, status: 200
+		redirect_to '/blog'
 	end
 
 	def push_post
@@ -103,7 +82,7 @@ class BlogController < ApplicationController
 
 	def destroy
 		Post.find(params[:id]).destroy!
-		render nothing: true, status: 200
+		redirect_to '/blog'
 	end
 
 	def email
@@ -131,5 +110,10 @@ class BlogController < ApplicationController
 		)
 		c.save!
 		render nothing: true, status: 200
+	end
+
+	private
+	def post_params
+		params.permit(:title, :content)
 	end
 end

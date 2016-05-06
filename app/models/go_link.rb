@@ -14,7 +14,6 @@ class GoLink < ActiveRecord::Base
  		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
  		gids += Group.where(is_open: true).pluck(:id)
  		ids = GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id)
- 		grouped_ids = GoLinkGroup.all.pluck(:go_link_id).uniq
  		ids += GoLink.where(member_email: email).pluck(:id)
  		ids += GoLink.where('id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups)').pluck(:id) 
  		return ids.uniq
@@ -80,14 +79,6 @@ class GoLink < ActiveRecord::Base
 		self.num_clicks ? self.num_clicks : 0
 	end
 
-	# def link
-	# 	'http://pbl.link/'+self.key
-	# end
-
-	# def self.cleanup
-	# 	GoLink.where(key: 'change-this-key').destroy_all
-	# end
-
 	def log_click(email)
 		if self.num_clicks == nil
 			self.num_clicks = 1
@@ -143,7 +134,7 @@ class GoLink < ActiveRecord::Base
 	end
 
 	#
-	# Group based permissions
+	# batch checking
 	#
 
 	def self.get_checked_ids(email)

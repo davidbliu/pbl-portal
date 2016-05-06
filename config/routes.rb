@@ -70,7 +70,7 @@ Rails.application.routes.draw do
   get 'blog/email/:id' => 'blog#email'
   get 'blog/post/:id' => 'blog#post'
   post 'blog/save' => 'blog#save'
-  post 'blog/destroy/:id' => 'blog#destroy'
+  get 'blog/destroy/:id' => 'blog#destroy'
   post 'blog/send_email/:id' => 'blog#send_email'
   post 'blog/post_comment/:id' => 'blog#post_comment'
   get 'blog/push_post/:id' => 'blog#push_post'

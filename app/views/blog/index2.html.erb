@@ -53,46 +53,16 @@
 }
 </style>
 <%= stylesheet_link_tag 'flickr_pagination' %>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Folders</h4>
-      </div>
-      <div class="modal-body">
-      	<a href = '/blog'>
-        		<div class = 'btn btn-default'>#NoFilter
-        		</div>
-        	</a>
-        <% @tags.each do |tag| %>
-        	<a href = '/blog?tag=<%= tag %>'>
-        		<div class = 'btn btn-default filter-btn'><%= tag %>
-        		</div>
-        	</a>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id = 'top-stuff' class = 'centered'>
-  <h1>PBL Blog</h1>
-  <a href = '/blog/edit'>
+<a href = '/blog/edit'>
     <div class = 'btn btn-info'>Add New Post</div>
   </a>
 
 
-  <div href = 'javascript:void(0)' class = 'btn btn-default' id = 'filter-btn'>Filter Posts</div>
-  <% if @tag %>
-  Current Filter is <%= @tag %>
-  <% end %>
-  <div>
+<div id = 'top-stuff' class = 'centered'>
+  <!-- <h1>PBL Blog</h1> -->
   <div class="flickr_pagination">
     <%= will_paginate @posts, :container => false %>
     </div>
-</div>
 </div>
 
 
@@ -106,9 +76,13 @@
   </div>
 	
   <div class = 'text-muted author'>
-    By <%= @email_hash[post.author].name %>,
+    By <%= @email_hash[post.author] ? @email_hash[post.author].name : post.author %>,
     <span class = 'text-muted timestring'><%= post.time_string %></span>
   </div>
+  <div class = 'text-muted author'>
+    To <%= group_string(post.groups) %>
+  </div>
+
 	<div class = 'post-content'><%= raw(post.content)%></div>
 </div>
 <% end %>

@@ -5,6 +5,8 @@ class Group < ActiveRecord::Base
 	has_many :go_link_copy_groups, dependent: :destroy
 	has_many :go_links, :through => :go_link_groups
 	has_many :go_link_copies, :through => :go_link_copy_groups
+	has_many :post_groups, dependent: :destroy
+	has_many :posts, :through => :post_groups
 
 
 	def self.groups_by_email(email)
