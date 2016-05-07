@@ -36,9 +36,6 @@ class TablingSlot < ActiveRecord::Base
 
 	def self.get_slot_by_email(email)
 		TablingSlot.all.select{|x| x.member_emails.include?(email)}.first
-	end
-
-	
-	
+	end	
 end
 
