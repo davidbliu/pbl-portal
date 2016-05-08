@@ -7,7 +7,18 @@ class GoLink < ActiveRecord::Base
  	include Elasticsearch::Model::Callbacks
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
- 	def self.can_view(email)
+ 	def self.list(email)
+ 		if GoLink.admin_emails.include?(email)
+ 			return GoLink.order('created_at desc')
+ 		end
+ 		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
+ 		gids += Group.where(is_open: true).pluck(:id)
+ 		golinks = GoLink.where('member_email = ? OR id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups) OR id in (?)', email, GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id))
+ 		return golinks
+ 	end
+
+ 	# return list of golinks
+ 	def self.viewable_ids(email)
  		if GoLink.admin_emails.include?(email)
  			return GoLink.all.pluck(:id)
  		end
@@ -35,10 +46,10 @@ class GoLink < ActiveRecord::Base
 	end
 
 	def self.handle_redirect(key, email)
-		viewable = GoLink.can_view(email)		
+		viewable = GoLink.viewable_ids(email)		
 		where = GoLink.where(key: key).where('id in (?)', viewable)
-		search_group_keys = GoPreference.search_groups(email).map{|x| x.key}
-		where = where.select{|x| x.is_searchable(search_group_keys)}
+		# search_group_keys = GoPreference.search_groups(email).map{|x| x.key}
+		# where = where.select{|x| x.is_searchable(search_group_keys)}
 		return where
 	end
 
@@ -100,16 +111,19 @@ class GoLink < ActiveRecord::Base
 		return matches
   	end
 
+  	# returns list of golinks
   	def self.email_search(search_term, email)
   		search = self.default_search(search_term)
-  		viewable = self.can_view(email)
-  		result_ids = search.select{|x| viewable.include?(x)}
-		golinks_by_id = GoLink.where('id in (?)', result_ids).index_by(&:id)
-		keys = golinks_by_id.keys
-  		golinks = search.select{|x| golinks_by_id.keys.include?(x)}.map{|x| golinks_by_id[x]}
+  		viewable = self.viewable_ids(email)
+  		return GoLink.where('id in (?)', search & viewable)
+  		# result_ids = search.select{|x| viewable.include?(x)}
+		# golinks_by_id = GoLink.where('id in (?)', result_ids).index_by(&:id)
+		# keys = golinks_by_id.keys
+  		# golinks = search.select{|x| golinks_by_id.keys.include?(x)}.map{|x| golinks_by_id[x]}
   		return golinks
   	end
 
+  	# returns list of ids
 	def self.default_search(search_term)
 		q = {
 			multi_match: {

@@ -67,7 +67,7 @@ class GoController < ApplicationController
 		if params[:group_id]
 			@group = Group.find(params[:group_id])
 			@group_editing = true
-			viewable = GoLink.can_view(myEmail)
+			viewable = GoLink.viewable_ids(myEmail)
 			@ajax_params = '?group_id='+params[:group_id].to_s
 			@golinks = @group.go_links.order('created_at desc').where('go_links.id in (?)', viewable)
 		elsif params[:q]
@@ -79,10 +79,11 @@ class GoController < ApplicationController
 			@search_term = params[:q]
 			@golinks = GoLink.email_search(params[:q], myEmail)
 		else
-			viewable = GoLink.can_view(myEmail)
-			@golinks = GoLink.order('created_at desc')
-				.where('id in (?)',viewable)
-				.includes(:groups)
+			@golinks = GoLink.list(myEmail).includes(:groups)
+			# viewable = GoLink.can_view(myEmail)
+			# @golinks = GoLink.order('created_at desc')
+			# 	.where('id in (?)',viewable)
+			# 	.includes(:groups)
 		end
 		@groups = Group.groups_by_email(myEmail)
 		@golinks = @golinks.to_a
@@ -98,13 +99,14 @@ class GoController < ApplicationController
 			@golinks = GoLink.email_search(params[:query], myEmail)
 		elsif params[:group_id]
 			@group = Group.find(params[:group_id])
-			viewable = GoLink.can_view(myEmail)
+			viewable = GoLink.viewable_ids(myEmail)
 			@golinks = @group.go_links.order('created_at desc').where('go_links.id in (?)', viewable)
 		else
-			viewable = GoLink.can_view(myEmail)
-			@golinks = GoLink.order('created_at desc')
-				.where('id in (?)',viewable)
-				.includes(:groups)
+			@golinks = GoLink.list(myEmail).includes(:groups)
+			# viewable = GoLink.viewable_ids(myEmail)
+			# @golinks = GoLink.order('created_at desc')
+			# 	.where('id in (?)',viewable)
+			# 	.includes(:groups)
 		end
 		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
 

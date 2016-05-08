@@ -29,27 +29,27 @@ RSpec.describe GoLink, type: :model do
 	end
 
 	it 'anyone can view golinks with no groups' do
-		viewable = GoLink.can_view('m1@gmail.com')
+		viewable = GoLink.list('m1@gmail.com')
 		expect(viewable.length).to eq(2)
 	end
 
 	it 'group members can view golinks in groups they are part of' do
 		@g1.groups << @gp1
 		@g2.groups << @gp2
-		viewable = GoLink.can_view('m1@gmail.com')
+		viewable = GoLink.list('m1@gmail.com')
 		expect(viewable.length).to eq(1)
 	end
 
 	it 'blocks anyone from viewing golinks if they are not in group' do
 		@g1.groups << @gp2
-		viewable = GoLink.can_view('m1@gmail.com')
+		viewable = GoLink.list('m1@gmail.com')
 		expect(viewable.include?(@g1.id)).to eq(false)
 	end
 	
 	it 'can be viewed by original creator' do
 		@g1.update(member_email: 'm1@gmail.com')
 		@g1.groups << @gp2
-		expect(GoLink.can_view("m1@gmail.com").length).to eq(2)
+		expect(GoLink.list("m1@gmail.com").length).to eq(2)
 	end
 
 	it 'creates a copy with the link is deleted' do 
@@ -59,9 +59,9 @@ RSpec.describe GoLink, type: :model do
 
 	it 'allows members to view go links in open groups' do
 		@g1.groups << @gp2
-		expect(GoLink.can_view('m1@gmail.com').include?(@g1.id)).to eq(false)
+		expect(GoLink.list('m1@gmail.com').include?(@g1)).to eq(false)
 		@gp2.update(is_open: true)
-		expect(GoLink.can_view('m1@gmail.com').include?(@g1.id)).to eq(true)
+		expect(GoLink.list('m1@gmail.com').include?(@g1)).to eq(true)
 	end
 
 	it 'can check for matching urls' do
