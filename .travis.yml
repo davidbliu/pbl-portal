@@ -4,4 +4,5 @@ rvm:
 services: 
   - postgresql
 before_script:
-  - psql -c "CREATE USER postgres WITH PASSWORD 'password';" -U postgres
+  - cp config/database.travis.yml config/database.yml
+  - psql -c 'create database v2_testing' -U postgres
