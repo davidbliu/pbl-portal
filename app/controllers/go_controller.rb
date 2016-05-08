@@ -1,7 +1,7 @@
 class GoController < ApplicationController
 	skip_before_filter :verify_authenticity_token, only: [:add_checked_id, :get_checked_ids, :remove_checked_id, :test]
 	before_filter :is_search
-	skip_before_filter :is_signed_in, only: [:redirect]
+	skip_before_filter :is_signed_in #, only: [:redirect]
 
 	def is_search
 		if params[:q] and request.path != '/go'
