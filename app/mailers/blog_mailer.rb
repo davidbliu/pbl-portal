@@ -3,8 +3,6 @@ class BlogMailer < ActionMailer::Base
 	default from: "berkeleypbl.vpoperations@gmail.com"
 
 	def send_blog_email(emails, post)
-	    puts 'ABOUT TO SEND BLOG EMAAIL, EMAILS ARE'
-	    puts emails
 	    @post = post
 	    @title = @post.title + ' [PBL][Blog]'
 	    mail( 

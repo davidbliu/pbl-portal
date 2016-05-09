@@ -28,7 +28,7 @@ class GoController < ApplicationController
 			@golinks = where
 			@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
 			@groups = Group.groups_by_email(myEmail)
-			render :new_index
+			render :index
 		else
 			redirect_to '/go?q='+params[:key]
 		end
@@ -55,7 +55,7 @@ class GoController < ApplicationController
 		@groups = Group.groups_by_email(myEmail)
 		@batch_editing = true
 		@group = Group.new(name: 'Batch Edit Links')
-		render :new_index
+		render :index
 	end
 
 	def deselect_links
@@ -87,7 +87,7 @@ class GoController < ApplicationController
 		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
 		@golinks = @golinks.includes(:groups)
 		if not redirected
-			render :new_index
+			render :index
 		end
 	end
 

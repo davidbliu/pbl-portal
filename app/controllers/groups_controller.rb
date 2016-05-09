@@ -33,10 +33,6 @@ class GroupsController < ApplicationController
 		end
 	end
 
-	def index
-		@groups = Group.groups_by_email(myEmail).sort_by{|x| x.created_at}.reverse
-	end
-
 	def destroy
 		group = Group.find(params[:id])
 		if group.creator == myEmail
@@ -70,10 +66,5 @@ class GroupsController < ApplicationController
 		redirect_to :back
 	end
 
-	def show
-		@group = Group.find(params[:id])
-		@groups = Group.groups_by_email(myEmail)
-		@golinks = @group.golinks
-	end
 
 end

@@ -1,9 +1,0 @@
-<% if @clicks.length == 0 %>
-No clicks to show 
-<% end %>
-
-<% @clicks.each do |click| %>
-<div>
-	<%= click.member_email %>: <%= click.created_at %>
-</div>
-<% end %>

@@ -1,9 +1,6 @@
 
 class PointsController < ApplicationController
 	before_filter :is_member
-	def index
-		redirect_to '/points/attendance'
-	end
 
 	def scoreboard
 		@cm_scoreboard = Event.cm_scoreboard.first(10)

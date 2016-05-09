@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  get 'test' => 'test#test'
   root 'main#home'
   get '/track_clicks'=>'main#clicks'
   get '/cookie_hack' => 'main#cookie_hack'
@@ -55,7 +54,6 @@ Rails.application.routes.draw do
   get 'go/restore_copy/:id' => 'go_copy#restore'
   get 'go/destroy_copy/:id' => 'go_copy#destroy'
 
-  get 'go/test'=> 'go#test'
   get 'go/delete_checked' => 'go#delete_checked'
   get 'go/preferences' => 'go#preferences'
   post 'go/update_preferences' => 'go#update_preferences'
@@ -95,76 +93,20 @@ Rails.application.routes.draw do
   get 'push/new' => 'push#new'
   post 'push/create' => 'push#create'
 
-  
-
-  # feed
-  get 'feed' => 'feed#feed'
-  get 'feed/read' => 'feed#read'
-  get 'feed/view' => 'feed#view_feed'
-  post 'feed/create' => 'feed#create'
-  post 'feed/destroy' => 'feed#destroy'
-  get 'feed/push/:id' => 'feed#push'
-  get 'feed/details/:id' => 'feed#details'
-  post 'feed/mark_read' => 'feed#mark_read'
-  post 'feed/remove' => 'feed#remove'
-  get 'feed/view_push/:id' => 'feed#view_push'
-
-  # precompute stuff
-  get 'c/trending_links' => 'compute#trending_links'
-
-  #reminders
-  # get 'reminders' => 'reminder#index'
-  # post 'reminders/delete' => 'reminder#delete'
-  # get 'reminders/redirect/:id' => 'reminder#redirect'
-  # get 'reminders/new' => 'reminder#new'
-  # get 'reminders/admin' => 'reminder#admin'
-  # get 'reminders/destroy_all' => 'reminder#destroy_all'
-  post 'reminders/create' => 'reminder#create'
-  # post 'reminders/destroy_id' => 'reminder#destroy_id'
-  
-
-  #iter2 of reminders
-  get 'reminders' => 'reminder#index'
-  get 'reminders/new2' => 'reminder#new2'
-  get 'reminders/admin2' => 'reminder#admin2'
-  post 'reminders/set_response' => 'reminder#set_response'
-  get 'reminders/reminder/:id' => 'reminder#view_reminder'
-  get 'reminders/destroy/:id' => 'reminder#destroy_id'
-  get 'reminders/refresh' => 'reminder#refresh'
-  get 'reminders/refresh_response/:id' => 'reminder#refresh_response'
-  get 'reminders/admin3' => 'reminder#admin3'
-  get 'reminders/export_csv/:id' => 'reminder#export_csv'
-
-  get 'courseware' => 'courseware#index'
 
   # points and events
-  get 'points' => 'points#index'
+  get 'points' => 'points#attendance'
   get 'points/scoreboard' => 'points#scoreboard'
   get 'points/distribution' => 'points#distribution'
   get 'points/attendance' => 'points#attendance'
   post 'points/mark_attendance' => 'points#mark_attendance'
 
 
-  # profile stuff
-  get 'profiles/edit'=> 'profile#edit_profile'
-  post 'profiles/update' => 'profile#update'
-  get 'profiles/edit/:id' => 'profile#edit', as: 'edit_profile'
-  get 'profiles/new' => 'profile#new'
-  get 'profiles' => 'profile#index' #, as: => :profiles
-  get 'profiles/get_project' => 'profile#get_project'
-  get 'projects' => "profile#projects"
-  get 'position'=> 'profile#position'
-  get 'profiles/show/:id' => 'profile#show'
-
-
   # groups
   post 'groups/create' => 'groups#create'
-  get 'groups' => 'groups#index'
   get 'groups/destroy/:id' => 'groups#destroy'
   get 'groups/edit/:id'=>'groups#edit'
   post 'groups/update/:id'=>'groups#update'
-  get 'groups/show/:id' => 'groups#show'
-
   get 'groups/new' => 'groups#new'
 
   # The priority is based upon order of creation: first created -> highest priority.

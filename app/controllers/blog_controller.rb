@@ -33,8 +33,6 @@ class BlogController < ApplicationController
 			)
 			ActiveRecord::Base.connection.close
 		}
-
-		render :template => 'blog/index2'
 	end
 
 	def ajax_scroll
@@ -69,7 +67,6 @@ class BlogController < ApplicationController
 				@post = Post.find(params[:id])
 				@editing = true
 			end
-			render :template => "blog/new_edit"
 		end
 		
 	end
@@ -133,10 +130,6 @@ class BlogController < ApplicationController
 	def email
 		@post = Post.find(params[:id])
 		@channels = Post.channels
-		@notifications = Notification.where(
-			notification_type: 'blog',
-			object_id: params[:id]
-		)
 
 	end
 

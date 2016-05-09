@@ -28,6 +28,7 @@ class Pusher
 		return response
 	end
 
+	# pushes out post and saves a Push object
 	def self.push_post(members, post, author = nil)
 		title = 'Check out this post on the blog'
 		body = post.title

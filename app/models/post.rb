@@ -4,11 +4,6 @@ class Post < ActiveRecord::Base
 	has_many :groups, :through => :post_groups
 	has_many :post_comments
 
-	# def self.list(member)
-	# 	Post.order('created_at desc').where('id in (?)', Post.can_view(member))
-	# end
-
-
 	def self.search(q)
 		search_regex = "%#{q.downcase}%"
 		Post.where('lower(title) LIKE ? 
@@ -33,11 +28,6 @@ class Post < ActiveRecord::Base
 		return ids.uniq
 	end
 
-	# def group_string
-	# 	gs = self.groups.pluck(:name).join(', ')
-	# 	gs != '' ? gs : 'Anyone'
-	# end
-
 	def self.channel_to_emails(channel)
 		email_dict = {}
 		email_dict['GMs'] = 'berkeley-pbl-spring-2016-general-members@googlegroups.com'
@@ -54,17 +44,12 @@ class Post < ActiveRecord::Base
 	end
 
 	def self.channels
-		['CMs_and_Officers', 'Execs', 'Officers', 'CMs', 'GMs', 'David']
+		['CMs_and_Officers', 'Execs', 'Officers', 'CMs', 'GMs']
 	end
 
 	def time_string
 		self.created_at.strftime('%m-%d-%Y')
 	end
-
-
-	# def words
-	# 	ActionView::Base.full_sanitizer.sanitize(self.content)
-	# end
 
 	def push_list
 		if self.groups.length == 0
@@ -80,11 +65,6 @@ class Post < ActiveRecord::Base
 	def push(members = nil, author = nil)
 		Pusher.push_post(members, self, author)
 	end
-
-	# def self.feed_test
-	# 	Post.all.sample.add_to_feed([Member.david])
-	# end
-
 
 end
 

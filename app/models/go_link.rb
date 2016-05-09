@@ -48,8 +48,6 @@ class GoLink < ActiveRecord::Base
 	def self.handle_redirect(key, email)
 		viewable = GoLink.viewable_ids(email)		
 		where = GoLink.where(key: key).where('id in (?)', viewable)
-		# search_group_keys = GoPreference.search_groups(email).map{|x| x.key}
-		# where = where.select{|x| x.is_searchable(search_group_keys)}
 		return where
 	end
 

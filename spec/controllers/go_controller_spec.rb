@@ -37,7 +37,7 @@ RSpec.describe GoController, type: :controller do
 		it 'shows a landing page if duplicate keys' do
 			GoLink.create(key: 'key1', url: 'http://google3.com')
 			get :redirect, {:key => 'key1'}
-			expect(response).to render_template(:new_index)
+			expect(response).to render_template(:index)
 		end
 	end
 
