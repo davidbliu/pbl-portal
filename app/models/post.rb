@@ -8,6 +8,17 @@ class Post < ActiveRecord::Base
 	# 	Post.order('created_at desc').where('id in (?)', Post.can_view(member))
 	# end
 
+
+	def self.search(q)
+		search_regex = "%#{q.downcase}%"
+		Post.where('lower(title) LIKE ? 
+			OR lower(content) LIKE ? OR
+			lower(author) like ?', 
+			search_regex,
+			search_regex,
+			search_regex)
+	end
+
 	def comments
 		return self.post_comments
 	end

@@ -47,6 +47,11 @@
   height:35px;
   border-radius:100px;
 }
+#search-input{
+  width:30%;
+  text-align: center;
+  margin-left:36%;
+}
 </style>
 <%= stylesheet_link_tag 'flickr_pagination' %>
 <%= render partial: 'show_modal' %>
@@ -57,12 +62,14 @@
 
 
 <div id = 'top-stuff' class = 'centered'>
-  <!-- <h1>PBL Blog</h1> -->
+  
   <% if @list %>
     <a href = '/blog'>Grid View</a>
   <% else %>
     <a href = '/blog?view=list'>List View</a>
   <% end %>
+    <input type = 'text' class = 'form-control' id = 'search-input' placeholder = 'Search' value = '<%= @query %>'>
+
   <div class="flickr_pagination">
     <%= will_paginate @posts, :container => false %>
   </div>
@@ -101,9 +108,9 @@ function activateToggles(){
 activateToggles();
 var last_scroll_time = 0;
 <% if @list %>
-var ajax_params = '?view=list';
+var ajax_params = '?view=list&q=<%= @query %>';
 <% else %>
-var ajax_params = '?view=grid';
+var ajax_params = '?view=grid&q=<%= @query %>';
 <% end %>
 $(window).scroll(function(){
   pos = $(window).scrollTop();
@@ -176,4 +183,15 @@ function saveComment(id){
 <% if @post_id %>
 showPostModal('<%= @post_id %>');
 <% end %>
+
+ $('#search-input').on('keypress', function (event) {
+       if(event.which === 13){
+          $(this).attr("disabled", "disabled");
+          <% if @list %>
+          window.location = '/blog?view=list&q='+$(this).val();
+          <% else %>
+          window.location = '/blog?q='+$(this).val();
+          <% end %>
+       }
+ });
 </script>

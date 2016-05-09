@@ -4,8 +4,15 @@ class BlogController < ApplicationController
 
 	def index
 		@page = params[:page] ? params[:page] : 1
-		@posts = Post.includes(:groups).order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+		@query = params[:q]
+		if params[:q]
+			@posts = Post.search(params[:q])
+		else
+			@posts = Post.all
+		end
+		@posts = @posts.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
 
+		@posts = @posts.includes(:groups)
 		if params[:view] == 'list'
 			@list = true
 			@posts = @posts.paginate(:page => params[:page], :per_page => 50)
@@ -31,8 +38,13 @@ class BlogController < ApplicationController
 	end
 
 	def ajax_scroll
-		@posts = Post.includes(:groups).order('created_at desc').where('id in (?)', Post.can_view(myEmail))
-		
+		if params[:q]
+			@posts = Post.search(params[:q])
+		else
+			@posts = Post.all
+		end
+		@posts = @posts.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+		@posts = @posts.includes(:groups)
 		if @posts.length == 0
 			render nothing: true, status: 404
 		elsif params[:view] == 'list'
