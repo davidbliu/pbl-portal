@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160506003558) do
+ActiveRecord::Schema.define(version: 20160509215007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,34 +58,6 @@ ActiveRecord::Schema.define(version: 20160506003558) do
     t.text     "unattended"
   end
 
-  create_table "feed_items", force: :cascade do |t|
-    t.string   "item_type"
-    t.string   "title"
-    t.string   "body"
-    t.datetime "timestamp"
-    t.string   "link"
-    t.string   "status"
-    t.text     "recipients"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.string   "permissions"
-    t.string   "member_email"
-  end
-
-  create_table "feed_pushes", force: :cascade do |t|
-    t.integer  "feed_item_id"
-    t.text     "response"
-    t.string   "member_email"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-  end
-
-  create_table "feed_responses", force: :cascade do |t|
-    t.integer "feed_item_id"
-    t.string  "member_email"
-    t.string  "response_type"
-  end
-
   create_table "go_link_clicks", force: :cascade do |t|
     t.string   "member_email"
     t.string   "key"
@@ -118,13 +90,6 @@ ActiveRecord::Schema.define(version: 20160506003558) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "go_link_tags", force: :cascade do |t|
-    t.integer  "golink_id"
-    t.string   "tag_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "go_links", force: :cascade do |t|
     t.string   "key"
     t.string   "url"
@@ -137,23 +102,6 @@ ActiveRecord::Schema.define(version: 20160506003558) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.string   "semester"
-  end
-
-  create_table "go_preferences", force: :cascade do |t|
-    t.string   "email"
-    t.text     "default_group_ids"
-    t.text     "search_group_ids"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-    t.integer  "landing_group_id"
-  end
-
-  create_table "go_tags", force: :cascade do |t|
-    t.string   "name"
-    t.string   "description"
-    t.string   "creator"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
   end
 
   create_table "group_members", force: :cascade do |t|
@@ -201,17 +149,6 @@ ActiveRecord::Schema.define(version: 20160506003558) do
     t.datetime "updated_at",    null: false
   end
 
-  create_table "notifications", force: :cascade do |t|
-    t.string   "notification_type"
-    t.integer  "object_id"
-    t.datetime "timestamp"
-    t.text     "channels"
-    t.string   "sender"
-    t.text     "content"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-  end
-
   create_table "positions", force: :cascade do |t|
     t.string   "member_email"
     t.string   "semester"
@@ -253,42 +190,6 @@ ActiveRecord::Schema.define(version: 20160506003558) do
     t.string   "link"
   end
 
-  create_table "profiles", force: :cascade do |t|
-    t.string   "email"
-    t.string   "grad"
-    t.string   "phone"
-    t.text     "positions"
-    t.text     "projects"
-    t.text     "jobs"
-    t.text     "extracurriculuars"
-    t.text     "awards"
-    t.text     "state_awards"
-    t.text     "case_comps"
-    t.text     "description"
-    t.text     "gallery"
-    t.text     "images"
-    t.text     "nicknames"
-    t.string   "hometown"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-    t.string   "major"
-    t.string   "website"
-  end
-
-  create_table "projects", force: :cascade do |t|
-    t.string   "name"
-    t.text     "emails"
-    t.datetime "time"
-    t.string   "semester"
-    t.text     "description"
-    t.text     "links"
-    t.text     "images"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.text     "members"
-    t.text     "embed"
-  end
-
   create_table "pushes", force: :cascade do |t|
     t.string   "title"
     t.string   "body"
@@ -299,37 +200,6 @@ ActiveRecord::Schema.define(version: 20160506003558) do
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
     t.text     "member_emails"
-  end
-
-  create_table "reminder_responses", force: :cascade do |t|
-    t.integer  "reminder_id"
-    t.string   "member_email"
-    t.string   "response"
-    t.string   "other_content"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-  end
-
-  create_table "reminders", force: :cascade do |t|
-    t.string   "title"
-    t.string   "link"
-    t.string   "body"
-    t.text     "buttons"
-    t.text     "reminder_status"
-    t.string   "author"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.string   "reminder_type"
-  end
-
-  create_table "reports", force: :cascade do |t|
-    t.string   "title"
-    t.string   "key"
-    t.string   "report_type"
-    t.text     "data_bins"
-    t.text     "data_labels"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
   end
 
   create_table "tabling_slots", force: :cascade do |t|

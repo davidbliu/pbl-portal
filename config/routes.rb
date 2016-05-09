@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   root 'main#home'
-  get '/track_clicks'=>'main#clicks'
   get '/cookie_hack' => 'main#cookie_hack'
 
   post '/pablo' => 'pablo#pablo'
@@ -27,10 +26,8 @@ Rails.application.routes.draw do
   get 'go' => 'go#index'
   get 'go/menu' => 'go#index'
   get 'go/show/:id' => 'go#show'
-  get 'go/batch_show' => 'go#batch_show'
   get 'go/search' => 'go#search'
   get 'go/lookup' => 'go#lookup'
-  get 'go/insights/:id' => 'go#insights'
   get 'go/recent' => 'go#recent'
   
   get 'go/add' => 'go#add'
@@ -58,9 +55,6 @@ Rails.application.routes.draw do
   get 'go/preferences' => 'go#preferences'
   post 'go/update_preferences' => 'go#update_preferences'
   get 'go/ajax_scroll/:page' => 'go#ajax_scroll'
-  # tags
-  post 'go_tag/create' => 'go_tag#create'
-  get 'go_tag/show/:id' => 'go_tag#show'
 
   #blog
   get 'blog' => 'blog#index'
@@ -87,7 +81,7 @@ Rails.application.routes.draw do
   get 'tabling/slots_available' => 'tabling#slots_available'
   get 'tabling/chair_tabling' => 'tabling#chair_tabling', as: 'chair_tabling'
   
-  # push notifications
+  # registering for push notifications
   get 'push' => 'push#index'
   get 'push/register'  => 'push#register'
   get 'push/new' => 'push#new'
