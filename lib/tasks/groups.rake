@@ -1,3 +1,19 @@
+task :import_blog => :environment do
+	require "yaml"
+	posts = YAML::load(File.open('posts_dump.yaml'))
+	posts.each do |post|
+		# puts post["email"]
+		# puts post["title"]
+		# puts Time.strptime("%Y-%m-%d", post["date"])
+		# puts post["date"].month
+		Post.create(
+			view_permissions:'old',
+			title: post["title"],
+			author: post["email"],
+			content: post["body"],
+			created_at: post["date"])
+	end
+end
 task :load_groups => :environment do
 	data = Marshal.load(File.binread('go_groups.marshal'))
 	GroupMember.where(group_id: nil).destroy_all

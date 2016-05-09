@@ -79,14 +79,10 @@ class GoController < ApplicationController
 			@search_term = params[:q]
 			@golinks = GoLink.email_search(params[:q], myEmail)
 		else
-			@golinks = GoLink.list(myEmail).includes(:groups)
-			# viewable = GoLink.can_view(myEmail)
-			# @golinks = GoLink.order('created_at desc')
-			# 	.where('id in (?)',viewable)
-			# 	.includes(:groups)
+			@golinks = GoLink.list(myEmail)
 		end
 		@groups = Group.groups_by_email(myEmail)
-		@golinks = @golinks.to_a
+		@golinks = @golinks.includes(:groups)
 		@page = params[:page] ? params[:page].to_i : 1
 		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
 		if not redirected
@@ -102,12 +98,9 @@ class GoController < ApplicationController
 			viewable = GoLink.viewable_ids(myEmail)
 			@golinks = @group.go_links.order('created_at desc').where('go_links.id in (?)', viewable)
 		else
-			@golinks = GoLink.list(myEmail).includes(:groups)
-			# viewable = GoLink.viewable_ids(myEmail)
-			# @golinks = GoLink.order('created_at desc')
-			# 	.where('id in (?)',viewable)
-			# 	.includes(:groups)
+			@golinks = GoLink.list(myEmail)
 		end
+		@golinks = @golinks.includes(:groups)
 		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
 
 		if @golinks.length == 0

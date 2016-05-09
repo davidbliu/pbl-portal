@@ -13,7 +13,7 @@ class GoLink < ActiveRecord::Base
  		end
  		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
  		gids += Group.where(is_open: true).pluck(:id)
- 		golinks = GoLink.where('member_email = ? OR id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups) OR id in (?)', email, GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id))
+ 		golinks = GoLink.order('created_at desc').where('member_email = ? OR id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups) OR id in (?)', email, GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id))
  		return golinks
  	end
 

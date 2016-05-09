@@ -37,7 +37,7 @@
 
 <div class = 'modal-footer'>
 	<div class = 'post-meta'>
-		<div>Posted By <%= @email_hash[@post.author].name %></div>
+		<div>Posted By <%= @email_hash[@post.author] ? @email_hash[@post.author].name : @post.author %></div>
 		<div>To <%= group_string(@post.groups) %></div>
 		<div>
 			<div>
