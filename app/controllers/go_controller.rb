@@ -82,9 +82,10 @@ class GoController < ApplicationController
 			@golinks = GoLink.list(myEmail)
 		end
 		@groups = Group.groups_by_email(myEmail)
-		@golinks = @golinks.includes(:groups)
+		
 		@page = params[:page] ? params[:page].to_i : 1
 		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
+		@golinks = @golinks.includes(:groups)
 		if not redirected
 			render :new_index
 		end
@@ -100,9 +101,9 @@ class GoController < ApplicationController
 		else
 			@golinks = GoLink.list(myEmail)
 		end
-		@golinks = @golinks.includes(:groups)
+		
 		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
-
+		@golinks = @golinks.includes(:groups)
 		if @golinks.length == 0
 			render nothing: true, status: 404
 		else
