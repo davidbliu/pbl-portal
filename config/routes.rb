@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   get 'go/add' => 'go#add'
   post 'go/create' => 'go#create'
   post 'go/update' => 'go#update'
-  post 'go/destroy' => 'go#destroy'
+  post 'go/destroy/:id' => 'go#destroy'
   get 'go/insights/:id' => 'go#insights'
   get 'go/engagement' => 'go#engagement'
   get 'go/admin' => 'go#admin'
@@ -97,6 +97,7 @@ Rails.application.routes.draw do
 
 
   # groups
+  get 'groups' => 'groups#index'
   post 'groups/create' => 'groups#create'
   get 'groups/destroy/:id' => 'groups#destroy'
   get 'groups/edit/:id'=>'groups#edit'

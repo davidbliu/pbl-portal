@@ -7,6 +7,9 @@ class GoLink < ActiveRecord::Base
  	include Elasticsearch::Model::Callbacks
  	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
+ 	@@per_page = 25
+ 	
+ 	# returns an list of golinks this email can view sorted by recently created first
  	def self.list(email)
  		if GoLink.admin_emails.include?(email)
  			return GoLink.order('created_at desc')
@@ -17,7 +20,7 @@ class GoLink < ActiveRecord::Base
  		return golinks
  	end
 
- 	# return list of golinks
+ 	# returns list of golink ids of links this email can view
  	def self.viewable_ids(email)
  		if GoLink.admin_emails.include?(email)
  			return GoLink.all.pluck(:id)
@@ -30,6 +33,7 @@ class GoLink < ActiveRecord::Base
  		return ids.uniq
  	end
 
+ 	# creates copy of link (see GoLinkCopy)
 	def create_copy
 		if self.key.present? and self.url.present?
 			copy = GoLinkCopy.create(
@@ -51,13 +55,6 @@ class GoLink < ActiveRecord::Base
 		return where
 	end
 
-	def is_searchable(search_group_keys)
-		true
-	end
-
-	def self.per_page
-		25
-	end
 	def self.admin_emails
 		['davidbliu@gmail.com']
 	end

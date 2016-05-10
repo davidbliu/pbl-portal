@@ -60,6 +60,14 @@ __Points:__ Event, Member
 
 __Misc:__ Member, Semester, Position
 
+## Reading list and related projects
+
+__Chrome extension:__ pbl.link/extension-git, pbl.link/extension
+
+__Oauth__
+
+__Elasticsearch__
+
 ## Contact
 
 David Liu: davidbliu@gmail.com

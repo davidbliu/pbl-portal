@@ -181,7 +181,13 @@ class GoController < ApplicationController
 		params[:groups] ||= []
 		golink.groups = Group.where('id in (?)', params[:groups])
 		golink.save!
-		render json: golink.to_json
+		golink_json = {
+			key: golink.key,
+			description: golink.description,
+			url: golink.url,
+			group_string: group_string(golink.groups)
+			}.to_json
+		render json: golink_json
 	end
 
 	def destroy

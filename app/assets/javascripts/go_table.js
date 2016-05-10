@@ -30,10 +30,10 @@ function renderCheckedIds(ids){
 
 function showGolinkInfo(data){
 	$("#golink-info-container").html(data);
-	$('#golink-info-outer').show();
+	$('#golink-info-outer').show(150);
 }
 function hideGolinkInfo(data){
-	$('#golink-info-outer').hide();
+	$('#golink-info-outer').hide(150);
 }
 function activateGolinkCheckbox(){
 	$('.golink-checkbox').click(function(){
@@ -53,6 +53,50 @@ function activateGolinkCheckbox(){
 		});
 	});	
 }
+
+function getGroupsChecked(){
+	var checked = [];
+	$('.group-checkbox').each(function(){
+		if($(this).is(':checked')){
+			checked.push($(this).attr('data-key'));
+		}
+	});
+	return checked;
+}
+
+function saveGoLink(id){
+	$.ajax({
+		url: '/go/update',
+		type:'post',
+		data:{
+			id: id,
+			url: $('#url-input').val(),
+			description: $('#description-input').val(),
+			key: $('#key-input').val(),
+			groups: getGroupsChecked()
+		},
+		success:function(data){
+			console.log('saved');
+			$('#'+id+'-key').text(data.key);
+			$('#'+id+'-key').attr('href', data.url);
+			$('#'+id+'-description').text(data.description);
+			$('#'+id+'-group_string').text(data.group_string);
+			$('#'+id+'-tr').fadeOut(200).fadeIn(200);
+			hideGolinkInfo();
+		}
+	})
+}
+
+function destroyGoLink(id){
+	$.ajax({
+		url: '/go/destroy/'+id,
+		type:'post',
+		success:function(data){
+			$('#'+id+'-tr').remove();
+			hideGolinkInfo();
+		}
+	})
+}
 $(document).ready(function(){
 
 $.ajax({
@@ -67,6 +111,7 @@ $('#close-info-btn').click(function(){
 	hideGolinkInfo();
 })
 $('.golink-row').click(function(event){
+	hideGolinkInfo();
 	if($(event.target).hasClass('golink-checkbox') || 
 		$(event.target).hasClass('mute-info')){
 		return;

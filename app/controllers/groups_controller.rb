@@ -1,4 +1,9 @@
 class GroupsController < ApplicationController
+	
+	def index
+		@groups = Group.all
+	end
+
 	def new
 		@warning = flash[:warning]
 		@group = Group.new
@@ -35,10 +40,15 @@ class GroupsController < ApplicationController
 
 	def destroy
 		group = Group.find(params[:id])
-		if group.creator == myEmail
-			group.destroy
+		group.destroy
+		# if group.creator == myEmail
+			# group.destroy
+		# end
+		begin
+			redirect_to :back
+		rescue
+			redirect_to '/go'
 		end
-		redirect_to '/go'
 	end
 
 	def edit

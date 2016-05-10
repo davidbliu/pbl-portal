@@ -12,26 +12,6 @@ class Event < ActiveRecord::Base
 	def time_string
 		self.time.strftime('%m/%d/%Y')
 	end
-	def self.migrate
-		session = GoogleDrive.saved_session("drive_config.json")
-		key = '1GJnRDWjY_1Q1IVHQ5M7AHANiq7s2UumAW9eVY4qqMM0'
-		ws = session.spreadsheet_by_key(key).worksheets[0]
-		rows = ws.rows
-		index = 0
-		rows.each do |row|
-			if index == 0
-				index += 1
-			else
-				e = Event.where(
-					name: row[0]
-				).first_or_create
-				e.time = Time.strptime(row[1], '%m/%d/%Y')
-				e.points = row[2].to_i
-				e.semester = 'Spring 2016'
-				e.save
-			end
-		end
-	end
 
 	def get_attended
 		self.attended ? self.attended : []
@@ -58,6 +38,8 @@ class Event < ActiveRecord::Base
 		return h
 	end
 
+	# returns sorted list of members and their points
+	# 	Event.scoreboard(Member.all) # => [[member1, 10], [member2, 9]...]  
 	def self.scoreboard(members)
 		score_hash = self.score_hash(members)
 		score_list = members.map{|x| x.email}
@@ -74,6 +56,8 @@ class Event < ActiveRecord::Base
 		return self.scoreboard(officers).uniq
 	end
 
+	# return hash whose keys are committee abbreviations and values are attendance rates
+	# 	Event.committee_attendance_rates # => {'HT': 0.2, 'PB': 0.5}
 	def self.committee_attendance_rates
 		committees = Member.committees.select{|x| x != 'GM'}
 		current_members = Member.current_members.where.not(committee:'GM')
@@ -94,38 +78,37 @@ class Event < ActiveRecord::Base
 		return h
 	end
 
+	# returns score for email
+	#   Event.get_score('davidbliu@gmail.com') # => 13
 	def self.get_score(email)
 		attended = Event.all.select{|x| x.get_attended.include?(email)}
 		pts = attended.map{|x| x.points}
 		return pts.sum
 	end
 
-	def self.clean?
-		Event.all.each do |event|
-			a = event.get_attended
-			b = event.get_unattended
-			a.each do |email|
-				if b.include?(email)
-					return false
-				end
+	# Loads events and points from google events sheet (Spring 2016)
+	def self.migrate
+		session = GoogleDrive.saved_session("drive_config.json")
+		key = '1GJnRDWjY_1Q1IVHQ5M7AHANiq7s2UumAW9eVY4qqMM0'
+		ws = session.spreadsheet_by_key(key).worksheets[0]
+		rows = ws.rows
+		index = 0
+		rows.each do |row|
+			if index == 0
+				index += 1
+			else
+				e = Event.where(
+					name: row[0]
+				).first_or_create
+				e.time = Time.strptime(row[1], '%m/%d/%Y')
+				e.points = row[2].to_i
+				e.semester = 'Spring 2016'
+				e.save
 			end
-			b.each do |email|
-				if a.include?(email)
-					return false
-				end
-			end
-		end
-		return true
-	end
-
-	def self.clean
-		Event.all.each do |event|
-			event.attended = event.get_attended.uniq
-			event.unattended = event.get_unattended.uniq
-			event.save
 		end
 	end
 
+	# Includes Spring 2016 points as events
 	def self.tabling_points
 		session = GoogleDrive.saved_session("drive_config.json")
 		key = '1CC5F03uScXVTtGhkLs4cKON8MPbobfxvRe67QWFwvLs'

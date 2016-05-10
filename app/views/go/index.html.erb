@@ -33,13 +33,15 @@ tr:hover{
 	margin-bottom:15px;
 }
 #right-div{
-	margin-top:13em;
+	/*margin-top:13em;*/
 }
 #my-groups-title{
 	margin-bottom:0.5em;
 }
 .half-em{
 	margin-bottom:0.5em;
+	font-weight:bold;
+	font-size: 15px;
 }
 #pref-link-div{
 	display:inline-block;
@@ -47,15 +49,17 @@ tr:hover{
 }
 </style>
 <%= stylesheet_link_tag 'flickr_pagination' %>
+<%= javascript_include_tag 'go_menu' %>
 
 <div class = 'row'>
 
 <div class = 'col-md-2'>
 	<div id = 'groups-container'>
 		<div class = 'half-em'>My Groups</div>
+		<input class = 'form-control' placeholder = 'Search Groups' id = 'groups-input'>
 		<a href = '/go/menu'>All Groups</a>
 		<% @groups.each do |group| %>
-			<div>
+			<div class = 'group-div' data-group = '<%= group.name %>'>
 				<a href = '/go?group_id=<%= group.id %>'>
 				<%= group.name %>
 				</a>
@@ -150,9 +154,9 @@ tr:hover{
 </table>
 
 
-<div class = 'btn btn-info pull-right' id = 'update-groups-btn'>Update Groups</div>
+<div class = 'btn btn-info' id = 'update-groups-btn'>Update Groups</div>
 <a href = '/go/delete_checked'>
-	<div class = 'btn btn-danger' id = 'delete-all-btn'>Delete All</div>
+	<div class = 'btn btn-danger pull-right' id = 'delete-all-btn'>Delete All</div>
 </a>
 
 <% end %>
@@ -225,22 +229,4 @@ function getNextPage(){
 	})
 }
 
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-function debounce(func, wait, immediate) {
-	var timeout;
-	return function() {
-		var context = this, args = arguments;
-		var later = function() {
-			timeout = null;
-			if (!immediate) func.apply(context, args);
-		};
-		var callNow = immediate && !timeout;
-		clearTimeout(timeout);
-		timeout = setTimeout(later, wait);
-		if (callNow) func.apply(context, args);
-	};
-};
 </script>

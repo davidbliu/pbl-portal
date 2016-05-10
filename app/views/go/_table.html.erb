@@ -14,6 +14,9 @@
 	height:30px;
 	border-radius:100px;
 }
+.right-td{
+	text-align: right;
+}
 </style>
 <%= javascript_include_tag 'go_table' %>
 
@@ -28,27 +31,25 @@
 				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
 			</td>
 			<td class = 'mute-info'>
-				<a class = 'mute-info' href = '<%= golink.url %>'>
+				<a class = 'mute-info' href = '<%= golink.url %>' id = '<%= golink.id %>-key'>
 					<%= golink.key %>
 				</a>
 			</td>
-			<td>
-				<% if golink.description.present? %>
-				&nbsp;&nbsp;<%= golink.description %>
-				<% end %>
-
+			<td id = '<%= golink.id %>-description'>
+				<%= golink.description %>
 			</td>
-			<td>
-				<img src = '<%= gravatar(golink.member_email) %>' class = 'gravatar-img'>
-			</td>
-			<td>
+			
+			<td class = 'right-td'>
 				<div class = 'text-muted smalltext'><%= golink.member_email %></div>
-				<div class = 'text-muted smalltext'>
+				<div class = 'text-muted smalltext' id = '<%= golink.id %>-group_string'>
 					To: <%= group_string(golink.groups) %>
 				</div>
 				<div class = 'text-muted smalltext'>
 					<%= golink.time_string %>
 				</div>
+			</td>
+			<td>
+				<img src = '<%= gravatar(golink.member_email) %>' class = 'gravatar-img'>
 			</td>
 		</tr>
 		<% end %>
