@@ -4,14 +4,21 @@ class Post < ActiveRecord::Base
 	has_many :groups, :through => :post_groups
 	has_many :post_comments
 
-	def self.search(q)
-		search_regex = "%#{q.downcase}%"
-		Post.where('lower(title) LIKE ? 
-			OR lower(content) LIKE ? OR
-			lower(author) like ?', 
-			search_regex,
-			search_regex,
-			search_regex)
+	include Elasticsearch::Model
+ 	include Elasticsearch::Model::Callbacks
+ 	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
+
+	def self.email_search(email, search_term)
+		q = {
+			multi_match: {
+				query: search_term, 
+				fields: ['title^3','content', 'author'],
+				fuzziness: 1
+			}
+		}
+		viewable_ids = self.can_view(email)
+		result_ids = Post.search(query: q, :size => 100).results.map{|x| x._source.id}
+		return Post.includes(:groups).where('id in (?)', result_ids & viewable_ids).sort_by{|x| result_ids.index(x)} 
 	end
 
 	def comments

@@ -6,20 +6,20 @@ class BlogController < ApplicationController
 		@page = params[:page] ? params[:page] : 1
 		@query = params[:q]
 		if params[:q]
-			@posts = Post.search(params[:q])
+			@posts = Post.email_search(myEmail, params[:q])
 		else
-			@posts = Post.all
+			@posts = @posts.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+			@posts = @posts.includes(:groups)
 		end
-		@posts = @posts.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+		
 
-		@posts = @posts.includes(:groups)
+		
 		if params[:view] == 'list'
 			@list = true
 			@posts = @posts.paginate(:page => params[:page], :per_page => 50)
 		else
 			@posts = @posts.paginate(:page => params[:page], :per_page => 30)
 		end
-		
 		
 		@email_hash = Member.email_hash
 		@post_id = params[:post_id]
@@ -37,12 +37,12 @@ class BlogController < ApplicationController
 
 	def ajax_scroll
 		if params[:q]
-			@posts = Post.search(params[:q])
+			@posts = Post.email_search(myEmail, params[:q])
 		else
-			@posts = Post.all
+			@posts = @posts.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+			@posts = @posts.includes(:groups)
 		end
-		@posts = @posts.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
-		@posts = @posts.includes(:groups)
+		
 		if @posts.length == 0
 			render nothing: true, status: 404
 		elsif params[:view] == 'list'

@@ -111,10 +111,6 @@ class GoLink < ActiveRecord::Base
   		search = self.default_search(search_term)
   		viewable = self.viewable_ids(email)
   		return GoLink.where('id in (?)', search & viewable)
-  		# result_ids = search.select{|x| viewable.include?(x)}
-		# golinks_by_id = GoLink.where('id in (?)', result_ids).index_by(&:id)
-		# keys = golinks_by_id.keys
-  		# golinks = search.select{|x| golinks_by_id.keys.include?(x)}.map{|x| golinks_by_id[x]}
   		return golinks
   	end
 

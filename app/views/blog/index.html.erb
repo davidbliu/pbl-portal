@@ -62,16 +62,14 @@
 
 
 <div id = 'top-stuff' class = 'centered'>
-  
   <% if @list %>
     <a href = '/blog'>Grid View</a>
   <% else %>
     <a href = '/blog?view=list'>List View</a>
   <% end %>
     <input type = 'text' class = 'form-control' id = 'search-input' placeholder = 'Search' value = '<%= @query %>'>
-
   <div class="flickr_pagination">
-    <%= will_paginate @posts, :container => false %>
+    <%= will_paginate @posts, :container => false, :params => params.merge({:post_id => nil})  %>
   </div>
 </div>
 
@@ -96,13 +94,11 @@
 <% end %>
 
 
-
 <script type = 'text/javascript'>
 var page = <%= @page %>;
 function activateToggles(){
   $('.post-toggle').unbind('click').click(function(){
     showPostModal($(this).attr('id'));
-    // window.location.href = '/blog/post/'+$(this).attr('id');
   })
 }
 activateToggles();
