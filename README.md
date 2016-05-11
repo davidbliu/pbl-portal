@@ -1,5 +1,5 @@
 # Berkeley PBL Members Portal V2
-[![Build Status](https://travis-ci.org/davidbliu/v2-rails.svg?branch=master)](https://travis-ci.org/davidbliu/v2-rails)
+[![Build Status](https://travis-ci.org/davidbliu/pbl-portal.svg?branch=master)](https://travis-ci.org/davidbliu/pbl-portal)
 
 This repo contains code for PBL Links, Blog, Tabling generator, Points, etc
 
