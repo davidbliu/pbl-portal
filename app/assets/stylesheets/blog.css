@@ -1,0 +1,53 @@
+.post-content:hover{
+  opacity:1;
+}
+.post-content{
+   margin-top:20px;
+}
+.post-toggle:hover{
+  cursor:pointer;
+}
+.post-div{
+	border:1px solid rgba(0,0,0,0.1);
+  width:30%;
+  height:410px;
+	margin:10px;
+	padding:25px;
+	float:left;
+  overflow:hidden;
+}
+.post-div:hover{
+  cursor:pointer;
+}
+.title{
+	font-size:1.3em;
+	font-weight:bold;
+}
+.timestring{
+}
+.read-more-link{
+  /*bottom:10px;*/
+  position:relative;
+  vertical-align:bottom;
+  bottom:0;
+  /*bottom:0px;*/
+}
+.filter-btn{
+  margin-top:5px;
+}
+#top-stuff{
+
+}
+.flickr_pagination{
+  margin-top:1em;
+  margin-bottom:1em;
+}
+.profile-img{
+  height:35px;
+  border-radius:100px;
+}
+#search-input{
+  width:30%;
+  text-align: center;
+  margin-left:36%;
+}

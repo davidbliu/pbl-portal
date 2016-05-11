@@ -5,10 +5,10 @@ class BlogController < ApplicationController
 	def index
 		@page = params[:page] ? params[:page] : 1
 		@query = params[:q]
-		if params[:q]
+		if params[:q].present?
 			@posts = Post.email_search(myEmail, params[:q])
 		else
-			@posts = @posts.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+			@posts = Post.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
 			@posts = @posts.includes(:groups)
 		end
 		
@@ -36,10 +36,10 @@ class BlogController < ApplicationController
 	end
 
 	def ajax_scroll
-		if params[:q]
+		if params[:q].present?
 			@posts = Post.email_search(myEmail, params[:q])
 		else
-			@posts = @posts.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
+			@posts = Post.order('created_at desc').where('id in (?)', Post.can_view(myEmail))
 			@posts = @posts.includes(:groups)
 		end
 		

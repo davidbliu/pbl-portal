@@ -1,53 +1,4 @@
-<style type = 'text/css'>
-td{
-	max-width:120px;
-	overflow:auto;
-}
-tr:hover{
-	cursor:pointer;
-}
-
-#title-box{
-	background-color:#f2f2f2;
-	padding:15px;
-	margin-bottom:15px;
-}
-
-.hilite{
-	background-color: rgba(27, 255, 0, 0.25);
-}
-
-#checked-div{
-	display:none;
-}
-#pbl-links-title{
-	margin-top:0px;
-}
-#search-input{
-	margin-bottom:1em;
-}
-#create-group-div{
-	margin-top:0.5em;
-}
-.flickr_pagination{
-	margin-bottom:15px;
-}
-#right-div{
-	/*margin-top:13em;*/
-}
-#my-groups-title{
-	margin-bottom:0.5em;
-}
-.half-em{
-	margin-bottom:0.5em;
-	font-weight:bold;
-	font-size: 15px;
-}
-#pref-link-div{
-	display:inline-block;
-	text-align: right;
-}
-</style>
+<%= stylesheet_link_tag 'go' %>
 <%= stylesheet_link_tag 'flickr_pagination' %>
 <%= javascript_include_tag 'go_menu' %>
 
@@ -96,9 +47,6 @@ tr:hover{
 		</div>
 	<% end %>
 	<input type = 'text' class = 'form-control' placeholder = 'Search  |  Paste your long url here' id = 'search-input'>
-	<!-- <div id = 'pref-link-div'> -->
-		<!-- <a href = '/go/preferences'>Preferences</a> -->
-	<!-- </div> -->
 	<div id = 'trash-link-div'>
 		<a href = '/go/trash'>Trash</a>
 	</div>
@@ -167,37 +115,7 @@ tr:hover{
 
 </div> <!-- end of row -->
 
-<script type = 'text/javascript'>
-function getCheckedGroups(type){
-	var ids = [];
-	$('.batch-group-checkbox').each(function(){
-		if($(this).is(':checked') && $(this).attr('data-type') == type){
-			ids.push($(this).attr('data-id'));
-		}
-	});
-	return ids;
-}
-$('#update-groups-btn').click(function(){
-	$.ajax({
-		url: '/go/batch_update_groups',
-		type:'post',
-		data:{
-			add: getCheckedGroups('add'),
-			remove: getCheckedGroups('remove')
-		},
-		success:function(data){
-			window.location.reload();
-		}
-	})
-});
-$('#search-input').keypress(function(e) {
-    if(e.which == 13) {
-    	searchTerm = $(this).val();
-    	window.location = '?q='+searchTerm;
-    }
-});
 
-</script>
 <script type  ='text/javascript'>
 var page = <%= @page %>;
 <% if @ajax_params %>
@@ -206,27 +124,6 @@ var page = <%= @page %>;
 	var ajax_params = '';
 <% end %>
 var last_scroll_time = 0;
-$(window).scroll(function(){
-	pos = $(window).scrollTop();
-	height = $(document).height()-$(window).height()-10;
-	if(pos > height){
-		now = new Date().getTime() / 1000;
-		if(now-last_scroll_time > 1){
-			getNextPage();
-		}
-	}
-})
-function getNextPage(){
-	last_scroll_time = new Date().getTime() / 1000;
-	page+=1;
-	console.log('getting page /go/ajax_scroll/'+page+ajax_params);
-	$.ajax({
-		url: '/go/ajax_scroll/'+page+ajax_params,
-		type:'get',
-		success:function(data){
-			$('#go-table-container').append(data);
-		}
-	})
-}
-
 </script>
+
+<%= javascript_include_tag 'go' %>

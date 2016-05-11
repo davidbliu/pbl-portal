@@ -1,0 +1,49 @@
+
+td{
+	max-width:120px;
+	overflow:auto;
+}
+tr:hover{
+	cursor:pointer;
+}
+
+#title-box{
+	background-color:#f2f2f2;
+	padding:15px;
+	margin-bottom:15px;
+}
+
+.hilite{
+	background-color: rgba(27, 255, 0, 0.25);
+}
+
+#checked-div{
+	display:none;
+}
+#pbl-links-title{
+	margin-top:0px;
+}
+#search-input{
+	margin-bottom:1em;
+}
+#create-group-div{
+	margin-top:0.5em;
+}
+.flickr_pagination{
+	margin-bottom:15px;
+}
+#right-div{
+	/*margin-top:13em;*/
+}
+#my-groups-title{
+	margin-bottom:0.5em;
+}
+.half-em{
+	margin-bottom:0.5em;
+	font-weight:bold;
+	font-size: 15px;
+}
+#pref-link-div{
+	display:inline-block;
+	text-align: right;
+}
