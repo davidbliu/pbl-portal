@@ -8,6 +8,19 @@ module ApplicationHelper
 		end
 	end
 
+	def get_name(email)
+		email_hash = Rails.cache.read('email_hash')
+		if email_hash.nil?
+			email_hash = Member.email_hash
+			Rails.cache.write('email_hash', email_hash)
+		end
+		if email_hash.keys.include?(email)
+			return email_hash[email].name
+		else 
+			return email
+		end
+	end
+
 	def gravatar(email)
 		if email.nil?
 			email = 'asdf@gmail.com'

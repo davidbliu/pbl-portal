@@ -45,6 +45,8 @@ class TablingManager
 		end
 	end
 
+
+	# generates a new tabling schedule and destroys old one
 	def self.gen_tabling
 		TablingSlot.destroy_all
 		slots = self.default_slots

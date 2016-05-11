@@ -21,7 +21,7 @@
 			</td>
 			
 			<td class = 'right-td'>
-				<div class = 'text-muted smalltext'><%= golink.member_email %></div>
+				<div class = 'text-muted smalltext'><%= get_name(golink.member_email) %></div>
 				<div class = 'text-muted smalltext' id = '<%= golink.id %>-group_string'>
 					To: <%= group_string(golink.groups) %>
 				</div>

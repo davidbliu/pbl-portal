@@ -12,10 +12,13 @@ class TablingSlot < ActiveRecord::Base
 		return TablingSlot.get_hour(self.time)
 	end
 
+	# ex: TablingSlot.get_time_string(0) # => "Monday at 12:00am"
 	def self.get_time_string(time)
 		return TablingSlot.get_day(time) +  ' at '+TablingSlot.get_hour(time)
 	end
 
+	# converts time (0..168) to a string
+	# ex: TablingSlot.get_day(0) # => "Monday"
 	def self.get_day(time)
 	  day = time / 24
 	  day_strings = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -23,6 +26,7 @@ class TablingSlot < ActiveRecord::Base
 	  return day_string
 	end
 
+	# ex: TablingSlot.get_hour(0) # => 12:00am
 	def self.get_hour(time)
 	  hour = time % 24
 	  h = hour % 12

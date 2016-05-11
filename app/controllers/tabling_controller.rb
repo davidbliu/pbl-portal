@@ -96,7 +96,7 @@ class TablingController < ApplicationController
 
 	# generates a new tabling schedule, deleting the old
 	def generate
-		if current_member.email == 'davidbliu@gmail.com'
+		if TablingManager.tabling_admin.include?(myEmail)
 			TablingManager.gen_tabling
 			redirect_to '/tabling'
 		else
