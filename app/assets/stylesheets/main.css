@@ -33,3 +33,7 @@ p, div {
 select.form-control{
 	border-radius:0px !important;
 }
+.gravatar-img{
+	height:30px;
+	/*border-radius:100px;*/
+}

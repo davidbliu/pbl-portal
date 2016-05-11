@@ -47,3 +47,35 @@ tr:hover{
 	display:inline-block;
 	text-align: right;
 }
+#golink-info-outer{
+	top:50px;
+	right:0px;
+	width:400px;
+	background-color: #f2f2f2;
+	z-index:1000;
+	display:none;
+}
+#close-info-btn{
+	margin:1em;
+}
+
+.right-td{
+	text-align: right;
+}
+.group-link{
+	color:black;
+}
+.small-group{
+	font-size:0.8em;
+	margin-bottom:0.2em;
+}
+.small-group-link{
+	color:#3c3c3c !important;
+}
+.group-link:hover{
+	color:#BFBFBF !important;
+}
+.true-group>a{
+	color:red !important;
+	text-decoration: underline;
+}

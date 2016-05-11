@@ -6,17 +6,19 @@
 
 <div class = 'col-md-2'>
 	<div id = 'groups-container'>
-		<div class = 'half-em'>My Groups</div>
+		<h4>
+			<a href = '/groups' class = 'group-link'>My Groups</a>
+		</h4>
 		<input class = 'form-control' placeholder = 'Search Groups' id = 'groups-input'>
-		<a href = '/go/menu'>All Groups</a>
 		<% @groups.each do |group| %>
-			<div class = 'group-div' data-group = '<%= group.name %>'>
-				<a href = '/go?group_id=<%= group.id %>'>
+			<div class = 'group-div small-group <%= group == @group %>-group' data-group = '<%= group.name %>'>
+				<a class = 'group-link small-group-link' href = '/go?group_id=<%= group.id %>'>
 				<%= group.name %>
-				</a>
 				<% if group.is_open %>
 				(open group)
 				<% end %>
+				</a>
+				
 			</div>
 		<% end %>
 		
@@ -25,6 +27,8 @@
 		</div>
 	</div>
 </div>
+
+
 <div class = 'col-md-7' id = 'col6'>
 <div id = 'title-box'>
 	<h1 class = 'centered' id = 'pbl-links-title'>
@@ -35,13 +39,13 @@
 		<% else %>
 			PBL Links
 		<% end %>
-
 	</h1>
 	<% if @group %>
 		<div class = 'centered'>
+			<p><%= @group.description %></p>
 			<%= @group.get_type.capitalize %> Group (<%= @group.group_members.length %> Members)
 			&nbsp;
-		<% if @group.creator == myEmail %>
+		<% if @group.can_edit(myEmail) %>
 			<%= link_to 'Edit Group', "/groups/edit/#{@group.id}" %>
 		<% end %>
 		</div>

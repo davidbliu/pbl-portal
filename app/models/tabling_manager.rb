@@ -34,9 +34,9 @@ class TablingManager
 		return availabilities
 	end
 
+	# initialize every member with a random set of commitments
 	def self.random_init
 		slots = self.default_slots
-
 		Member.all.each do |member|
 			if member.commitments == nil
 				member.commitments = slots.sample(5)

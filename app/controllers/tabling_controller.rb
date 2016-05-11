@@ -22,7 +22,7 @@ class TablingController < ApplicationController
 		@slots = TablingManager.default_slots
 		@availabilities = TablingManager.slot_availabilities
 	end
-	
+
 	def index
 		@me = current_member
 		slots = TablingSlot
@@ -79,6 +79,7 @@ class TablingController < ApplicationController
 		end
 	end
 
+	# admin can switch two members' tabling slots
 	def admin_switch
 		m1 = Member.where('lower(name) = ?', params[:name1].downcase).first
 		m2 = Member.where('lower(name) = ?', params[:name2].downcase).first
@@ -93,6 +94,7 @@ class TablingController < ApplicationController
 		redirect_to '/tabling'
 	end
 
+	# generates a new tabling schedule, deleting the old
 	def generate
 		if current_member.email == 'davidbliu@gmail.com'
 			TablingManager.gen_tabling

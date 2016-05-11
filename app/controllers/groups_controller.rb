@@ -1,7 +1,8 @@
 class GroupsController < ApplicationController
 	
 	def index
-		@groups = Group.includes(:group_members).all
+		@groups = Group.list(myEmail).includes(:group_members)
+		# includes(:group_members).all
 	end
 
 	def new
@@ -18,6 +19,7 @@ class GroupsController < ApplicationController
 		else
 			group = Group.create( 
 				name: params[:name],
+				description: params[:description],
 				is_open: params[:group_type] != 'private',
 				creator: myEmail)
 		end
@@ -38,17 +40,11 @@ class GroupsController < ApplicationController
 		end
 	end
 
+	# TODO check if this person can actual destroy group
 	def destroy
 		group = Group.find(params[:id])
 		group.destroy
-		# if group.creator == myEmail
-			# group.destroy
-		# end
-		begin
-			redirect_to :back
-		rescue
-			redirect_to '/go'
-		end
+		redirect_to '/groups'
 	end
 
 	def edit
@@ -60,6 +56,7 @@ class GroupsController < ApplicationController
 	def update
 		@group = Group.find(params[:id])
 		@group.name = params[:name]
+		@group.description = params[:description]
 		@group.is_open = params[:group_type] != 'private'
 		@group.save!
 		# update members too
