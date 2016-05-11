@@ -50,9 +50,9 @@
 		var is_list = false;
 	<% end %>
 	var last_scroll_time = 0;
+	var post_id = -1;
 	<% if @post_id %>
-	showPostModal('<%= @post_id %>');
+	var post_id = <%= @post_id %>;
 	<% end %>
-
 </script>
 <%= javascript_include_tag 'blog' %>

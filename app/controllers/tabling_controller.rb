@@ -22,6 +22,7 @@ class TablingController < ApplicationController
 		@slots = TablingManager.default_slots
 		@availabilities = TablingManager.slot_availabilities
 	end
+	
 	def index
 		@me = current_member
 		slots = TablingSlot

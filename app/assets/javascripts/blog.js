@@ -89,4 +89,8 @@ $(document).ready(function(){
 			}
 		 }
 	 });
+
+	 if(post_id != -1){
+	 	showPostModal(post_id);
+	 } 
 });
