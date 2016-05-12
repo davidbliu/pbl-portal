@@ -5,37 +5,9 @@
 <%= render partial: "go/batch_edit_modal" %>
 <div class = 'row'>
 
-<div class = 'col-md-2'>
-	<div id = 'groups-container'>
-		<h4>
-			<a href = '/groups' class = 'group-link'>My Groups</a>
-		</h4>
-		<input class = 'form-control' placeholder = 'Search Groups' id = 'groups-input'>
-		<% @groups.each do |group| %>
-			<div class = 'group-div small-group <%= group == @group %>-group' data-group = '<%= group.name %>'>
-				<% if not group.is_open %>*<% end %>
-				<a class = 'group-link small-group-link' href = '/go?group_id=<%= group.id %>'>
-				<%= group.name %>
-				
-				</a>
-				
-			</div>
-		<% end %>
 
 
-		
-		<div id = 'create-group-div'>
-			<a href = '/groups/new'>Create a group</a>
-		</div>
-
-		<div>
-			* = Private Group
-		</div>
-	</div>
-</div>
-
-
-<div class = 'col-md-7' id = 'col6'>
+<div class = 'col-md-8' id = 'col6'>
 <div id = 'title-box'>
 	<h1 class = 'centered' id = 'pbl-links-title'>
 		<% if @search_term %>
@@ -88,13 +60,37 @@
 </div>
 
 
+<div class = 'col-md-4'>
+	<div id = 'groups-container'>
+		<h4>
+			<a href = '/groups' class = 'group-link'>My Groups</a>
+		</h4>
+		<input class = 'form-control' placeholder = 'Search Groups' id = 'groups-input'>
+		<% @groups.each do |group| %>
+			<div class = 'group-div small-group <%= group == @group %>-group' data-group = '<%= group.name %>'>
+				<% if not group.is_open %>*<% end %>
+				<a class = 'group-link small-group-link' href = '/go?group_id=<%= group.id %>'>
+				<%= group.name %>
+				
+				</a>
+				
+			</div>
+		<% end %>
 
 
-<div class = 'col-md-3'>
+		
+		<div id = 'create-group-div'>
+			<a href = '/groups/new'>Create a group</a>
+		</div>
 
-</div><!-- end of right column --> 
+		<div>
+			* = Private Group
+		</div>
+	</div>
+</div>
 
-</div> <!-- end of row -->
+
+
 
 
 <script>
