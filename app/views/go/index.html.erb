@@ -1,7 +1,8 @@
+<script type = 'text/javascript' src = '/typeahead.bundle.js'></script>
 <%= stylesheet_link_tag 'go' %>
 <%= stylesheet_link_tag 'flickr_pagination' %>
 <%= javascript_include_tag 'go_menu' %>
-
+<%= render partial: "go/batch_edit_modal" %>
 <div class = 'row'>
 
 <div class = 'col-md-2'>
@@ -12,18 +13,23 @@
 		<input class = 'form-control' placeholder = 'Search Groups' id = 'groups-input'>
 		<% @groups.each do |group| %>
 			<div class = 'group-div small-group <%= group == @group %>-group' data-group = '<%= group.name %>'>
+				<% if not group.is_open %>*<% end %>
 				<a class = 'group-link small-group-link' href = '/go?group_id=<%= group.id %>'>
 				<%= group.name %>
-				<% if group.is_open %>
-				(open group)
-				<% end %>
+				
 				</a>
 				
 			</div>
 		<% end %>
+
+
 		
 		<div id = 'create-group-div'>
 			<a href = '/groups/new'>Create a group</a>
+		</div>
+
+		<div>
+			* = Private Group
 		</div>
 	</div>
 </div>
@@ -56,12 +62,19 @@
 	</div>
 	<div id = 'checked-div'>
 		<span>
-			<a href = '/go/checked_links' id = 'checked-link'>
+			<a href = 'javascript:void(0)' id = 'checked-link' onclick = 'showEditModal()'>
 			Edit <span id = 'checked-count'></span> Selected Links</a>
 		</span>&nbsp;&nbsp;
 		<span>
 			<a href = '/go/deselect_links'>Deselect Links</a>
 		</span>
+		
+		<span class = 'pull-right'>
+			<%= link_to "Delete all selected links", "/go/delete_checked" %>
+		</span>
+		<div>
+			<a href = '/go/menu?selected=true'>Show Selected Links</a>
+		</div>
 	</div>
 
 </div>
@@ -81,43 +94,20 @@
 
 
 <div class = 'col-md-3'>
-<div id = 'right-div' class = ''>
 
-<% if not @batch_editing %>
-	
-	
-<% else %>
-<h3>Batch Edit these Links</h3>
-
-<div class = 'half-em'>Add/Remove Groups</div>
-
-<table class = 'table table-condensed table-hover'>
-	<% @groups.each do |group| %>
-	<tr>
-		<td>
-			<a href = '/go?group_id=<%= group.id %>'>
-				<%= group.name %>
-			</a>
-		</td>
-		<td><input id = 'add-group-<%= group.id %>-checkbox' class = 'batch-group-checkbox' type = 'checkbox' data-type = 'add' data-id = '<%= group.id %>'>&nbsp;Add</td>
-		<td><input id = 'remove-group-<%= group.id %>-checkbox'  class = 'batch-group-checkbox' type = 'checkbox' data-type = 'remove' data-id = '<%= group.id %>'>&nbsp;Remove</td>
-	</tr>
-	<% end %>
-</table>
-
-
-<div class = 'btn btn-info' id = 'update-groups-btn'>Update Groups</div>
-<a href = '/go/delete_checked'>
-	<div class = 'btn btn-danger pull-right' id = 'delete-all-btn'>Delete All</div>
-</a>
-
-<% end %>
-
-
-</div><!-- end of right-div -->
-</div><!--end of col-->
+</div><!-- end of right column --> 
 
 </div> <!-- end of row -->
+
+
+<script>
+var groups = <%= raw(@groups.map{|x| [x.id, x.name]}) %>;
+var group_names = _.map(groups, function(x){ return x[1]});
+var group_id_dict = {};
+_.each(groups, function(x){
+	group_id_dict[x[1]] = x[0];
+})
+</script>
 
 
 <script type  ='text/javascript'>
@@ -131,3 +121,4 @@ var last_scroll_time = 0;
 </script>
 
 <%= javascript_include_tag 'go' %>
+<%= javascript_include_tag 'batch_typeahead' %>

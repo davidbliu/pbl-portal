@@ -34,15 +34,5 @@ Scenario: clicking checkboxes selects golinks
 
 Scenario: deselecting links works
 
-
-Scenario: editing groups changes their groups
-  Given I log in as "e1@gmail.com"
-  Given I am on the go_menu page
-  Given I check the box for "key1"
-  And I check the box for "key2"
-  And I visit the checked links page
-  And I check the box to "add" "g1"
-  And I check the box to "add" "g2"
-  And I click the id "update-groups-btn"
-
+Scenario: editing groups works
   

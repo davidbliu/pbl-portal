@@ -38,6 +38,10 @@ class GoController < ApplicationController
 		render json: GoLink.get_checked_ids(myEmail)
 	end
 
+	def ajax_get_checked
+		render json: GoLink.where('id in (?)', GoLink.get_checked_ids(myEmail)).to_json
+	end
+
 
 	def add_checked_id
 		ids = GoLink.add_checked_id(myEmail, params[:id])
@@ -78,6 +82,10 @@ class GoController < ApplicationController
 			@ajax_params = '?query='+params[:q].to_s
 			@search_term = params[:q]
 			@golinks = GoLink.email_search(params[:q], myEmail)
+		elsif params[:selected]
+			# @golinks = GoLink.order('created_at asc')
+			@golinks = GoLink.where('id in (?)', GoLink.get_checked_ids(myEmail))
+
 		else
 			@golinks = GoLink.list(myEmail)
 		end
@@ -121,7 +129,7 @@ class GoController < ApplicationController
 	def delete_checked
 		GoLink.checked_golinks(myEmail).destroy_all
 		GoLink.deselect_links(myEmail)
-		redirect_to '/go'
+		redirect_to '/go/menu'
 	end
 
 
@@ -193,20 +201,6 @@ class GoController < ApplicationController
 	def destroy
 		GoLink.find(params[:id]).destroy
 		render nothing: true, status: 200
-	end
-
- 
-
-	def batch_delete
-		ids = JSON.parse(params[:ids])
-		ids.each do |id|
-			GoLink.find(id).destroy
-		end
-		begin
-			redirect_to :back
-		rescue ActionController::RedirectBackError
-			redirect_to '/go/menu'
-		end
 	end
 
 	def batch_update_groups

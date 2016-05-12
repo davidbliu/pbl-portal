@@ -5,9 +5,8 @@
 	<tbody>
 		<% golinks.each do |golink| %>
 		<tr id = '<%= golink.id %>-tr' class = 'golink-row' data-id = '<%= golink.id %>'>
+			
 			<td>
-				<input type = 'checkbox' id = '<%= golink.id %>-checkbox'  class = 'golink-checkbox' data-id = '<%= golink.id %>' >
-				&nbsp;
 				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
 			</td>
 			<td class = 'mute-info'>
@@ -30,6 +29,9 @@
 			</td>
 			<td>
 				<img src = '<%= gravatar(golink.member_email) %>' class = 'gravatar-img'>
+			</td>
+			<td>
+				<input type = 'checkbox' id = '<%= golink.id %>-checkbox'  class = 'golink-checkbox' data-id = '<%= golink.id %>' >
 			</td>
 		</tr>
 		<% end %>

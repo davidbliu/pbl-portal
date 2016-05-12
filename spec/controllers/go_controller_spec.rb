@@ -91,7 +91,7 @@ RSpec.describe GoController, type: :controller do
 		it 'can batch delete links' do
 			get :deselect_links
 			post :add_checked_id, {id: @gl1.id}
-			get :batch_delete, {ids: "[#{@gl1.id}]"}
+			get :delete_checked
 			expect(GoLink.where(key: 'key1').length).to eq(0)
 		end
 	end

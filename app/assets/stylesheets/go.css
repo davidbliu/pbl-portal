@@ -1,4 +1,18 @@
-
+.show-card{
+	padding:10px;
+	padding-top:0px;
+}
+.groups-form{
+	display:none;
+}
+.groups-toggle:hover{
+	cursor:pointer;
+	opacity:0.5;
+}
+.groups-edit{
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+}
 td{
 	max-width:120px;
 	overflow:auto;
@@ -52,6 +66,8 @@ tr:hover{
 	right:0px;
 	width:400px;
 	background-color: #f2f2f2;
+	border-radius: 5px 0px 0px 5px;
+	border:1px solid rgba(0,0,0,0.1);
 	z-index:1000;
 	display:none;
 }
@@ -62,20 +78,59 @@ tr:hover{
 .right-td{
 	text-align: right;
 }
+
 .group-link{
 	color:black;
 }
+
 .small-group{
 	font-size:0.8em;
 	margin-bottom:0.2em;
 }
+
 .small-group-link{
 	color:#3c3c3c !important;
 }
+
 .group-link:hover{
 	color:#BFBFBF !important;
 }
+
 .true-group>a{
 	color:red !important;
 	text-decoration: underline;
 }
+
+.groups-typeahead{
+	width:100% !important;
+}
+.twitter-typeahead{
+	width:100%;
+}
+div.tt-menu.tt-open{
+	background-color: white !important;
+    padding: 10px !important;
+}
+
+#selected-groups{
+	color:gray;
+}
+.group-name-tag{
+	margin-left:2px;
+}
+.field-div{
+	padding:5px;
+}
+#groups-desc{
+	display:none;
+}
+.golink-card{
+	max-width: 500px;
+}
+.label.label-default{
+	opacity:0.5;
+}
+
+#batch-group-links{
+	display:none;
+	}

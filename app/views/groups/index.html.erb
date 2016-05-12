@@ -25,10 +25,11 @@
 				<% if group.is_open %>(open)<% end %>
 			</td>
 			<td>
-				<%= link_to 'Delete', "/groups/destroy/#{group.id}" %>
 				<%= link_to 'Links', "/go?group_id=#{group.id}" %>
 				<%= link_to 'Posts', "#" %>
 				<%= link_to 'Edit', "/groups/edit/#{group.id}" %>
+				<%= link_to 'Delete', "/groups/destroy/#{group.id}" %>
+
 			</td>
 		</tr>
 		<% end %>

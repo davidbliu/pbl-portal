@@ -73,7 +73,7 @@ function saveGoLink(id){
 			url: $('#url-input').val(),
 			description: $('#description-input').val(),
 			key: $('#key-input').val(),
-			groups: getGroupsChecked()
+			groups: getSelectedGroupIds()
 		},
 		success:function(data){
 			console.log('saved');

@@ -5,26 +5,39 @@
 	<%= form_tag "/groups/create" %>
 <% end %>
 
+<div class = 'field-input'>
 Name
 <%= text_field_tag 'name', @group.name, placeholder: 'Group Name', class: 'form-control' %>
+</div>
 
+<div class = 'field-input'>
 Description
 <%= text_area_tag 'description', @group.description, placeholder: 'Description', class: 'form-control' %>
+</div>
 
+
+<div class = 'field-input'>
 Members
 <%= text_area_tag 'emails', @group.group_members.pluck(:email).join(','), placeholder: 'Group Members Emails (comma separated)', class: 'form-control' %>
+</div>
 
+
+<div class = 'field-input'>
 Group Privacy (who can view links in the group)
 <select name = 'group_type' class = 'form-control'>
 	<option value = 'private' >Private: Group Members Only</option>
 	<option value = 'open' <%= @group.is_open ? "selected" : "" %>>Open</option>
 </select>
+</div>
+
+<div class = 'field-input'>
 <%= submit_tag 'Submit', class: 'btn btn-info' %>
 
 <% if @editing %>
-<a href = '<%= "/groups/destroy/#{@group.id}" %>'>
+<a class = 'pull-right' href = '<%= "/groups/destroy/#{@group.id}" %>'>
 	<div class = 'btn btn-danger'>
 		Destroy Group
 	</div>
 </a>
 <% end %>
+</div>

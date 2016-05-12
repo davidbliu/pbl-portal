@@ -1,0 +1,33 @@
+
+<!-- Modal -->
+<div class="modal fade" id="go-edit-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+   
+      <div class="modal-body">
+      	<h3>Editing <span id = 'batch-num'></span> links</h3>
+      	<div id = 'batch-selected'></div>
+      	<h3>Add or Remove Groups</h3>
+        <div class = 'field-input'>
+        	<div id = 'batch-selected-groups'></div>
+
+			<input id = 'batch-group-typeahead' type = 'text' class = 'form-control' placeholder = 'Batch Edit Groups'>
+			<div id = 'batch-group-links'>
+					<div class = 'btn btn-info' onclick = 'batchAddGroups()'>
+						Add to all selected links
+					</div>
+					<div class = 'btn btn-danger' onclick = 'batchRemoveGroups()'>
+						Remove from all selected links
+					</div>
+			</div>
+		</div>		
+		<h3>Danger!</h3>
+		<div class = 'field-input'>
+			<a href = '/go/delete_checked'>
+				<div class = 'btn btn-danger'>Destroy All</div>
+			</a>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>

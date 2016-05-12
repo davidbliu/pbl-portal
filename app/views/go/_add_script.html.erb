@@ -1,0 +1,14 @@
+<script>
+var golink_id = <%= raw(golink.id) %>;
+var groups = <%= raw(groups.map{|x| [x.id, x.name]}) %>;
+var group_names = _.map(groups, function(x){ return x[1]});
+var group_id_dict = {};
+_.each(groups, function(x){
+	group_id_dict[x[1]] = x[0];
+})
+<% if golink.groups.length != 0 %>
+	var selectedGroupNames = <%= raw(golink.groups.map{|x| x.name}) %>;
+<% else %>
+	var selectedGroupNames = [];
+<% end %>
+</script>

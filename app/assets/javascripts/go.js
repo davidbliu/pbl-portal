@@ -1,3 +1,4 @@
+
 function getCheckedGroups(type){
 	var ids = [];
 	$('.batch-group-checkbox').each(function(){
