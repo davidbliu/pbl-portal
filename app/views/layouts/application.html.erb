@@ -5,13 +5,9 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
-  <!-- <link rel = 'stylesheet' href = 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'> -->
 
   <!-- Latest compiled and minified CSS https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css -->
 <link rel="stylesheet" href="/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-<!-- Optional theme https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css-->
-<!-- <link rel="stylesheet" href="/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"> -->
 
 <!-- Latest compiled and minified JavaScript https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js-->
 <script src="/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
@@ -54,7 +50,9 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <img id = 'logo-img' src = '/logo-135.png' />
+      <a href = '/'>
+        <img id = 'logo-img' src = '/logo-135.png' />
+      </a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -62,11 +60,9 @@
       <ul class="nav navbar-nav">
         <li><a href="http://wd.berkeley-pbl.com/wiki">WIKI</a></li>
         <li><a href="/go/menu">PBL LINKS</a></li>
-        <!-- <li><a href="/feed/view">FEED</a></li> -->
         <li><a href="/tabling">TABLING</a></li>
         <li><a href="/points">POINTS</a></li>
         <li><a href="/blog">BLOG</a></li>
-        <!-- <li><a href="/flickr/go">GALLERY</a></li> -->
         <li><a href="/me">ME</a></li>
         <% if myEmail != nil and myEmail != '' %>
           <li><a href="/auth/logout">LOGOUT (<%= myEmail %>)</a></li>
