@@ -1,5 +1,6 @@
 class TablingSlot < ActiveRecord::Base
 	serialize :member_emails
+	has_many :tabling_slot_members
 
 	def time_string
 	  return TablingSlot.get_day(self.time) + ' at '+ TablingSlot.get_hour(self.time)
