@@ -87,6 +87,7 @@ class TablingController < ApplicationController
 		render nothing: true, status: 200
 	end
 
+	# Member confirms switch with another person
 	def confirm_switch
 		request = TablingSwitchRequest.find(params[:id])
 		TablingManager.switch_tabling(request.email1, request.email2)
