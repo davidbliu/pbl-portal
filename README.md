@@ -88,7 +88,7 @@ GoLink.unscoped.deleted # returns all deleted golinks
 
 #### Group
 
-main thing is Group.groups_by_email, which returns groups that this email is a part of. example `Group.groups_by_email('davidbliu@gmail.com') #=> [group1, group2]
+main thing is Group.groups_by_email, which returns groups that this email is a part of. example `Group.groups_by_email('davidbliu@gmail.com') #=> [group1, group2]`
 
 ## Reading list and related projects
 

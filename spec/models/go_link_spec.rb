@@ -13,21 +13,6 @@ RSpec.describe GoLink, type: :model do
 
 	end
 
-	it 'has Anyone as default group' do
-		expect(@g1.group_string).to eq("Anyone")
-	end
-
-	it 'can have single group' do 
-		@g1.groups << @gp1
-		expect(@g1.group_string).to eq("group1")
-	end
-
-	it 'can have multiple groups' do 
-		@g1.groups << @gp1
-		@g1.groups << @gp2
-		expect(@g1.group_string).to eq("group1, group2")
-	end
-
 	it 'anyone can view golinks with no groups' do
 		viewable = GoLink.list('m1@gmail.com')
 		expect(viewable.length).to eq(2)
@@ -50,11 +35,6 @@ RSpec.describe GoLink, type: :model do
 		@g1.update(member_email: 'm1@gmail.com')
 		@g1.groups << @gp2
 		expect(GoLink.list("m1@gmail.com").length).to eq(2)
-	end
-
-	it 'creates a copy with the link is deleted' do 
-		@g1.destroy
-		expect(GoLinkCopy.all.length).to eq(1)
 	end
 
 	it 'allows members to view go links in open groups' do

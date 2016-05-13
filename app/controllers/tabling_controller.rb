@@ -2,7 +2,7 @@ class TablingController < ApplicationController
 	before_filter :is_member
 	
 	def slots_available
-		@members = Member.current_members
+		@members = Member.active
 			.where.not(committee:'GM')
 			.order(:committee)
 

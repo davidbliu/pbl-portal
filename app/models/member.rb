@@ -1,31 +1,23 @@
 class Member < ActiveRecord::Base
+  scope :active, -> {where("is_active = true")}
   serialize :commitments
-  has_many :groups, primary_key: 'email', foreign_key: 'email'
-
-  def self.get_group(group)
-    group = group.downcase
-    if group == 'all'
-      return Member.current_members.where.not(committee:'GM')
-    elsif self.committees.include?(group.upcase)
-      return Member.current_members
-        .where(committee: group.upcase)
-    elsif group == 'officers'
-      return Member.current_members.where('position = ? OR position = ?',
-          'chair', 'exec')
-    elsif group == 'cms'
-      return Member.current_members.where('position = ?', 'cm')
-        .where.not(committee:'GM')
-    elsif group == 'execs'
-      return Member.current_members.where(committee:'EX')
-    end
-  end
 
   def self.officers
-    return self.get_group('officers')
+    return Member.active.where('position = ? OR position = ?',
+          'chair', 'exec')
   end
 
   def self.execs
-    return self.get_group('execs')
+    return Member.active.where(committee:'EX')
+  end
+
+  def self.cms
+    return Member.active.where('position = ?', 'cm')
+        .where.not(committee:'GM')
+  end
+
+  def self.chairs_and_cms
+    Member.active.where.not(committee: 'GM').order('committee asc')
   end
 
   def self.groups
@@ -89,59 +81,4 @@ class Member < ActiveRecord::Base
     Member.where(latest_semester: semester)
   end
 
-  def self.execs
-    self.current_members.where(position: 'exec')
-  end
-  def self.officers
-    self.current_members.where('position = ? OR position = ?',
-      'exec','chair')
-  end
-
-  def to_json
-    return {
-      email: self.email,
-      name: self.name,
-      position: self.position,
-      role:  self.role,
-      phone: self.phone,
-      latest_semester: self.latest_semester,
-      commitments: self.commitments
-    }
-  end
-
-  def self.check_csv
-    names = []
-    CSV.foreach("contact_sheets/sp16.csv") do |row|
-      member = Member.where(email: row[1]).first
-      if member == nil
-        names << row[0]
-      end
-    end
-    puts names
-  end
-
-  def self.sp16_import
-    Position.where(semester: 'Spring 2016').destroy_all
-    CSV.foreach("contact_sheets/sp16.csv") do |row|
-      member = Member.where(email: row[1]).first_or_create!
-      member.name = row[0]
-      member.latest_semester = "Spring 2016"
-      member.committee = row[2]
-      member.position = row[5].downcase
-      if row[3] and row[3] != ''
-        member.phone = row[3]
-      end
-      if row[4] and row[4] != ''
-        member.major = row[4]
-      end
-      member.save
-
-      # create a position for them
-      pos = Position.where(member_email: row[1], 
-        semester:'Spring 2016').first_or_create
-      pos.committee = member.committee
-      pos.position = member.position
-      pos.save
-    end
-  end
 end

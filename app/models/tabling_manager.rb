@@ -18,8 +18,8 @@ class TablingManager
 	end
 
 	def self.slot_availabilities
-		cms = Member.get_group('cms')
-		chairs = Member.get_group('officers')
+		cms = Member.cms
+		chairs = Member.officers
 		availabilities = {}
 		self.default_slots.each do |slot|
 			a_chairs = chairs.select{|x| x.get_commitments.include?(slot)}
@@ -35,18 +35,11 @@ class TablingManager
 
 	# generates a new tabling schedule and destroys old one
 	def self.gen_tabling
-		TablingSlot.destroy_all
+		TablingSlot.destroy_all #TODO: simply flag tabling slot as old
 		slots = self.default_slots
-
-		officers = Member.where(latest_semester: Semester.current_semester)
-			.where('position = ? OR  position = ?', 'chair', 'exec')
-			.where.not(committee: 'AC')
-			.to_a
-		cms = Member.where(latest_semester: Semester.current_semester)
-			.where('position = ? AND committee != ?',
-				'cm',
-				'GM')
-			.to_a
+		officers = Member.officers.where.not(committee: 'AC')
+		cms = Member.cms
+		# assign officers first, then cms to ensure load balancing among officers
 		officer_assignments = self.assign(officers, slots)
 		cm_assignments = self.assign(cms, slots, officer_assignments)
 		cm_assignments.keys.each do |slot|
@@ -69,10 +62,12 @@ class TablingManager
 		emails1 << email2
 		slot1.member_emails = emails1
 		slot2.member_emails = emails2
-		slot1.save
-		slot2.save
+		slot1.save!
+		slot2.save!
 	end
 
+	# Return assignment hash populated with members
+	# {1 => [m1, m2, m3], 2 => [m1, m2, m3]}
 	def self.assign(members, slots, assignments = {})
 		slots.each do |slot|
 			if not assignments.keys.include?(slot)
@@ -115,7 +110,7 @@ class TablingManager
 		valid_slots.each do |slot|
 			slot_members = assignments[slot]
 			slot_size = slot_members.length
-			if self.starting_slots.include?(slot)
+			if @@starting_slots.include?(slot)
 				slot_size -=1 
 			end
 			if slot_size < min_fill

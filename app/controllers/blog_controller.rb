@@ -23,7 +23,7 @@ class BlogController < ApplicationController
 		
 		@email_hash = Member.email_hash
 		@post_id = params[:post_id]
-
+		@comments = PostComment.order('created_at desc').where('post_id in (?)', Post.can_view(myEmail)).all #TODO permissions
 		# save it in clicks
 		Thread.new{
 			GoLinkClick.create(

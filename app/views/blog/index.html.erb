@@ -2,43 +2,57 @@
 <%= stylesheet_link_tag 'flickr_pagination' %>
 <%= render partial: 'show_modal' %>
 
-<a href = '/blog/edit'>
-	<div class = 'btn btn-info'>Add New Post</div>
-</a>
 
 
-<div id = 'top-stuff' class = 'centered'>
-	<% if @list %>
-		<a href = '/blog'>Grid View</a>
-	<% else %>
-		<a href = '/blog?view=list'>List View</a>
-	<% end %>
+<div class = 'col-md-8'>
+	<div id = 'title-box' class = 'centered'>
+		<a href = '/blog/edit' class = 'pull-left'>Add New Post</a>
+		<h1 class = 'centered'>PBL Blog</h1>
+			
+		<% if @list %>
+			<a href = '/blog'>Grid View</a>
+		<% else %>
+			<a href = '/blog?view=list'>List View</a>
+		<% end %>
 		<input type = 'text' class = 'form-control' id = 'search-input' placeholder = 'Search' value = '<%= @query %>'>
+		
+	</div>
+
+
 	<div class="flickr_pagination">
 		<%= will_paginate @posts, :container => false, :params => params.merge({:post_id => nil})  %>
 	</div>
+
+	<% if @list %>
+		<table class = 'table table-condensed table-hover'>
+			<thead>
+				<th>Date</th>
+				<th>Title</th>
+				<th>Author</th>
+				<th>Groups</th>
+			</thead>
+			<tbody id = 'post-area'>
+				<%= render partial: 'blog/list', locals:{posts: @posts} %>
+			</tbody>
+		</table>
+	<% else %>
+		<div id = 'post-area'>
+		<%= render partial: 'blog/grid', locals:{posts: @posts, email_hash: @email_hash} %>
+		</div>
+	<% end %>
 </div>
 
-
-
-<% if @list %>
-<table class = 'table table-condensed table-hover'>
-	<thead>
-		<th>Date</th>
-		<th>Title</th>
-		<th>Author</th>
-		<th>Groups</th>
-	</thead>
-	<tbody id = 'post-area'>
-		<%= render partial: 'blog/list', locals:{posts: @posts} %>
-	</tbody>
-</table>
-<% else %>
-<div id = 'post-area'>
-<%= render partial: 'blog/grid', locals:{posts: @posts, email_hash: @email_hash} %>
+<div class = 'col-md-4'>
+	<h3>Recent Comments</h3>
+	<% @comments.each do |comment| %>
+	<div class = 'comment-div' onclick = 'showPostModal(<%= comment.post_id %>)'>
+		<div class = 'text-muted smalltext'>
+			<%= comment.member_email %> at <%= hour_string(comment.created_at) %>
+		</div>
+		<%= comment.content %>
+	</div>
+	<% end %>
 </div>
-<% end %>
-
 
 <script type = 'text/javascript'>
 	var page = <%= @page %>;

@@ -20,6 +20,13 @@ RSpec.describe GoController, type: :controller do
 		@group2 = Group.create(creator: @email1, name: 'group2', is_open: true)
 	end
 
+	describe 'groups' do
+		it 'has Anyone as default group string' do
+			get :index
+			expect(response.body).to include('Anyone')
+		end
+	end
+
 	describe 'adding' do
 		it 'can add links from home page with search' do
 			url = "http://random_url.com"

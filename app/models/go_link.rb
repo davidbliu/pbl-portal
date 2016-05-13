@@ -2,7 +2,6 @@ require 'elasticsearch/model'
 class GoLink < ActiveRecord::Base
 	default_scope {where("is_deleted = false")}
 	scope :deleted, -> {where("is_deleted = true")}
-	before_destroy :create_copy
 	has_many :go_link_groups, dependent: :destroy
 	has_many :groups, :through => :go_link_groups	
 	include Elasticsearch::Model
@@ -56,36 +55,12 @@ class GoLink < ActiveRecord::Base
 		return ids.uniq
 	end
 
- 	# creates copy of link (see GoLinkCopy)
-	def create_copy
-		if self.key.present? and self.url.present?
-			copy = GoLinkCopy.create(
-				key: self.key,
-				url: self.url,
-				member_email: self.member_email,
-				description: self.description,
-				golink_id: self.id)
-			gps = self.groups
-			gps.each do |gp|
-				copy.groups << gp
-			end
-		end
-	end
-
 	# queries for golinks that match key which this email can view
 	# 	GoLink.handle_redirect('mission', 'davidbliu@gmail.com') # => []
 	def self.handle_redirect(key, email)
 		viewable = GoLink.viewable_ids(email)		
 		where = GoLink.where(key: key).where('id in (?)', viewable)
 		return where
-	end
-
-	def group_string
-		if groups.length > 0
-			return groups.pluck(:name).join(', ')
-		else
-			return 'Anyone'
-		end
 	end
 
 	def log_click(email)

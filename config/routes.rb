@@ -16,7 +16,6 @@ Rails.application.routes.draw do
 
   # get and set member data
   get 'me' => 'members#me'
-  get 'officer' => 'members#officer'
   get 'members' => 'members#index'
   post 'me/update' => 'members#update'
   post 'me/update_commitments' => 'members#update_commitments'
