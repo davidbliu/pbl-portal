@@ -2,12 +2,13 @@ class GoController < ApplicationController
 	skip_before_filter :verify_authenticity_token, only: [:add_checked_id, :get_checked_ids, :remove_checked_id, :test]
 	before_filter :is_search
 	skip_before_filter :is_signed_in #, only: [:redirect]
-
 	def is_search
 		if params[:q] and request.path != '/go'
 			redirect_to controller:'go', action:'index', q: params[:q]
 		end
 	end
+
+
 
 	def redirect
 		where = GoLink.handle_redirect(params[:key], myEmail)
@@ -126,7 +127,7 @@ class GoController < ApplicationController
 
 
 	def delete_checked
-		GoLink.checked_golinks(myEmail).destroy_all
+		GoLink.checked_golinks(myEmail).each{|x| x.hide}
 		GoLink.deselect_links(myEmail)
 		redirect_to '/go/menu'
 	end
@@ -198,7 +199,8 @@ class GoController < ApplicationController
 	end
 
 	def destroy
-		GoLink.find(params[:id]).destroy
+		GoLink.find(params[:id]).hide
+		GoLink.remove_checked_id(myEmail, params[:id])
 		render nothing: true, status: 200
 	end
 
@@ -211,6 +213,21 @@ class GoController < ApplicationController
 			golink.groups = golink.groups.select{|x| remove_ids.exclude?(x.id)}
 			golink.groups = golink.groups.uniq
 		end
+		render nothing: true, status: 200
+	end
+
+	#
+	# copy of golinks
+	#
+	def trash 
+		@golinks = GoLink.deleted_list(myEmail)
+	end
+	def restore
+		GoLink.unscoped.find(params[:id]).update(is_deleted: false)
+		render nothing: true, status: 200
+	end
+	def destroy_copy
+		GoLink.unscoped.find(params[:id]).destroy
 		render nothing: true, status: 200
 	end
 	

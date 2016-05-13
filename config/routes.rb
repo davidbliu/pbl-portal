@@ -45,9 +45,9 @@ Rails.application.routes.draw do
   get 'go/get_checked_ids' => 'go#get_checked_ids'
   get 'go/ajax_get_checked' => 'go#ajax_get_checked'
   get 'go/deselect_links' => 'go#deselect_links'
-  get 'go/trash' => 'go_copy#trash'
-  get 'go/restore_copy/:id' => 'go_copy#restore'
-  get 'go/destroy_copy/:id' => 'go_copy#destroy'
+  get 'go/trash' => 'go#trash'
+  post 'go/restore/:id' => 'go#restore'
+  post 'go/destroy_copy/:id' => 'go#destroy_copy'
 
   get 'go/delete_checked' => 'go#delete_checked'
   get 'go/preferences' => 'go#preferences'

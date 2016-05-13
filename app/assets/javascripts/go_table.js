@@ -58,8 +58,20 @@ function destroyGoLink(id){
 		success:function(data){
 			$('#'+id+'-tr').remove();
 			hideGolinkInfo();
+			pullCheckedIds();
+
 		}
 	})
+}
+
+function pullCheckedIds(){
+	$.ajax({
+		url:'/go/get_checked_ids',
+		type:'get',
+		success:function(data){
+			renderCheckedIds(data);
+		}
+	});
 }
 $(document).ready(function(){
 
@@ -76,8 +88,6 @@ $(document).ready(function(){
 			}
 		});
 	})
-
-
 	$('.golink-row').click(function(){
 		if($(this).hasClass('highlighted')){
 			url = '/go/remove_checked_id';
@@ -103,13 +113,7 @@ $(document).ready(function(){
 	});
 
 	// get checked ids and render them on page
-	$.ajax({
-		url:'/go/get_checked_ids',
-		type:'get',
-		success:function(data){
-			renderCheckedIds(data);
-		}
-	});
+	pullCheckedIds();
 
 	$('#close-info-btn').click(function(){
 		hideGolinkInfo();

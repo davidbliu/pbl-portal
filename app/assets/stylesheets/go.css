@@ -14,7 +14,7 @@
 	margin-bottom:0.5em;
 }
 td{
-	max-width:120px;
+	/*max-width:120px;*/
 	overflow:auto;
 }
 tr:hover{
@@ -109,7 +109,7 @@ tr:hover{
 }
 div.tt-menu.tt-open{
 	background-color: white !important;
-    padding: 10px !important;
+	padding: 10px !important;
 }
 
 #selected-groups{
@@ -127,6 +127,7 @@ div.tt-menu.tt-open{
 .golink-card{
 	max-width: 500px;
 }
+
 .label.label-default{
 	opacity:0.5;
 }
@@ -140,4 +141,10 @@ div.tt-menu.tt-open{
 }
 .edit-link{
 	display:none;
+}
+.gravatar-td img{
+	float:right;
+}
+.key-td{
+	min-width:120px;
 }

@@ -48,7 +48,7 @@ these are the models/files you should look at for each of the corresponding feat
 
 __Pablo (IGNORE THESE):__ Boba, BotMember, DefaultMessage, FBMessage, Pokemon, Pablo, Topic
 
-__PBL Links:__ GoLink, GoLinkClick, GoLinkCopy, GoLinkCopyGroup, GoLinkGroup, Group, GroupMember
+__PBL Links:__ GoLink, GoLinkClick, GoLinkGroup, Group, GroupMember
 
 __Blog:__ Post, Group, GroupMember
 
@@ -59,6 +59,36 @@ __Tabling:__ TablingSlot, TablingSwitchRequest, TablingManager
 __Points:__ Event, Member
 
 __Misc:__ Member, Semester, Position
+
+### PBL Links
+
+The main models involved are GoLink, Group, GoLinkGroup, GroupMember, and GoLinkClick
+
+GoLinks have key, url, description, member_email
+
+GoLinks belong to Groups through the join table GoLinkGroup
+
+Groups have many GroupMembers, and a GroupMember is just an email that belongs to some group_id
+
+#### GoLink
+
+fields: key, url, description, member_email, is_deleted
+
+is_deleted is used for undo-ing deletion of links. The first time a user deletes a link, we set the link's is_deleted flag to true but dont actually delete the link from the DB. When the user confirms that he/she wants the link gone, we delete the link from the db.
+
+notice that the default_scope filters out the is_deleted golinks. 
+
+```ruby
+GoLink.all # by default returns links with is_deleted = false
+
+GoLink.unscoped.all # returns all golinks, even deleted
+
+GoLink.unscoped.deleted # returns all deleted golinks
+```
+
+#### Group
+
+main thing is Group.groups_by_email, which returns groups that this email is a part of. example `Group.groups_by_email('davidbliu@gmail.com') #=> [group1, group2]
 
 ## Reading list and related projects
 

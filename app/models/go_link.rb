@@ -1,5 +1,7 @@
 require 'elasticsearch/model'
 class GoLink < ActiveRecord::Base
+	default_scope {where("is_deleted = false")}
+	scope :deleted, -> {where("is_deleted = true")}
 	before_destroy :create_copy
 	has_many :go_link_groups, dependent: :destroy
 	has_many :groups, :through => :go_link_groups	
@@ -8,6 +10,11 @@ class GoLink < ActiveRecord::Base
 	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
 	@@per_page = 25
+
+	def hide
+		self.is_deleted = true
+		self.save!
+	end
 	
 	# Hard coded list of admin emails... 	
 	def self.admin_emails
@@ -23,6 +30,16 @@ class GoLink < ActiveRecord::Base
 		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
 		gids += Group.where(is_open: true).pluck(:id)
 		golinks = GoLink.order('created_at desc').where('member_email = ? OR id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups) OR id in (?)', email, GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id))
+		return golinks
+	end
+
+	def self.deleted_list(email)
+		if GoLink.admin_emails.include?(email)
+			return GoLink.unscoped.deleted.order('created_at desc')
+		end
+		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
+		gids += Group.where(is_open: true).pluck(:id)
+		golinks = GoLink.unscoped.deleted.order('created_at desc').where('member_email = ? OR id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups) OR id in (?)', email, GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id))
 		return golinks
 	end
 

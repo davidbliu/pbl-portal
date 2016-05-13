@@ -11,6 +11,7 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 Rails.application.config.assets.precompile += %w( go.css )
 Rails.application.config.assets.precompile += %w( go.js )
+Rails.application.config.assets.precompile += %w( go_trash.js )
 Rails.application.config.assets.precompile += %w( batch_typeahead.js )
 Rails.application.config.assets.precompile += %w( go_add.js )
 Rails.application.config.assets.precompile += %w( go_table.js )

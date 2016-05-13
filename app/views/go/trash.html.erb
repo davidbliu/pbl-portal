@@ -1,0 +1,26 @@
+
+
+<h1>Deleted Links</h1>
+<table class = 'table table-condensed table-hover'>
+	<% @golinks.each do |golink| %>
+	<tr id = '<%= golink.id %>-row'>
+		<td>
+			<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
+			<%= link_to golink.key, golink.url %>
+		</td>
+		<td>
+			<%= golink.description %>
+		</td>
+		<td>
+			To: <%= group_string(golink.groups) %>
+		</td>
+		<td><%= date_string(golink.created_at) %></td>
+		<td>
+			<a href='javascript:void(0)' onclick = 'restoreGoLink(<%= golink.id %>)'>Restore</a>
+			<a href='javascript:void(0)' onclick = 'deleteGoLink(<%= golink.id %>)'>Delete</a>
+		</td>
+	</tr>
+	<% end %>
+</table>
+
+<%= javascript_include_tag 'go_trash' %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160512192109) do
+ActiveRecord::Schema.define(version: 20160513083700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,23 +66,6 @@ ActiveRecord::Schema.define(version: 20160512192109) do
     t.datetime "updated_at",   null: false
   end
 
-  create_table "go_link_copies", force: :cascade do |t|
-    t.string   "key"
-    t.string   "member_email"
-    t.string   "description"
-    t.string   "url"
-    t.integer  "golink_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-  end
-
-  create_table "go_link_copy_groups", force: :cascade do |t|
-    t.integer  "go_link_copy_id"
-    t.integer  "group_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-  end
-
   create_table "go_link_groups", force: :cascade do |t|
     t.integer  "group_id"
     t.integer  "go_link_id"
@@ -99,9 +82,10 @@ ActiveRecord::Schema.define(version: 20160512192109) do
     t.integer  "num_clicks"
     t.datetime "timestamp"
     t.string   "permissions"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.string   "semester"
+    t.boolean  "is_deleted",   default: false, null: false
   end
 
   create_table "group_members", force: :cascade do |t|
