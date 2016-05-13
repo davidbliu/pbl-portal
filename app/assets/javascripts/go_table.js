@@ -1,23 +1,15 @@
+// Stuff in this file gets run on every ajax load
 
-var checkedIds = [];
-function getCheckedIds(){
-	var checked = [];
-	$('.golink-checkbox').each(function(){
-		if($(this).is(':checked')){
-			checked.push($(this).attr('data-id'));
-		}
-	});
-	return checked;
-}
 function renderCheckedIds(ids){
-	$('.golink-checkbox').each(function(){
+	$('.highlighted').each(function(){
+		$(this).removeClass('highlighted');
+	})
+	$('.golink-row').each(function(){
 		if(_.contains(ids, $(this).attr('data-id'))){
-			$(this).prop('checked', true);
+			$(this).addClass('highlighted');
 		}
-		else{
-			$(this).prop('checked', false);
-		}
-	});
+	})
+	// update words and div on pages
 	if(ids.length > 0){
 		$('#checked-div').show();
 	}
@@ -32,36 +24,9 @@ function showGolinkInfo(data){
 	$("#golink-info-container").html(data);
 	$('#golink-info-outer').show(150);
 }
+
 function hideGolinkInfo(data){
 	$('#golink-info-outer').hide(150);
-}
-function activateGolinkCheckbox(){
-	$('.golink-checkbox').click(function(){
-		var route = '/go/remove_checked_id';
-		if($(this).is(':checked')){
-			route = '/go/add_checked_id';
-		}
-		$.ajax({
-			url: route, 
-			type:'post',
-			data:{
-				id: $(this).attr('data-id')
-			},
-			success:function(data){
-				renderCheckedIds(data);
-			}
-		});
-	});	
-}
-
-function getGroupsChecked(){
-	var checked = [];
-	$('.group-checkbox').each(function(){
-		if($(this).is(':checked')){
-			checked.push($(this).attr('data-key'));
-		}
-	});
-	return checked;
 }
 
 function saveGoLink(id){
@@ -76,7 +41,6 @@ function saveGoLink(id){
 			groups: getSelectedGroupIds()
 		},
 		success:function(data){
-			console.log('saved');
 			$('#'+id+'-key').text(data.key);
 			$('#'+id+'-key').attr('href', data.url);
 			$('#'+id+'-description').text(data.description);
@@ -99,38 +63,64 @@ function destroyGoLink(id){
 }
 $(document).ready(function(){
 
-$.ajax({
-	url:'/go/get_checked_ids',
-	type:'get',
-	success:function(data){
-		renderCheckedIds(data);
-	}
-});
-activateGolinkCheckbox();
-$('#close-info-btn').click(function(){
-	hideGolinkInfo();
-})
-$('.golink-row').click(function(event){
-	hideGolinkInfo();
-	if($(event.target).hasClass('golink-checkbox') || 
-		$(event.target).hasClass('mute-info')){
-		return;
-	}
+	$('.mute-info').click(function(e){
+		e.stopPropagation();
+	})
+	$('.edit-link').click(function(e){
+		e.stopPropagation();
+		$.ajax({
+			url: '/go/show/'+$(this).attr('data-id'),
+			type:'get',
+			success:function(data){
+				showGolinkInfo(data);
+			}
+		});
+	})
+
+
+	$('.golink-row').click(function(){
+		if($(this).hasClass('highlighted')){
+			url = '/go/remove_checked_id';
+		}
+		else{
+			url = '/go/add_checked_id';
+		}
+		$.ajax({
+			url: url,
+			type: 'post',
+			data: {id: $(this).attr('data-id')},
+			success:function(data){
+				renderCheckedIds(data);
+			}
+		})
+	});
+
+	$('.golink-row').hover(function(){
+		$('.edit-link').each(function(){
+			$(this).hide();
+		})
+		$(this).find('.edit-link').show();
+	});
+
+	// get checked ids and render them on page
 	$.ajax({
-		url:'/go/show/'+$(this).attr('data-id'),
+		url:'/go/get_checked_ids',
 		type:'get',
-		success: function(data){
-			showGolinkInfo(data);
+		success:function(data){
+			renderCheckedIds(data);
 		}
 	});
-});
 
+	$('#close-info-btn').click(function(){
+		hideGolinkInfo();
+	})
 
-$('html').click(function(){
-	hideGolinkInfo();
-});
-$('#golink-info-outer').click(function(event){
-	event.stopPropagation();
-})
+	$('html').click(function(){
+		hideGolinkInfo();
+	});
+
+	$('#golink-info-outer').click(function(event){
+		event.stopPropagation();
+	})
 
 });

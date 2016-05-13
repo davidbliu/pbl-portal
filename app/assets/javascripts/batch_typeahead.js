@@ -18,7 +18,7 @@ function updateSelectedGroupsTag(tag_selector){
 	_.each(batchSelectedGroupNames, function(name){
 		div = $("<div class = 'label label-default batch-group-name-tag'></div>");
 		$(div).text(name);
-		$(tag_selector).append(div);
+		$(tag_selector).prepend(div);
 	});
 	$('.batch-group-name-tag').click(function(){
 		name = $(this).text();

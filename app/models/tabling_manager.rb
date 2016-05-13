@@ -4,6 +4,8 @@ class TablingManager
 		['davidbliu@gmail.com', 'harukoayabe@gmail.com']
 	end
 
+	@@starting_slots = (0..4).map{|x| 10+24*x}
+	# default times for each week (monday - friday 9-1)
 	def self.default_slots
 		slots = []
 		interval = 3
@@ -13,10 +15,6 @@ class TablingManager
 			slots << (start..end_time).to_a
 		end
 		slots = slots.flatten()
-	end
-
-	def self.starting_slots
-		(0..4).map{|x| 10+24*x}
 	end
 
 	def self.slot_availabilities
@@ -32,17 +30,6 @@ class TablingManager
 			}
 		end
 		return availabilities
-	end
-
-	# initialize every member with a random set of commitments
-	def self.random_init
-		slots = self.default_slots
-		Member.all.each do |member|
-			if member.commitments == nil
-				member.commitments = slots.sample(5)
-				member.save
-			end
-		end
 	end
 
 

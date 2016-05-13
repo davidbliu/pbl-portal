@@ -134,3 +134,10 @@ div.tt-menu.tt-open{
 #batch-group-links{
 	display:none;
 	}
+
+.highlighted{
+	background-color:rgba(239, 0, 255, 0.05);
+}
+.edit-link{
+	display:block;
+}

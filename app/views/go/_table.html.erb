@@ -1,6 +1,6 @@
 <%= javascript_include_tag 'go_table' %>
 
-<table class = 'table table-condensed table-hover'>
+<table class = 'table table-condensed'>
 	
 	<tbody>
 		<% golinks.each do |golink| %>
@@ -9,30 +9,34 @@
 			<td>
 				<img src = 'http://www.google.com/s2/favicons?domain=<%= golink.url %>'>
 			</td>
+			<!-- mute info stops the editing popup from showing --> 
 			<td class = 'mute-info'>
 				<a class = 'mute-info' href = '<%= golink.url %>' id = '<%= golink.id %>-key'>
 					<%= golink.key %>
 				</a>
+				<a href = 'javascript:void(0)' class = 'edit-link pull-right' data-id = '<%= golink.id %>'>Edit</a>
 			</td>
 			<td id = '<%= golink.id %>-description'>
 				<%= golink.description %>
 			</td>
 			
 			<td class = 'right-td'>
-				<div class = 'text-muted smalltext'><%= get_name(golink.member_email) %></div>
-				<div class = 'text-muted smalltext' id = '<%= golink.id %>-group_string'>
-					To: <%= group_string(golink.groups) %>
-				</div>
 				<div class = 'text-muted smalltext'>
 					<%= date_string(golink.created_at) %>
 				</div>
+				<div class = 'text-muted smalltext'><%= get_name(golink.member_email) %>
+				</div>
+				<div class = 'text-muted smalltext' id = '<%= golink.id %>-group_string'>
+					<%= group_string(golink.groups) %>
+				</div>
+				
 			</td>
 			<td>
 				<img src = '<%= gravatar(golink.member_email) %>' class = 'gravatar-img'>
 			</td>
-			<td>
+	<!-- 		<td>
 				<input type = 'checkbox' id = '<%= golink.id %>-checkbox'  class = 'golink-checkbox' data-id = '<%= golink.id %>' >
-			</td>
+			</td> -->
 		</tr>
 		<% end %>
 	</tbody>

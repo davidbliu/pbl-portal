@@ -97,12 +97,6 @@ class Member < ActiveRecord::Base
       'exec','chair')
   end
 
-  def self.default_commitments
-    default_com = Array.new(168)
-    168.times{|i| default_com[i] = 0}
-    return default_com
-  end
-
   def to_json
     return {
       email: self.email,
@@ -125,6 +119,7 @@ class Member < ActiveRecord::Base
     end
     puts names
   end
+
   def self.sp16_import
     Position.where(semester: 'Spring 2016').destroy_all
     CSV.foreach("contact_sheets/sp16.csv") do |row|
@@ -148,11 +143,5 @@ class Member < ActiveRecord::Base
       pos.position = member.position
       pos.save
     end
-
-
-  end
-
-  def groups
-    Group.groups_by_email(self.email)
   end
 end

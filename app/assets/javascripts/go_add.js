@@ -20,7 +20,7 @@ function updateSelectedGroupsTag(tag_selector){
 	_.each(selectedGroupNames, function(name){
 		div = $("<div class = 'label label-default group-name-tag'></div>");
 		$(div).text(name);
-		$(tag_selector).append(div);
+		$(tag_selector).prepend(div);
 	});
 	$('.group-name-tag').click(function(){
 		console.log('clicked');
