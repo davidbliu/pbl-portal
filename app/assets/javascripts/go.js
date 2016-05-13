@@ -38,7 +38,13 @@ $(document).ready(function(){
 	$('#search-input').keypress(function(e) {
 	    if(e.which == 13) {
 	    	searchTerm = $(this).val();
-	    	window.location = '?q='+searchTerm;
+	    	if(group_id == -1){
+	    		window.location = '?q='+searchTerm;
+	    	}
+	    	else{
+	    		window.location = '?group_id='+group_id+'&q='+searchTerm;
+	    	}
+	    	
 	    }
 	});
 

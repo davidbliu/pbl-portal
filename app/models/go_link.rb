@@ -4,34 +4,40 @@ class GoLink < ActiveRecord::Base
 	has_many :go_link_groups, dependent: :destroy
 	has_many :groups, :through => :go_link_groups	
 	include Elasticsearch::Model
- 	include Elasticsearch::Model::Callbacks
- 	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
+	include Elasticsearch::Model::Callbacks
+	GoLink.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
- 	@@per_page = 25
- 	
- 	# returns an list of golinks this email can view sorted by recently created first
- 	def self.list(email)
- 		if GoLink.admin_emails.include?(email)
- 			return GoLink.order('created_at desc')
- 		end
- 		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
- 		gids += Group.where(is_open: true).pluck(:id)
- 		golinks = GoLink.order('created_at desc').where('member_email = ? OR id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups) OR id in (?)', email, GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id))
- 		return golinks
- 	end
+	@@per_page = 25
+	
+	# Hard coded list of admin emails... 	
+	def self.admin_emails
+		['davidbliu@gmail.com']
+	end
 
- 	# returns list of golink ids of links this email can view
- 	def self.viewable_ids(email)
- 		if GoLink.admin_emails.include?(email)
- 			return GoLink.all.pluck(:id)
- 		end
- 		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
- 		gids += Group.where(is_open: true).pluck(:id)
- 		ids = GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id)
- 		ids += GoLink.where(member_email: email).pluck(:id)
- 		ids += GoLink.where('id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups)').pluck(:id) 
- 		return ids.uniq
- 	end
+	# returns an list of golinks this email can view sorted by recently created first
+	#   GoLink.list('davidbliu@gmail.com') # => ActiveRecordRelation []
+	def self.list(email)
+		if GoLink.admin_emails.include?(email)
+			return GoLink.order('created_at desc')
+		end
+		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
+		gids += Group.where(is_open: true).pluck(:id)
+		golinks = GoLink.order('created_at desc').where('member_email = ? OR id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups) OR id in (?)', email, GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id))
+		return golinks
+	end
+
+	# returns list of golink ids of links this email can view
+	def self.viewable_ids(email)
+		if GoLink.admin_emails.include?(email)
+			return GoLink.all.pluck(:id)
+		end
+		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
+		gids += Group.where(is_open: true).pluck(:id)
+		ids = GoLinkGroup.where('group_id in (?)', gids).pluck(:go_link_id)
+		ids += GoLink.where(member_email: email).pluck(:id)
+		ids += GoLink.where('id NOT IN (SELECT DISTINCT(go_link_id) FROM go_link_groups)').pluck(:id) 
+		return ids.uniq
+	end
 
  	# creates copy of link (see GoLinkCopy)
 	def create_copy
@@ -49,14 +55,12 @@ class GoLink < ActiveRecord::Base
 		end
 	end
 
+	# queries for golinks that match key which this email can view
+	# 	GoLink.handle_redirect('mission', 'davidbliu@gmail.com') # => []
 	def self.handle_redirect(key, email)
 		viewable = GoLink.viewable_ids(email)		
 		where = GoLink.where(key: key).where('id in (?)', viewable)
 		return where
-	end
-
-	def self.admin_emails
-		['davidbliu@gmail.com']
 	end
 
 	def group_string
@@ -65,14 +69,6 @@ class GoLink < ActiveRecord::Base
 		else
 			return 'Anyone'
 		end
-	end
-	
-	def time_string
-		self.created_at.strftime('%m-%d-%Y')
-	end
-
-	def get_num_clicks
-		self.num_clicks ? self.num_clicks : 0
 	end
 
 	def log_click(email)
@@ -104,17 +100,17 @@ class GoLink < ActiveRecord::Base
 		matches = direct_matches + indirect_matches
 		matches = matches.uniq{|x| x.id}
 		return matches
-  	end
+	end
 
   	# returns list of golinks
-  	def self.email_search(search_term, email)
-  		search = self.default_search(search_term)
-  		viewable = self.viewable_ids(email)
-  		return GoLink.where('id in (?)', search & viewable)
-  		return golinks
-  	end
+	def self.email_search(search_term, email)
+		search = self.default_search(search_term)
+		viewable = self.viewable_ids(email)
+		return GoLink.where('id in (?)', search & viewable)
+		return golinks
+	end
 
-  	# returns list of ids
+	# returns list of ids
 	def self.default_search(search_term)
 		q = {
 			multi_match: {
@@ -129,9 +125,11 @@ class GoLink < ActiveRecord::Base
 	end
 
 	#
-	# batch checking
+	# Batch checking/unchecking methods
 	#
 
+	# Return ids of golinks this member has checked
+	# 	GoLink.get_checked_ids('davidbliu@gmail.com') # => [1,2,3]
 	def self.get_checked_ids(email)
 		Rails.cache.fetch("#{email}-checked") do 
 			[]

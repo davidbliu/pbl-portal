@@ -5,8 +5,8 @@ class Post < ActiveRecord::Base
 	has_many :post_comments
 
 	include Elasticsearch::Model
- 	include Elasticsearch::Model::Callbacks
- 	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
+	include Elasticsearch::Model::Callbacks
+	Post.__elasticsearch__.client = Elasticsearch::Client.new host: ENV['ELASTICSEARCH_HOST']
 
 	def self.email_search(email, search_term)
 		q = {
@@ -26,6 +26,7 @@ class Post < ActiveRecord::Base
 	end
 
 	# returns ids of posts this email can view
+	# 	Post.can_view("davidbliu@gmail.com") # => [1,2,3]
 	def self.can_view(email)
 		gids = GroupMember.where(email: email).where.not(group_id: nil).pluck(:group_id)
 		gids += Group.where(is_open: true).pluck(:id)
@@ -54,10 +55,7 @@ class Post < ActiveRecord::Base
 		['CMs_and_Officers', 'Execs', 'Officers', 'CMs', 'GMs']
 	end
 
-	def time_string
-		self.created_at.strftime('%m-%d-%Y')
-	end
-
+	# returns a list of Members who should receive push notifications for this post
 	def push_list
 		if self.groups.length == 0
 			return Member.all

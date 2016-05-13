@@ -53,54 +53,53 @@ class GoController < ApplicationController
 		render json: ids
 	end
 
-	def checked_links
-		@golinks = GoLink.where('id in (?)', GoLink.get_checked_ids(myEmail))
-		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
-		@groups = Group.groups_by_email(myEmail)
-		@batch_editing = true
-		@group = Group.new(name: 'Batch Edit Links')
-		render :index
-	end
-
 	def deselect_links
 		GoLink.deselect_links(myEmail)
 		redirect_to "/go/menu"
 	end
 
 	def index
-		if params[:group_id]
+		if params[:q].present? and params[:q].include?('http://')
+			redirected = true
+			redirect_to controller: 'go', action: 'add', url: params[:q]
+		elsif params[:group_id] and params[:q]
+			@search_term = params[:q]
+			@group = Group.find(params[:group_id])
+			@ajax_params = "?group_id=#{params[:group_id]}&query=#{params[:q]}"
+			group_ids = @group.go_links.pluck(:id)
+			@golinks = GoLink.email_search(params[:q], myEmail).where('id in (?)', group_ids)
+		elsif params[:group_id]
 			@group = Group.find(params[:group_id])
 			@group_editing = true
 			viewable = GoLink.viewable_ids(myEmail)
-			@ajax_params = '?group_id='+params[:group_id].to_s
+			@ajax_params = "?group_id=#{params[:group_id]}"
 			@golinks = @group.go_links.order('created_at desc').where('go_links.id in (?)', viewable)
 		elsif params[:q]
-			if params[:q].include?('http://') or params[:q].include?('https://')
-				redirected = true
-				redirect_to controller: 'go', action: 'add', url: params[:q]
-			end
-			@ajax_params = '?query='+params[:q].to_s
+			@ajax_params = "?query=#{params[:q]}"
 			@search_term = params[:q]
 			@golinks = GoLink.email_search(params[:q], myEmail)
 		elsif params[:selected]
-			# @golinks = GoLink.order('created_at asc')
-			@golinks = GoLink.where('id in (?)', GoLink.get_checked_ids(myEmail))
-
+			@golinks = GoLink.order('created_at desc').where('id in (?)', GoLink.get_checked_ids(myEmail))
 		else
 			@golinks = GoLink.list(myEmail)
 		end
-		@groups = Group.groups_by_email(myEmail)
 		
-		@page = params[:page] ? params[:page].to_i : 1
-		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
-		@golinks = @golinks.includes(:groups)
 		if not redirected
+			@groups = Group.groups_by_email(myEmail)
+			@page = params[:page] ? params[:page].to_i : 1
+			@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
+			@golinks = @golinks.includes(:groups)
+			@group_id = @group ? @group.id : -1
 			render :index
 		end
 	end
 
 	def ajax_scroll
-		if params[:query]
+		if params[:query] and params[:group_id]
+			@group = Group.find(params[:group_id])
+			group_ids = @group.go_links.pluck(:id)
+			@golinks = GoLink.email_search(params[:query], myEmail).where('id in (?)', group_ids)
+		elsif params[:query]
 			@golinks = GoLink.email_search(params[:query], myEmail)
 		elsif params[:group_id]
 			@group = Group.find(params[:group_id])

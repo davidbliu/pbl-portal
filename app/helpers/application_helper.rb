@@ -8,6 +8,8 @@ module ApplicationHelper
 		end
 	end
 
+	# gets name of member with this email
+	# if no match, returns email
 	def get_name(email)
 		email_hash = Rails.cache.read('email_hash')
 		if email_hash.nil?
@@ -21,6 +23,7 @@ module ApplicationHelper
 		end
 	end
 
+	# returns gravatar url given email
 	def gravatar(email)
 		if email.nil?
 			email = 'asdf@gmail.com'
@@ -28,4 +31,20 @@ module ApplicationHelper
 		gravatar_id = Digest::MD5.hexdigest(email.downcase)
 		return "http://gravatar.com/avatar/#{gravatar_id}.png"
 	end
+
+	#
+	# formatting_times
+	#
+
+	# just date without hour
+	# 	ex: 5-13-94
+	def date_string(time)
+		time.strftime('%m-%d-%Y')
+	end
+
+	def hour_string(time)
+		time = time + Time.zone_offset("PDT")
+		return time.strftime('%Y-%m-%d %H:%M:%S')
+	end
+
 end

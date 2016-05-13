@@ -8,14 +8,34 @@ RSpec.describe GoController, type: :controller do
 		request.cookies['email'] = @email1
 		@url1 = 'http://google.com'
 		@url2 = 'http://google2.com'
-		@gl1 = GoLink.create(url: @url1, key: 'key1', member_email: @email1)
-		@gl2 = GoLink.create(url: @url2, key: 'key2', member_email: @email2)
-		@gl3 = GoLink.create(url: @url2, key: 'key3', member_email: @email2)
+		@gl1 = GoLink.create(url: @url1, key: 'key1', description: 'desc1', member_email: @email1)
+		@gl2 = GoLink.create(url: @url2, key: 'key2', description: 'desc2',  member_email: @email2)
+		@gl3 = GoLink.create(url: @url2, key: 'key3', description: 'desc3',  member_email: @email2)
+
+		# email1 is NOT part of this group
 		@group1 = Group.create(creator: @email2, name: 'group1')
 		@gl3.groups << @group1
+
+		# email 1 IS part of group
+		@group2 = Group.create(creator: @email1, name: 'group2', is_open: true)
 	end
 
 	describe 'adding' do
+		it 'can add links from home page with search' do
+			url = "http://random_url.com"
+			get :index, {q: url}
+			expect(response).to redirect_to({:action => :add, :url => url})
+		end
+
+		it 'can add links from extension' do
+			url = 'http://random_url.com'
+			desc = 'asdfasdf'
+			key = 'ranlsakfjlsdjf'
+			get :add, {url: url, key: key, desc: desc}
+			expect(GoLink.find_by_url(url).nil?).to eq(false)
+			expect(GoLink.find_by_key(key).nil?).to eq(false)
+			expect(GoLink.find_by_description(desc).nil?).to eq(false)
+		end
 	end
 
 	describe 'redirect action' do
@@ -57,15 +77,16 @@ RSpec.describe GoController, type: :controller do
 
 	describe 'search' do
 		it 'returns search results for exact key queries' do
-			get :search, {q: 'key1'}
-			expect(response.body).to include('key1')
+		end
+
+		it 'scopes search queries' do
 		end
 	end
 
 	describe 'batch editing' do
 		it 'can select and deselect links' do
 			post :add_checked_id, {id: @gl1.id}
-			get :checked_links
+			get :index, {selected: true}
 			expect(response.body).to include("key1")
 			expect(response.body).not_to include("key2")
 			post :remove_checked_id, {id: @gl1.id}
@@ -94,6 +115,17 @@ RSpec.describe GoController, type: :controller do
 			get :delete_checked
 			expect(GoLink.where(key: 'key1').length).to eq(0)
 		end
+
+		it 'can batch add and delete groups' do
+			post :add_checked_id, {id: @gl1.id}
+			params = {add: [@group2.id]}
+			post :batch_update_groups, params
+			expect(@gl1.groups.include?(@group2)).to eq(true)
+
+			delete_params = {remove: [@group2.id]}
+			post :batch_update_groups, delete_params
+			expect(@gl1.groups.include?(@group2)).to eq(false)
+		end
 	end
 
 	describe 'engagement tracking' do 
@@ -107,13 +139,11 @@ RSpec.describe GoController, type: :controller do
 		it 'logs click after redirecting' do
 			num_clicks = GoLinkClick.all.length
 			get :redirect, {key: 'key1'}
-			sleep(1) # click is saved in new thread
 			# expect(GoLinkClick.all.length).to eq(1+num_clicks)
 		end
 
 		it 'shows recently clicked links' do 
 			get :redirect, {key: 'key1'}
-			sleep(1)
 			get :recent
 			# expect(response.body).to include('key1')
 		end

@@ -45,7 +45,7 @@ Given(/^I (.*) the box for "([^"]*)"$/) do |type, key|
 end
 
 Given(/^I visit the checked links page$/) do 
-	visit '/go/checked_links'
+	visit '/go/menu?selected=true'
 end
 
 Given(/^I wait (\d+) seconds for sign in$/) do |arg1|

@@ -1,7 +1,7 @@
 class Member < ActiveRecord::Base
   serialize :commitments
   has_many :groups, primary_key: 'email', foreign_key: 'email'
-  
+
   def self.get_group(group)
     group = group.downcase
     if group == 'all'

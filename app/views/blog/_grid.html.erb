@@ -8,7 +8,7 @@
     	
       <div class = 'text-muted author'>
         By <%= email_hash[post.author] ? email_hash[post.author].name : post.author %>,
-        <span class = 'text-muted timestring'><%= post.time_string %></span>
+        <span class = 'text-muted timestring'><%= date_string(post.created_at) %></span>
       </div>
       <div class = 'text-muted author'>
         To <%= group_string(post.groups) %>

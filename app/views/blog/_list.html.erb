@@ -1,7 +1,7 @@
 
   <% posts.each do |post| %>
   <tr class = 'post-toggle' id = '<%= post.id %>'>
-    <td><%= post.time_string %></td>
+    <td><%= date_string(post.created_at) %></td>
     <td><%= post.title %></td>
     <td><%= post.author %></td>
     <td><%= group_string(post.groups) %></td>

@@ -16,7 +16,7 @@
 				<%= @email_hash.keys.include?(click.member_email) ? @email_hash[click.member_email].committee : '' %></td>
 			</td>
 			<td>
-				<%= click.time_string %>
+				<%= hour_string(click.created_at) %>
 			</td>
 		</tr>
 		<% end %>
