@@ -5,16 +5,6 @@ class TablingController < ApplicationController
 		@members = Member.active
 			.where.not(committee:'GM')
 			.order(:committee)
-
-		# save it in clicks
-		Thread.new{
-			GoLinkClick.create(
-				key: '/tabling/slots_available',
-				golink_id: 'tabling_slots_id',
-				member_email: myEmail
-			)
-			ActiveRecord::Base.connection.close
-		}
 	end
 
 	def chair_tabling
@@ -42,15 +32,7 @@ class TablingController < ApplicationController
 		)
 		@email_hash = Member.email_hash
 
-		# save it in clicks
-		Thread.new{
-			GoLinkClick.create(
-				key: '/tabling',
-				golink_id: 'tabling_id',
-				member_email: myEmail
-			)
-			ActiveRecord::Base.connection.close
-		}
+		track_click("Tabling", nil)
 	end
 
 	# post a switch request

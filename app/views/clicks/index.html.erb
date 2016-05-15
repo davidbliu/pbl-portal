@@ -1,0 +1,19 @@
+<% if @filtered %>
+	<%= link_to 'Unfiltered', '/clicks' %>
+<% end %>
+<table class = 'table table-condensed'>
+	<% @clicks.each do |click| %>
+	<tr>
+		<td>
+			<%= link_to click.name ? click.name : "" , "clicks?name=#{click.name}" %>
+		</td>
+		<td><%= click.email %></td>
+		<td>
+			<%= link_to click.path ? click.path : "" , "clicks?path=#{click.path}" %>
+		</td>
+		<td><%= click.params %></td>
+		<td><%= click.properties %></td>
+		<td><%= hour_string(click.created_at) %></td>
+	<% end %>
+	</tr>
+</table>

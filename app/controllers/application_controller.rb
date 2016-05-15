@@ -19,18 +19,23 @@ class ApplicationController < ActionController::Base
   	end
   end
 
+  def track_click(name, properties)
+    Thread.new{
+      Click.create(
+        path: request.path, 
+        params: request.params.to_json,
+        email: myEmail,
+        name: name,
+        properties: properties.to_json)
+      ActiveRecord::Base.connection.close
+    }
+  end
+
   def is_signed_in
   	if not myEmail or myEmail == ''
   		cookies[:auth_redirect] = request.path
   		redirect_to '/auth/google_oauth2'
   	else
-  		Thread.new{
-            Click.create(
-            	path: request.path,
-            	params: request.params.to_json,
-            	email: myEmail)
-            ActiveRecord::Base.connection.close
-         }
   	end
   end
 

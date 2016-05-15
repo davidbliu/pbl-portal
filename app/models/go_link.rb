@@ -10,6 +10,11 @@ class GoLink < ActiveRecord::Base
 
 	@@per_page = 25
 
+	# what clicks on go links will be logged as in the Click table
+	def self.click_name 
+		'GoLinkClick'
+	end
+
 	def hide
 		self.is_deleted = true
 		self.save!
@@ -152,5 +157,10 @@ class GoLink < ActiveRecord::Base
 		return GoLink.where('id in (?)', self.get_checked_ids(email))
 	end
 
+	def clicks
+		Click.order('created_at desc')
+			.where(name: 'GoLinkClick')
+			.where('properties LIKE ?', "%#{self.id},%")
+	end
 
 end

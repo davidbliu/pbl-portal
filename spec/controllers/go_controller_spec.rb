@@ -135,31 +135,6 @@ RSpec.describe GoController, type: :controller do
 		end
 	end
 
-	describe 'engagement tracking' do 
-		it 'REMOVE THIS TEST LATER' do 
-			get :engagement
-			get :time_distribution
-		end
-	end
-
-	describe 'logging clicks' do
-		it 'logs click after redirecting' do
-			num_clicks = GoLinkClick.all.length
-			get :redirect, {key: 'key1'}
-			# expect(GoLinkClick.all.length).to eq(1+num_clicks)
-		end
-
-		it 'shows recently clicked links' do 
-			get :redirect, {key: 'key1'}
-			get :recent
-			# expect(response.body).to include('key1')
-		end
-
-		it 'has a page you can track links with' do
-			get :admin
-		end
-	end
-
 	describe 'main page with parameters' do
 		it 'can restrict groups' do
 			request.cookies[:email]=@email2

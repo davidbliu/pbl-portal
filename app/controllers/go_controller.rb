@@ -13,10 +13,8 @@ class GoController < ApplicationController
 		where = GoLink.handle_redirect(params[:key], myEmail)
 		if where.length == 1
 			golink = where.first
-			Thread.new{
-				golink.log_click(myEmail)
-				ActiveRecord::Base.connection.close
-			}
+			# track click
+			track_click(GoLink.click_name, {:id => golink.id, :key => golink.key})
 			# TODO remove reminders
 			reminder_emails = Rails.cache.read('reminder_emails')
 			if reminder_emails != nil and reminder_emails.include?(myEmail)
@@ -85,6 +83,9 @@ class GoController < ApplicationController
 		else
 			@golinks = GoLink.list(myEmail)
 		end
+
+		# track 
+		track_click("GoIndex", nil)
 		
 		if not redirected
 			@groups = Group.groups_by_email(myEmail)
@@ -110,6 +111,8 @@ class GoController < ApplicationController
 		else
 			@golinks = GoLink.list(myEmail)
 		end
+
+		track_click("GoIndex", nil)
 		
 		@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
 		@golinks = @golinks.includes(:groups)
@@ -123,6 +126,7 @@ class GoController < ApplicationController
 	def show
 		@golink = GoLink.find(params[:id])
 		@groups = Group.groups_by_email(myEmail)
+		track_click("GoShow", {:id => @golink.id})
 		render layout: false
 	end
 
@@ -131,14 +135,6 @@ class GoController < ApplicationController
 		GoLink.checked_golinks(myEmail).each{|x| x.hide}
 		GoLink.deselect_links(myEmail)
 		redirect_to '/go/menu'
-	end
-
-
-	def recent
-		@recent = GoLinkClick.order('created_at DESC')
-			.where.not(member_email: 'davidbliu@gmail.com')
-			.first(1000)
-		@email_hash = Member.email_hash
 	end
 
 	def add
@@ -215,6 +211,7 @@ class GoController < ApplicationController
 	# trash/restore/destroy go links
 	#
 	def trash 
+		track_click("GoTrash", nil)
 		@golinks = GoLink.deleted_list(myEmail)
 	end
 
@@ -227,107 +224,4 @@ class GoController < ApplicationController
 		GoLink.unscoped.find(params[:id]).destroy
 		render nothing: true, status: 200
 	end
-	
-#
-# TODO: create reporting controller and move everything below to it
-#
-	def admin
-		@keys = GoLinkClick.all.pluck(:key).uniq
-		@groups = ['All', 'Officers', 'CMs']+Member.committees
-	end
-
-	def engagement
-		keys = params[:keys] ? params[:keys].split(',') : []
-		@keys = keys
-		clicks = GoLinkClick.order('created_at DESC')
-				.where.not(member_email:'davidbliu@gmail.com')
-		if keys != []
-			clicks = clicks.where('key in (?)', keys)
-		end
-		if params[:time] and params[:time] != ''
-			time = Time.parse(params[:time])
-			@time = time
-			clicks = clicks.where('created_at > ?', time)
-		end
-		if params[:group] and params[:group] != ''
-			case params[:group]
-			when 'All'
-				@members = Member.active
-			when 'Officers'
-				@members = Member.officers
-			when 'CMs'
-				@members = Member.chairs_and_cms
-			else
-				@members = Member.where(committee: params[:group])
-			end
-			@members = @members.order(:committee).where.not(email: 'davidbliu@gmail.com')
-		else
-			@members = Member.chairs_and_cms
-				.where.not(email:'davidbliu@gmail.com')
-				.order(:committee)
-		end
-
-		@click_hash = {}
-		seen = []
-		@members.each do |m|
-			@click_hash[m.email] = []
-			seen << m.email
-		end
-		clicks.each do |click|
-			if not seen.include?(click.member_email)
-				@click_hash[click.member_email] = []
-				seen << click.member_email
-			else
-				@click_hash[click.member_email] << click
-			end
-		end  
-
-		@inactive = []
-		@active = []
-		@members.each do |m|
-			if not @click_hash[m.email] or @click_hash[m.email].length ==0
-				@inactive << m
-			else
-				@active << m
-			end
-		end
-	end
-
-	 def time_distribution
-		@clicks = GoLinkClick.all
-		@bins = Array.new(24, 0)
-		@hours = (0..24).to_a
-		@num = 0
-		@clicks.each do |click|
-			hour = click.created_at.in_time_zone("Pacific Time (US & Canada)").hour
-			@bins[hour] = @bins[hour]+1
-		end
-		@golinks = GoLink.where(semester: Semester.current_semester)
-		@num_clicks = @golinks.map{|x| x.get_num_clicks}
-		@max = @num_clicks.max 
-		@min = @num_clicks.min
-		@avg = @num_clicks.mean
-		@std = @num_clicks.standard_deviation
-		@click_bins = Array.new(15, 0)
-	end
 end
-
-module Enumerable
-	def sum
-		self.inject(0){|accum, i| accum + i }
-	end
-
-	def mean
-		self.sum/self.length.to_f
-	end
-
-	def sample_variance
-		m = self.mean
-		sum = self.inject(0){|accum, i| accum +(i-m)**2 }
-		sum/(self.length - 1).to_f
-	end
-
-	def standard_deviation
-		return Math.sqrt(self.sample_variance)
-	end
-end 

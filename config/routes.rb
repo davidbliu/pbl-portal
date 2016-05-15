@@ -47,10 +47,10 @@ Rails.application.routes.draw do
   post 'go/destroy_copy/:id' => 'go#destroy_copy'
 
   # monitoring PBL Links
-  get 'go/recent' => 'go#recent'
-  get 'go/engagement' => 'go#engagement'
-  get 'go/admin' => 'go#admin'
-  get 'go/time_distribution' => 'go#time_distribution'
+  get 'go/recent' => 'clicks#index'
+  # get 'go/engagement' => 'go#engagement'
+  # get 'go/admin' => 'go#admin'
+  # get 'go/time_distribution' => 'go#time_distribution'
 
   #blog
   get 'blog' => 'blog#index'
@@ -100,6 +100,7 @@ Rails.application.routes.draw do
   post 'groups/update/:id'=>'groups#update'
   get 'groups/new' => 'groups#new'
 
+  get 'clicks' => 'clicks#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

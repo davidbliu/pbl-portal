@@ -12,14 +12,7 @@ class PointsController < ApplicationController
 		@committees = @committees.sort_by{|x| -@committee_rates[x]}
 
 		# save it in clicks
-		Thread.new{
-			GoLinkClick.create(
-				key: '/points/scoreboard',
-				golink_id: 'scoreboard_id',
-				member_email: myEmail
-			)
-			ActiveRecord::Base.connection.close
-		}
+		track_click("PointsScoreboard", nil)
 	end
 
 	def distribution
@@ -54,14 +47,7 @@ class PointsController < ApplicationController
 		# @zeros = @zeros.sort_by{|x| @email_hash[x].committee}
 
 
-		Thread.new{
-			GoLinkClick.create(
-				key: '/points/distribution',
-				golink_id: 'distribution_id',
-				member_email: myEmail
-			)
-			ActiveRecord::Base.connection.close
-		}
+		track_click("PointsDistribution", nil)
 	end
 
 	def attendance

@@ -12,8 +12,6 @@ class BlogController < ApplicationController
 			@posts = @posts.includes(:groups)
 		end
 		
-
-		
 		if params[:view] == 'list'
 			@list = true
 			@posts = @posts.paginate(:page => params[:page], :per_page => 50)
@@ -24,15 +22,8 @@ class BlogController < ApplicationController
 		@email_hash = Member.email_hash
 		@post_id = params[:post_id]
 		@comments = PostComment.order('created_at desc').where('post_id in (?)', Post.can_view(myEmail)).first(50)
-		# save it in clicks
-		Thread.new{
-			GoLinkClick.create(
-				key: '/blog',
-				golink_id: 'blog_id',
-				member_email: myEmail
-			)
-			ActiveRecord::Base.connection.close
-		}
+		# track click
+		track_click("Blog", nil)
 	end
 
 	def ajax_scroll
@@ -68,6 +59,7 @@ class BlogController < ApplicationController
 				@editing = true
 			end
 		end
+		track_click("BlogEdit", nil)
 		
 	end
 
@@ -82,14 +74,7 @@ class BlogController < ApplicationController
 		@comments = PostComment.where(post_id: params[:id]).order('created_at DESC')
 		@email_hash = Member.email_hash
 		# save it in clicks
-		Thread.new{
-			GoLinkClick.create(
-				key: '/blog/post/'+params[:id]+':'+@post.title,
-				golink_id: 'post_id',
-				member_email: myEmail
-			)
-			ActiveRecord::Base.connection.close
-		}
+		track_click("Post", {:id => @post.id, :title => @post.title})
 		render layout: false
 	end
 
