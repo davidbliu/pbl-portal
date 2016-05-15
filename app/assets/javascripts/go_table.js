@@ -19,7 +19,6 @@ function renderCheckedIds(ids){
 	$('#checked-count').text(ids.length);
 }
 
-
 function showGolinkInfo(data){
 	$("#golink-info-container").html(data);
 	$('#golink-info-outer').show(150);

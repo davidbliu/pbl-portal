@@ -24,34 +24,33 @@ Rails.application.routes.draw do
   get ':key/go' => 'go#redirect'
   get 'go' => 'go#index'
   get 'go/menu' => 'go#index'
+  get 'go/ajax_scroll/:page' => 'go#ajax_scroll'
   get 'go/show/:id' => 'go#show'
   get 'go/search' => 'go#search'
-  get 'go/lookup' => 'go#lookup'
-  get 'go/recent' => 'go#recent'
-  
   get 'go/add' => 'go#add'
-  post 'go/create' => 'go#create'
   post 'go/update' => 'go#update'
   post 'go/destroy/:id' => 'go#destroy'
-  get 'go/insights/:id' => 'go#insights'
-  get 'go/engagement' => 'go#engagement'
-  get 'go/admin' => 'go#admin'
-  get 'go/time_distribution' => 'go#time_distribution'
-  get 'go/batch_edit' => 'go#batch_edit'
+  get 'go/lookup' => 'go#lookup'
+  
+  # batch editing pbl links
   post 'go/batch_update_groups' => 'go#batch_update_groups'
   post 'go/add_checked_id' => 'go#add_checked_id'
   post 'go/remove_checked_id' => 'go#remove_checked_id'
   get 'go/get_checked_ids' => 'go#get_checked_ids'
   get 'go/ajax_get_checked' => 'go#ajax_get_checked'
   get 'go/deselect_links' => 'go#deselect_links'
+  get 'go/delete_checked' => 'go#delete_checked'
+
+  # go link trash
   get 'go/trash' => 'go#trash'
   post 'go/restore/:id' => 'go#restore'
   post 'go/destroy_copy/:id' => 'go#destroy_copy'
 
-  get 'go/delete_checked' => 'go#delete_checked'
-  get 'go/preferences' => 'go#preferences'
-  post 'go/update_preferences' => 'go#update_preferences'
-  get 'go/ajax_scroll/:page' => 'go#ajax_scroll'
+  # monitoring PBL Links
+  get 'go/recent' => 'go#recent'
+  get 'go/engagement' => 'go#engagement'
+  get 'go/admin' => 'go#admin'
+  get 'go/time_distribution' => 'go#time_distribution'
 
   #blog
   get 'blog' => 'blog#index'

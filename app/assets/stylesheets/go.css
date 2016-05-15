@@ -115,9 +115,7 @@ div.tt-menu.tt-open{
 #selected-groups{
 	color:gray;
 }
-.group-name-tag{
-	margin-left:2px;
-}
+
 .field-div{
 	padding:5px;
 }
@@ -129,7 +127,11 @@ div.tt-menu.tt-open{
 }
 
 .label.label-default{
+	cursor:pointer;
 	opacity:0.5;
+	border-radius:0px;
+	padding:3px;
+	margin:2px;
 }
 
 #batch-group-links{

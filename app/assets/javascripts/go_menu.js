@@ -16,9 +16,6 @@ function filterGroups(q){
 
 function updateBatchModal(golinks){
 	$('#batch-num').text(golinks.length);
-	$('#batch-selected').text(_.map(golinks, function(x){
-		return x.key;
-	}).join(', '));
 }
 
 function showEditModal(){

@@ -27,6 +27,9 @@ gem 'rack-timeout'
 
 gem 'haml'
 
+# google drive gem
+gem 'google_drive'
+
 gem 'coveralls', require: false
 
 

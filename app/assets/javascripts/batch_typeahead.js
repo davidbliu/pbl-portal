@@ -25,7 +25,6 @@ function updateSelectedGroupsTag(tag_selector){
 		batchSelectedGroupNames = _.filter(batchSelectedGroupNames, function(x){
 			return x != name;
 		});
-		console.log(batchSelectedGroupNames);
 		updateSelectedGroupsTag(tag_selector);
 	})
 	$('#batch-group-links').hide();
@@ -89,27 +88,26 @@ var TYPEAHEAD_SELECTOR = '#batch-group-typeahead';
 var batchSelectedGroupNames = [];
 
 $(document).ready(function(){
+	setTimeout(function(){
+		$(TYPEAHEAD_SELECTOR).typeahead({
+		  hint: true,
+		  highlight: true,
+		  minLength: 1,
+		},
+		{
+		  name: 'Groups',
+		  source: substringMatcher(group_names),
+		});
 
-	updateSelectedGroupsTag('#batch-selected-groups');
+		$(TYPEAHEAD_SELECTOR).bind('typeahead:selected', function(obj, datum, name) {      
+		  transfer(datum);
+		});
 
-	$(TYPEAHEAD_SELECTOR).typeahead({
-	  hint: true,
-	  highlight: true,
-	  minLength: 1,
-	},
-	{
-	  name: 'Groups',
-	  source: substringMatcher(group_names),
-	});
-
-	$(TYPEAHEAD_SELECTOR).bind('typeahead:selected', function(obj, datum, name) {      
-	  transfer(datum);
-	});
-
-	
-	$(TYPEAHEAD_SELECTOR).keypress(function(e) {
-	    if(e.which == 13) {
-	        transfer($(this).val());
-	    }
-	});
+		
+		$(TYPEAHEAD_SELECTOR).keypress(function(e) {
+		    if(e.which == 13) {
+		        transfer($(this).val());
+		    }
+		});
+	}, 1000);	
 });

@@ -2,13 +2,12 @@ class GoController < ApplicationController
 	skip_before_filter :verify_authenticity_token, only: [:add_checked_id, :get_checked_ids, :remove_checked_id, :test]
 	before_filter :is_search
 	skip_before_filter :is_signed_in #, only: [:redirect]
+	
 	def is_search
 		if params[:q] and request.path != '/go'
 			redirect_to controller:'go', action:'index', q: params[:q]
 		end
 	end
-
-
 
 	def redirect
 		where = GoLink.handle_redirect(params[:key], myEmail)
@@ -35,10 +34,12 @@ class GoController < ApplicationController
 		end
 	end
 
+	# returns ids of selected golinks
 	def get_checked_ids
 		render json: GoLink.get_checked_ids(myEmail)
 	end
 
+	# return json representation of selected golinks
 	def ajax_get_checked
 		render json: GoLink.where('id in (?)', GoLink.get_checked_ids(myEmail)).to_json
 	end

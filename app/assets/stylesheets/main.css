@@ -40,3 +40,6 @@ select.form-control{
 .field-input{
 	padding:10px;
 }
+.modal-content{
+	border-radius:0px !important;
+}

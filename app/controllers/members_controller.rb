@@ -44,7 +44,4 @@ class MembersController < ApplicationController
       redirect_to '/auth/google_oauth2'
     end
   end
-
-  
-
 end
