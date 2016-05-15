@@ -1,3 +1,8 @@
+<style type = 'text/css'>
+td{
+	max-width: 300px !important;
+}
+</style>
 <% if @filtered %>
 	<%= link_to 'Unfiltered', '/clicks' %>
 <% end %>
@@ -7,7 +12,7 @@
 		<td>
 			<%= link_to click.name ? click.name : "" , "clicks?name=#{click.name}" %>
 		</td>
-		<td><%= click.email %></td>
+		<td><%= link_to click.email ? click.email : '', "clicks?email=#{click.email}" %></td>
 		<td>
 			<%= link_to click.path ? click.path : "" , "clicks?path=#{click.path}" %>
 		</td>

@@ -9,6 +9,11 @@ class ClicksController < ApplicationController
 			@clicks = @clicks.where(path: params[:path])
 			@filtered = true
 		end
+		if params[:email]
+			@clicks = @clicks.where(email: params[:email])
+			@filtered = true
+		end
+
 
 		@clicks = @clicks.first(1000)
 			
