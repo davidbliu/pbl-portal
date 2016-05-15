@@ -140,12 +140,6 @@ class GoController < ApplicationController
 		@email_hash = Member.email_hash
 	end
 
-	def admin
-		@keys = GoLinkClick.all.pluck(:key).uniq
-		@groups = Member.groups
-	end
-
-
 	def add
 		if params[:key]
 			@golinks = GoLink.where(key: params[:key]).map{|x| x.to_json}
@@ -217,15 +211,17 @@ class GoController < ApplicationController
 	end
 
 	#
-	# copy of golinks
+	# trash/restore/destroy go links
 	#
 	def trash 
 		@golinks = GoLink.deleted_list(myEmail)
 	end
+
 	def restore
 		GoLink.unscoped.find(params[:id]).update(is_deleted: false)
 		render nothing: true, status: 200
 	end
+
 	def destroy_copy
 		GoLink.unscoped.find(params[:id]).destroy
 		render nothing: true, status: 200
@@ -234,6 +230,10 @@ class GoController < ApplicationController
 #
 # TODO: create reporting controller and move everything below to it
 #
+	def admin
+		@keys = GoLinkClick.all.pluck(:key).uniq
+		@groups = ['All', 'Officers', 'CMs']+Member.committees
+	end
 
 	def engagement
 		keys = params[:keys] ? params[:keys].split(',') : []
@@ -249,10 +249,19 @@ class GoController < ApplicationController
 			clicks = clicks.where('created_at > ?', time)
 		end
 		if params[:group] and params[:group] != ''
-			@members = Member.get_group(params[:group]).order(:committee)
+			case params[:group]
+			when 'All'
+				@members = Member.active
+			when 'Officers'
+				@members = Member.officers
+			when 'CMs'
+				@members = Member.chairs_and_cms
+			else
+				@members = Member.where(committee: params[:group])
+			end
+			@members = @members.order(:committee).where.not(email: 'davidbliu@gmail.com')
 		else
-			@members = Member.current_members
-				.where.not(committee:'GM')
+			@members = Member.chairs_and_cms
 				.where.not(email:'davidbliu@gmail.com')
 				.order(:committee)
 		end

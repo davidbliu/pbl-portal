@@ -2,29 +2,8 @@ class Member < ActiveRecord::Base
   scope :active, -> {where("is_active = true")}
   serialize :commitments
 
-  def self.officers
-    return Member.active.where('position = ? OR position = ?',
-          'chair', 'exec')
-  end
+  
 
-  def self.execs
-    return Member.active.where(committee:'EX')
-  end
-
-  def self.cms
-    return Member.active.where('position = ?', 'cm')
-        .where.not(committee:'GM')
-  end
-
-  def self.chairs_and_cms
-    Member.active.where.not(committee: 'GM').order('committee asc')
-  end
-
-  def self.groups
-    committees = self.committees
-    gps = ['All', 'Officers', 'CMs']
-    return gps+ committees
-  end
   def self.email_hash
     Member.all.index_by(&:email)
   end
@@ -77,8 +56,26 @@ class Member < ActiveRecord::Base
     return pos
   end
 
-  def self.current_members(semester = Semester.current_semester)
-    Member.where(latest_semester: semester)
+  #
+  # Groups
+  #
+
+  def self.officers
+    return Member.active.where('position = ? OR position = ?',
+          'chair', 'exec')
+  end
+
+  def self.execs
+    return Member.active.where(committee:'EX')
+  end
+
+  def self.cms
+    return Member.active.where('position = ?', 'cm')
+        .where.not(committee:'GM')
+  end
+
+  def self.chairs_and_cms
+    Member.active.where.not(committee: 'GM').order('committee asc')
   end
 
 end

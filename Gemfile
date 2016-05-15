@@ -27,9 +27,7 @@ gem 'rack-timeout'
 
 gem 'haml'
 
-# google drive gem
-gem 'google_drive'
-gem 'cleverbot-api'
+gem 'coveralls', require: false
 
 
 # Use SCSS for stylesheets

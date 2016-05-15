@@ -5,6 +5,7 @@ class TablingManager
 	end
 
 	@@starting_slots = (0..4).map{|x| 10+24*x}
+
 	# default times for each week (monday - friday 9-1)
 	def self.default_slots
 		slots = []
@@ -15,6 +16,10 @@ class TablingManager
 			slots << (start..end_time).to_a
 		end
 		slots = slots.flatten()
+	end
+
+	def self.starting_slots
+		@@starting_slots
 	end
 
 	def self.slot_availabilities

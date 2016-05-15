@@ -1,6 +1,10 @@
 # Berkeley PBL Members Portal V2
 [![Build Status](https://travis-ci.org/davidbliu/PBL-Members-Portal.svg?branch=master)](https://travis-ci.org/davidbliu/PBL-Members-Portal)
 
+
+[![Coverage Status](https://coveralls.io/repos/github/davidbliu/pbl-portal/badge.svg?branch=master)](https://coveralls.io/github/davidbliu/pbl-portal?branch=master)
+
+
 This repo contains code for PBL Links, Blog, Tabling generator, Points, etc
 
 __see the documentation folder for guides__
