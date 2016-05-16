@@ -1,5 +1,5 @@
 # Berkeley PBL Members Portal V2
-[![Build Status](https://travis-ci.org/davidbliu/PBL-Members-Portal.svg?branch=master)](https://travis-ci.org/davidbliu/PBL-Members-Portal) 
+[![Build Status](https://travis-ci.org/davidbliu/pbl-portal.svg?branch=master)](https://travis-ci.org/davidbliu/pbl-portal) 
 [![Coverage Status](https://coveralls.io/repos/github/davidbliu/pbl-portal/badge.svg?branch=master)](https://coveralls.io/github/davidbliu/pbl-portal?branch=master)
 
 
