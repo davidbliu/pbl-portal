@@ -11,10 +11,6 @@ module AuthHelper
   end
 
   def current_member
-  	q = Member.where(email: myEmail)
-  	if q.length > 0
-  		return q.first
-  	end
-  	return nil
+  	q = Member.find_by_email(myEmail)
   end
 end

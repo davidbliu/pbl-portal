@@ -1,7 +1,7 @@
 class GoController < ApplicationController
 	skip_before_filter :verify_authenticity_token, only: [:add_checked_id, :get_checked_ids, :remove_checked_id, :test]
 	before_filter :is_search
-	skip_before_filter :is_signed_in #, only: [:redirect]
+	skip_before_filter :is_signed_in # allow using PBL Links without being signed in
 	
 	def is_search
 		if params[:q] and request.path != '/go'
@@ -13,15 +13,8 @@ class GoController < ApplicationController
 		where = GoLink.handle_redirect(params[:key], myEmail)
 		if where.length == 1
 			golink = where.first
-			# track click
 			track_click(GoLink.click_name, {:id => golink.id, :key => golink.key})
-			# TODO remove reminders
-			reminder_emails = Rails.cache.read('reminder_emails')
-			if reminder_emails != nil and reminder_emails.include?(myEmail)
-				redirect_to '/reminders?key='+golink.key
-			else
-				redirect_to golink.url
-			end
+			redirect_to golink.url
 		elsif where.length > 0
 			@golinks = where
 			@golinks = @golinks.paginate(:page => params[:page], :per_page => GoLink.per_page)
@@ -83,8 +76,6 @@ class GoController < ApplicationController
 		else
 			@golinks = GoLink.list(myEmail)
 		end
-
-		# track 
 		track_click("GoIndex", nil)
 		
 		if not redirected

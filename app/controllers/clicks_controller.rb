@@ -1,6 +1,8 @@
 class ClicksController < ApplicationController
 	def index
-		@clicks = Click.order('created_at desc').where.not(email: 'davidbliu@gmail.com')
+		@clicks = Click.order('created_at desc')
+			.where('email IS NULL or email != ?', 'davidbliu@gmail.com')
+		# TODO: figure out why need explicit null check or null emails wont show
 		if params[:name]
 			@clicks = @clicks.where(name: params[:name])
 			@filtered = true
@@ -13,9 +15,6 @@ class ClicksController < ApplicationController
 			@clicks = @clicks.where(email: params[:email])
 			@filtered = true
 		end
-
-
 		@clicks = @clicks.first(1000)
-			
 	end
 end

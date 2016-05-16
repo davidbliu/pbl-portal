@@ -16,8 +16,10 @@ td{
 		<td>
 			<%= link_to click.path ? click.path : "" , "clicks?path=#{click.path}" %>
 		</td>
-		<td><%= click.params %></td>
-		<td><%= click.properties %></td>
+		<td>
+			<div class = 'text-muted smalltext'><%= click.params %></div>
+			<div class = 'text-muted smalltext'><%= click.properties %></div>
+		</td>
 		<td><%= hour_string(click.created_at) %></td>
 	<% end %>
 	</tr>
