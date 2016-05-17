@@ -17,7 +17,11 @@ td{
 		</td>
 		<td><%= link_to click.email ? get_name(click.email) : '', "clicks?email=#{click.email}" %></td>
 		<td>
-			<%= link_to click.path ? click.path : "" , "clicks?path=#{click.path}" %>
+			<%= link_to click.path ? click.path : "" , click.path %>
+
+			<div>
+				<%= link_to click.path ? "filter" : "" , "clicks?path=#{click.path}" %>
+			</div>
 		</td>
 		<td>
 			<div class = 'text-muted smalltext'><%= click.params %></div>
