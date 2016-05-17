@@ -25,6 +25,7 @@ function showPostModal(id){
 		success:function(data){
 			$('#show-modal-content').html(data);
 			$('#show-modal').modal('show');
+		}
 	});
 }
 
