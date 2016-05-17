@@ -6,6 +6,9 @@ td{
 <% if @filtered %>
 	<%= link_to 'Unfiltered', '/clicks' %>
 <% end %>
+
+<%= will_paginate @golinks, :container => false %>
+
 <table class = 'table table-condensed'>
 	<% @clicks.each do |click| %>
 	<tr>

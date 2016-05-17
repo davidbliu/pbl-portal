@@ -47,7 +47,7 @@
 	<% @comments.each do |comment| %>
 	<div class = 'comment-div' onclick = 'showPostModal(<%= comment.post_id %>)'>
 		<div class = 'text-muted smalltext'>
-			<%= comment.member_email %> at <%= hour_string(comment.created_at) %>
+			<%= get_name(comment.member_email) %> at <%= hour_string(comment.created_at) %>
 		</div>
 		<%= comment.content %>
 	</div>

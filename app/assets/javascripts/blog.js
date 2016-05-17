@@ -25,7 +25,6 @@ function showPostModal(id){
 		success:function(data){
 			$('#show-modal-content').html(data);
 			$('#show-modal').modal('show');
-		}
 	});
 }
 
@@ -89,6 +88,8 @@ $(document).ready(function(){
 			}
 		 }
 	 });
+
+	 
 
 	 if(post_id != -1){
 	 	showPostModal(post_id);

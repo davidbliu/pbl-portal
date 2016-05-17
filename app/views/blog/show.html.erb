@@ -7,7 +7,7 @@
 		<a href = '/blog?post_id=<%= @post.id %>'>Link to the post</a>
 	</div>
 	<div>
-		<a href = 'javascript:void(0)' onclick = 'loadComments(<%= @post.id %>)'>See <%= @post.comments.length %> Comments</a>
+		<a href = 'javascript:void(0)' onclick = 'loadComments(<%= @post.id %>)'><%= @post.comments.length %> Comments</a>
 	</div>
 </div>
 

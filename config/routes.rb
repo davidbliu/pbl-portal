@@ -47,10 +47,7 @@ Rails.application.routes.draw do
   post 'go/destroy_copy/:id' => 'go#destroy_copy'
 
   # monitoring PBL Links
-  get 'go/recent' => 'clicks#index'
-  # get 'go/engagement' => 'go#engagement'
-  # get 'go/admin' => 'go#admin'
-  # get 'go/time_distribution' => 'go#time_distribution'
+  # TODO
 
   #blog
   get 'blog' => 'blog#index'
