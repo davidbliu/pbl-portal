@@ -15,7 +15,7 @@ td{
 		<td>
 			<%= link_to click.name ? click.name : "" , "clicks?name=#{click.name}" %>
 		</td>
-		<td><%= link_to click.email ? click.email : '', "clicks?email=#{click.email}" %></td>
+		<td><%= link_to click.email ? get_name(click.email) : '', "clicks?email=#{click.email}" %></td>
 		<td>
 			<%= link_to click.path ? click.path : "" , "clicks?path=#{click.path}" %>
 		</td>
