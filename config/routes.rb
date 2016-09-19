@@ -87,6 +87,7 @@ Rails.application.routes.draw do
   get 'points/distribution' => 'points#distribution'
   get 'points/attendance' => 'points#attendance'
   post 'points/mark_attendance' => 'points#mark_attendance'
+  get 'pull_events' => 'points#pull_events'
 
 
   # groups

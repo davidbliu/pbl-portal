@@ -2,6 +2,16 @@
 class PointsController < ApplicationController
 	before_filter :is_member
 
+        def pull_events
+          member = Member.find_by_email(myEmail)
+          if member != nil and member.is_admin?
+            Event.pull_events
+            redirect_to '/points'
+          else
+            redirect_to '/unauthorized'
+          end
+        end
+
 	def scoreboard
 		@cm_scoreboard = Event.cm_scoreboard.first(10)
 		@officer_scoreboard = Event.officer_scoreboard.first(10)	

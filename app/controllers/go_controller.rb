@@ -52,7 +52,7 @@ class GoController < ApplicationController
 	end
 
 	def index
-		if params[:q].present? and params[:q].include?('http://')
+		if params[:q].present? and (params[:q].include?('http://') or params[:q].include?('https://'))
 			redirected = true
 			redirect_to controller: 'go', action: 'add', url: params[:q]
 		elsif params[:group_id] and params[:q]

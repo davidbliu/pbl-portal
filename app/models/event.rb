@@ -86,6 +86,32 @@ class Event < ActiveRecord::Base
 		return pts.sum
 	end
 
+        def self.pull_events
+          session = GoogleDrive.saved_session("drive_config.json")
+          key = '1GJnRDWjY_1Q1IVHQ5M7AHANiq7s2UumAW9eVY4qqMM0'
+          ws = session.spreadsheet_by_key(key).worksheets[0]
+          rows = ws.rows
+          index = 0
+          seen_event_names = [] # we erase events whose names aren't seen
+          rows.each do |row|
+            if index == 0
+                index += 1
+            else
+              name = row[0]
+              time = Time.strptime(row[1], '%m/%d/%Y')
+              points = row[2].to_i
+              semester = Semester.current_semester
+              event = Event.where(name: name).where(semester: semester).first_or_create!
+              event.points = points
+              event.time = time
+              event.save!
+              seen_event_names << name
+            end
+          end
+          # remove events whose names have been changed
+          unseen_events = Event.where(semester: Semester.current_semester).where('name not in (?)', seen_event_names).destroy_all
+        end
+
 
 
 end

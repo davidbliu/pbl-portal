@@ -63,7 +63,7 @@
 		<div class = 'row'>
 			<div ng-repeat = 'dayIndex in dayIndices' class = 'col-md-2 day-div'>
 				{{days[dayIndex]}}
-				<div ng-repeat = 'hourIndex in hourIndices' class = 'hour-div' id = 'hour-{{dayIndex * 24 + (hourIndex+9)}}'>
+				<div ng-repeat = 'hourIndex in hourIndices' class = 'hour-div' id = 'hour-{{dayIndex * 24 + (hourIndex+10)}}'>
 					{{hours[hourIndex]}}
 				</div>
 			</div>
@@ -105,7 +105,7 @@ app.controller('CommitmentsCtrl', function($scope){
 	$scope.msg = 'hi';
 	$scope.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 	$scope.dayIndices = _.range($scope.days.length);
-	$scope.hours = ['9-10', '10-11', '11-12', '12-1', '1-2', '2-3'];
+	$scope.hours = ['10-11', '11-12', '12-1', '1-2'];
 	$scope.hourIndices = _.range($scope.hours.length);
 	$scope.clear = function(){
 		$('.selected').each(function(){

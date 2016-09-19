@@ -1,7 +1,7 @@
 class TablingManager
 
 	def self.tabling_admin
-		['davidbliu@gmail.com', 'harukoayabe@gmail.com']
+		['davidbliu@gmail.com', 'harukoayabe@gmail.com', 'alexparkap@berkeley.edu']
 	end
 
 	@@starting_slots = (0..4).map{|x| 10+24*x}

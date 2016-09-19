@@ -1,5 +1,5 @@
 class MainController < ApplicationController
-	skip_before_filter :is_signed_in, :only => [:cookie_hack]
+	skip_before_filter :is_signed_in, :only => [:cookie_hack, :home]
 
   def home
   end
