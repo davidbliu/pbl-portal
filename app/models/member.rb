@@ -9,7 +9,7 @@ class Member < ActiveRecord::Base
   end
 
   def self.committees
-    ['CS', 'CO', 'FI', 'HT', 'MK', 'GM', 'PD', 'PB', 'SO', 'WD', 'IN', 'EX']
+    ['CS', 'CO', 'FI', 'HT', 'MK', 'GM', 'CD', 'DS', 'SO', 'WD', 'IN', 'EX']
   end
 
   def self.david

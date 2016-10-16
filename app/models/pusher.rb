@@ -32,7 +32,7 @@ class Pusher
 	def self.push_post(members, post, author = nil)
 		title = 'Check out this post on the blog'
 		body = post.title
-		link = 'http://portal.berkeley-pbl.com/blog/post/'+post.id.to_s
+		link = 'http://portal.berkeley-pbl.com/blog?post_id='+post.id.to_s
 		response = self.push(post.id, title, body, link, members)
 		Push.create(
 			title: title,

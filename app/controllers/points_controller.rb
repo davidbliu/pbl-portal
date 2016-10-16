@@ -13,13 +13,13 @@ class PointsController < ApplicationController
         end
 
 	def scoreboard
-		@cm_scoreboard = Event.cm_scoreboard.first(10)
-		@officer_scoreboard = Event.officer_scoreboard.first(10)	
+		@cm_scoreboard = Event.cm_scoreboard
+		@officer_scoreboard = Event.officer_scoreboard	
 		@email_hash = Member.email_hash
 
 		@committee_rates = Event.committee_attendance_rates
 		@committees = @committee_rates.keys
-		@committees = @committees.sort_by{|x| -@committee_rates[x]}
+		@committees = @committees.sort_by{|x| @committee_rates[x] != 0 ? -@committee_rates[x] : 0}
 
 		# save it in clicks
 		track_click("PointsScoreboard", nil)
