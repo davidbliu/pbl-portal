@@ -41,7 +41,7 @@ class BotMember < ActiveRecord::Base
 	end
 
 	def self.get_name_from_fb(sender_id)
-		token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
+		token = 'EAAISyxS1I2MBAN6qGdsYs5PreTTyiQ9ZBAzRV48BDPsjUREDuLRHRDt4yZCYC0ZB9er1OnIumZBEqdjZBFhKjaFMGr4bQJ7kd6udYSs5jUM1bp4HOnLMaeHxt1wE68qtmVIx3tM8Qd7mYL2HbZAItiYiVWvYWmkQFlYkM6etZBnrwZDZD'
 		fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+token.to_s
 		begin
 			r = RestClient.get fb_url, :content_type => :json, :accept => :json
@@ -260,7 +260,7 @@ class BotMember < ActiveRecord::Base
     end
 
     def send_msg(msg)
-    	token = 'EAAHxkxJBZAosBAL6FZBRIM2wJ990bGqDNqDARI4lnHbzQT5yvsNEogZCivDMhMCquWwvgIZCkcZBvQChEbiP7DGL2jlQeSUOHgbddYK3fwcRDIDWdXeLegZA6NNUUZAWJRcRj0iZCO6AsbwjUZARjfFXeENyeMOlfkTbqYpICgMuT1gZDZD'
+    	token = 'EAAISyxS1I2MBAN6qGdsYs5PreTTyiQ9ZBAzRV48BDPsjUREDuLRHRDt4yZCYC0ZB9er1OnIumZBEqdjZBFhKjaFMGr4bQJ7kd6udYSs5jUM1bp4HOnLMaeHxt1wE68qtmVIx3tM8Qd7mYL2HbZAItiYiVWvYWmkQFlYkM6etZBnrwZDZD'
 	    body = {:recipient => {:id => self.sender_id}, :message => msg}
 	    fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
 	    begin
