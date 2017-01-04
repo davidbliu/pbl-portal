@@ -34,15 +34,19 @@ def pablo
     # postback_params = {"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}], "controller"=>"pablo", "action"=>"pablo", "pablo"=>{"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}]}}
     # params = text_params  
 
+  puts 'RECEIVED MESSAGE'
   token = 'EAAISyxS1I2MBABvEgMrZAct7oOOdSUc5RYBy6IPtnblsBOyGqUy6x2nmPDMyVPg44YTVytnMRNICNsMgkGosW8bj6SApMtNw1ZBHOy2LFZC7gQPAt42kfs6A202sp5XXk4zbZCVe5wZBTv8ZBicMS4mwQKqw10cvimtZBBL4Uf1JgZDZD'
-  body = {:recipient => {:id => params["entry"][0]["messaging"][0]["sender"]["id"]}, :message => 'hello there'}
-  fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
-  begin
-    RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
-  rescue => e
-    puts 'problem sending message'
-    puts e
-  end
+  # body = {:recipient => {:id => params["entry"][0]["messaging"][0]["sender"]["id"]}, :message => 'hello there'}
+  # fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
+  # begin
+  #   RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
+  # rescue => e
+  #   puts 'problem sending message'
+  #   puts e
+  # end
+  sender = params["entry"][0]["messaging"][0]
+  event = FBMessage.new(sender)
+  event.bot.send_msg({:text => 'Hello World'})
   # seen_seq = []
   # messaging_events = params["entry"][0]["messaging"]
   #   messaging_events.each do |event|
@@ -81,8 +85,8 @@ def pablo
   #     #   puts params
   #     # end
   #   end
-    render :text => "received message", status: 200
-    # render nothing: true, status: 200
+    # render :text => "received message", status: 200
+  render nothing: true, status: 200
 end
 
 
