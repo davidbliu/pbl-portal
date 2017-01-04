@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get '/cookie_hack' => 'main#cookie_hack'
 
   post '/pablo' => 'pablo#pablo'
+  post '/hook' => 'pablo#pablo'
   get '/pablo_test' => 'pablo#pablo'
   get '/boba' => 'pablo#boba'
   get '/pablo/admin'=>'pablo#admin'
