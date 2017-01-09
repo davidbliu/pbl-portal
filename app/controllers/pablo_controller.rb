@@ -34,17 +34,17 @@ def pablo
     # postback_params = {"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}], "controller"=>"pablo", "action"=>"pablo", "pablo"=>{"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}]}}
     # params = text_params  
   puts 'LOGGING PABLO'
-  puts params["entry"][0]["messaging"][0]["sender"]["id"]
+  # puts params["entry"][0]["messaging"][0]["sender"]["id"]
 
-  token = 'EAAISyxS1I2MBABvEgMrZAct7oOOdSUc5RYBy6IPtnblsBOyGqUy6x2nmPDMyVPg44YTVytnMRNICNsMgkGosW8bj6SApMtNw1ZBHOy2LFZC7gQPAt42kfs6A202sp5XXk4zbZCVe5wZBTv8ZBicMS4mwQKqw10cvimtZBBL4Uf1JgZDZD'
-  body = {:recipient => {:id => params["entry"][0]["messaging"][0]["sender"]["id"]}, :message => 'hello there'}
-  fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
-  begin
-    RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
-  rescue => e
-    puts 'problem sending message'
-    puts e
-  end
+  # token = 'EAAISyxS1I2MBABvEgMrZAct7oOOdSUc5RYBy6IPtnblsBOyGqUy6x2nmPDMyVPg44YTVytnMRNICNsMgkGosW8bj6SApMtNw1ZBHOy2LFZC7gQPAt42kfs6A202sp5XXk4zbZCVe5wZBTv8ZBicMS4mwQKqw10cvimtZBBL4Uf1JgZDZD'
+  # body = {:recipient => {:id => params["entry"][0]["messaging"][0]["sender"]["id"]}, :message => 'hello there'}
+  # fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
+  # begin
+  #   RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
+  # rescue => e
+  #   puts 'problem sending message'
+  #   puts e
+  # end
   #####################################################
   # sender = params["entry"][0]["messaging"][0]
   # event = FBMessage.new(sender)
