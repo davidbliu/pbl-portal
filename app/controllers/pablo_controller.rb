@@ -33,20 +33,23 @@ def pablo
     # like_params = {"object"=>"page", "entry"=>[{"id"=>1725116921106681, "time"=>1460927519247, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1725116921106681}, "timestamp"=>1460927519219, "message"=>{"mid"=>"mid.1460927519209:2d667cda3db4ff8910", "seq"=>12, "sticker_id"=>369239263222822, "attachments"=>[{"type"=>"image", "payload"=>{"url"=>"https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xfa1/t39.1997-6/851557_369239266556155_759568595_n.png"}}]}}]}], "controller"=>"application", "action"=>"hook", "application"=>{"object"=>"page", "entry"=>[{"id"=>1725116921106681, "time"=>1460927519247, "messaging"=>[{"sender"=>{"id"=>1055216967870621}, "recipient"=>{"id"=>1725116921106681}, "timestamp"=>1460927519219, "message"=>{"mid"=>"mid.1460927519209:2d667cda3db4ff8910", "seq"=>12, "sticker_id"=>369239263222822, "attachments"=>[{"type"=>"image", "payload"=>{"url"=>"https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xfa1/t39.1997-6/851557_369239266556155_759568595_n.png"}}]}}]}]}}
     # postback_params = {"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}], "controller"=>"pablo", "action"=>"pablo", "pablo"=>{"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}]}}
     # params = text_params  
+  puts 'LOGGING PABLO'
+  puts params["entry"][0]["messaging"][0]["sender"]["id"]
 
-  puts 'RECEIVED MESSAGE'
   token = 'EAAISyxS1I2MBABvEgMrZAct7oOOdSUc5RYBy6IPtnblsBOyGqUy6x2nmPDMyVPg44YTVytnMRNICNsMgkGosW8bj6SApMtNw1ZBHOy2LFZC7gQPAt42kfs6A202sp5XXk4zbZCVe5wZBTv8ZBicMS4mwQKqw10cvimtZBBL4Uf1JgZDZD'
-  # body = {:recipient => {:id => params["entry"][0]["messaging"][0]["sender"]["id"]}, :message => 'hello there'}
-  # fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
-  # begin
-  #   RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
-  # rescue => e
-  #   puts 'problem sending message'
-  #   puts e
-  # end
-  sender = params["entry"][0]["messaging"][0]
-  event = FBMessage.new(sender)
-  event.bot.send_msg({:text => 'Hello World'})
+  body = {:recipient => {:id => params["entry"][0]["messaging"][0]["sender"]["id"]}, :message => 'hello there'}
+  fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
+  begin
+    RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
+  rescue => e
+    puts 'problem sending message'
+    puts e
+  end
+  #####################################################
+  # sender = params["entry"][0]["messaging"][0]
+  # event = FBMessage.new(sender)
+  # event.bot.send_msg({:text => 'Hello World'})
+  #####################################################
   # seen_seq = []
   # messaging_events = params["entry"][0]["messaging"]
   #   messaging_events.each do |event|

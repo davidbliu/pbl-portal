@@ -260,7 +260,7 @@ class BotMember < ActiveRecord::Base
     end
 
     def send_msg(msg)
-    	token = 'EAAISyxS1I2MBAN6qGdsYs5PreTTyiQ9ZBAzRV48BDPsjUREDuLRHRDt4yZCYC0ZB9er1OnIumZBEqdjZBFhKjaFMGr4bQJ7kd6udYSs5jUM1bp4HOnLMaeHxt1wE68qtmVIx3tM8Qd7mYL2HbZAItiYiVWvYWmkQFlYkM6etZBnrwZDZD'
+    	token = 'EAAISyxS1I2MBABvEgMrZAct7oOOdSUc5RYBy6IPtnblsBOyGqUy6x2nmPDMyVPg44YTVytnMRNICNsMgkGosW8bj6SApMtNw1ZBHOy2LFZC7gQPAt42kfs6A202sp5XXk4zbZCVe5wZBTv8ZBicMS4mwQKqw10cvimtZBBL4Uf1JgZDZD'
 	    body = {:recipient => {:id => self.sender_id}, :message => msg}
 	    fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
 	    begin
