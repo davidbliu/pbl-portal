@@ -34,6 +34,13 @@ def pablo
     # postback_params = {"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}], "controller"=>"pablo", "action"=>"pablo", "pablo"=>{"object"=>"page", "entry"=>[{"id"=>1709967682591538, "time"=>1460929057849, "messaging"=>[{"sender"=>{"id"=>951139591673712}, "recipient"=>{"id"=>1709967682591538}, "timestamp"=>1460929057849, "postback"=>{"payload"=>"help"}}]}]}}
     # params = text_params  
   puts 'LOGGING PABLO'
+
+  messaging_events = params["entry"][0]["messaging"]
+    messaging_events.each do |event|
+      FBMessage.new(event)
+    end
+  end
+
   # puts params["entry"][0]["messaging"][0]["sender"]["id"]
 
   # token = 'EAAISyxS1I2MBABvEgMrZAct7oOOdSUc5RYBy6IPtnblsBOyGqUy6x2nmPDMyVPg44YTVytnMRNICNsMgkGosW8bj6SApMtNw1ZBHOy2LFZC7gQPAt42kfs6A202sp5XXk4zbZCVe5wZBTv8ZBicMS4mwQKqw10cvimtZBBL4Uf1JgZDZD'
@@ -88,8 +95,8 @@ def pablo
   #     #   puts params
   #     # end
   #   end
-    # render :text => "received message", status: 200
-  render nothing: true, status: 200
+  render :text => "received message", status: 200
+  # render nothing: true, status: 200
 end
 
 
