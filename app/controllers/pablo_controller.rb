@@ -36,9 +36,8 @@ def pablo
   puts 'LOGGING PABLO'
 
   messaging_events = params["entry"][0]["messaging"]
-    messaging_events.each do |event|
-      FBMessage.new(event)
-    end
+  messaging_events.each do |event|
+    FBMessage.new(event)
   end
 
   # puts params["entry"][0]["messaging"][0]["sender"]["id"]
