@@ -7,6 +7,7 @@ class PabloController < ApplicationController
     else
       render :template => 'pablo/broadcast'
     end
+  end
 
   def hook
     render text: params["hub.challenge"]

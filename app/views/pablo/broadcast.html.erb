@@ -1,11 +1,11 @@
 <div>
 	<h1>Broadcast to the entire club</h1>
 	<textarea id = 'broadcast-text'></textarea>
-	<button class = 'send-btn'>Send</button>
 </div>
+<button class = 'send-btn'>Send</button>
 <script type = 'text/javascript'>
 $('.send-btn').click(function(){
-	alert($('#broadcast-text').value());
+	alert($('#broadcast-text').val());
 	$('#broadcast-text').val('');
 	// $.ajax({
 	// 	url:'/pablo/broadcast',
