@@ -6,6 +6,10 @@ class Pablo
     951139591673712
   end
 
+  def self.pablo_admin
+    ['david.yan@berkeley.edu', 'justin.me@berkeley.edu', 'wilson1.yan@berkeley.edu', 'jackzhang1067@berkeley.edu']
+  end
+
    def self.help_response(member)
     return {
     attachment: {

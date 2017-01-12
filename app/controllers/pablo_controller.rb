@@ -1,7 +1,12 @@
 class PabloController < ApplicationController
   skip_before_filter :is_signed_in
 
-
+  def admin_broadcast
+    if Pablo.pablo_admin.exclude?(myEmail)
+      render :template => 'members/unauthorized'
+    else
+      render :template => 'pablo/broadcast'
+    end
 
   def hook
     render text: params["hub.challenge"]
@@ -37,7 +42,8 @@ def pablo
 
   messaging_events = params["entry"][0]["messaging"]
   messaging_events.each do |event|
-    FBMessage.new(event)
+    event = FBMessage.new(event)
+    event.bot.send_msg({:text => "hi there"})
   end
 
   # puts params["entry"][0]["messaging"][0]["sender"]["id"]
