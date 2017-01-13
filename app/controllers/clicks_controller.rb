@@ -2,7 +2,7 @@ class ClicksController < ApplicationController
 	@@clicks_per_page = 1000
 	def index
 		@clicks = Click.order('created_at desc')
-			.where('email IS NULL or email != ?', 'davidbliu@gmail.com')
+			.where('email IS NULL or (email != ? and email != ?)', 'davidbliu@gmail.com', 'daliu@linkedin.com')
 		# TODO: figure out why need explicit null check or null emails wont show
 		if params[:name]
 			@clicks = @clicks.where(name: params[:name])
