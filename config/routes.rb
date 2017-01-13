@@ -3,10 +3,15 @@ Rails.application.routes.draw do
   get '/cookie_hack' => 'main#cookie_hack'
 
   post '/pablo' => 'pablo#pablo'
+  # post '/hook' => 'pablo#pablo'
   get '/pablo_test' => 'pablo#pablo'
   get '/boba' => 'pablo#boba'
   get '/pablo/admin'=>'pablo#admin'
   post '/pablo/send/:id' => 'pablo#admin_send'
+  # get '/hook' => 'pablo#hook'
+  get '/pablo' => 'pablo#hook'
+  get '/pablo/broadcast' => 'pablo#admin_broadcast'
+  post '/pablo/broadcast' => 'pablo#broadcast'
 
   # authentication 
   get "/auth/google_oauth2/callback", to: "auth#google_callback"
