@@ -90,6 +90,7 @@ class PabloController < ApplicationController
       event = FBMessage.new(sender)
       event.bot.send_msg({:text => param[:msg]})
     end
+    render nothing: true, status: 200
   end
 
 
