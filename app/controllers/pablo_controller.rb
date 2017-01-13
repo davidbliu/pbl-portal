@@ -67,17 +67,19 @@ class PabloController < ApplicationController
           event.bot.send_msg({:text => "error"})
         end
       else
-        seen_seq << event.seq
-        if event.forwarded_message
-          if event.bot.group_id
-            event.bot.group.each do |bot|
-              bot.send_msg(event.forwarded_message)
-            end
-          else
-            event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
-            event.bot.send_msg(Pablo.joke_response)
-          end
-        end
+        # seen_seq << event.seq
+        # if event.forwarded_message
+        #   if event.bot.group_id
+        #     event.bot.group.each do |bot|
+        #       bot.send_msg(event.forwarded_message)
+        #     end
+        #   else
+        #     event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
+        #     event.bot.send_msg(Pablo.joke_response)
+        #   end
+        # end
+        event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
+        event.bot.send_msg(Pablo.joke_response)
       end
     end
     render nothing: true, status: 200
