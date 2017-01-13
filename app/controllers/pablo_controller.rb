@@ -84,8 +84,9 @@ class PabloController < ApplicationController
   end
 
   def broadcast
-    members = BotMember.where(:is_active => true)
-    members.each do |member|
+    active_members = Member.where(:is_active => true)
+    active_members.each do |member|
+      member = BotMember.where(:email => member.email).first
       sender = {"sender" => {"id" => member.sender_id}}
       event = FBMessage.new(sender)
       event.bot.send_msg({:text => param[:msg]})
