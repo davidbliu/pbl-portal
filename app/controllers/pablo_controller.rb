@@ -88,9 +88,7 @@ class PabloController < ApplicationController
     active_members.each do |member|
       begin
         member = BotMember.where(:email => member.email).first
-        sender = {"sender" => {"id" => member.sender_id}}
-        event = FBMessage.new(sender)
-        event.bot.send_msg({:text => param[:msg]})
+        member.send_msg({:text => param[:msg]})
       rescue
         Rails.logger.debug('member email was not found')
       end
