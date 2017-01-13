@@ -89,7 +89,8 @@ class PabloController < ApplicationController
       begin
         member = BotMember.where(:email => member.email).first
         member.send_msg({:text => param[:msg]})
-      rescue
+      rescue Exception => e
+        Rails.logger.debug(e)
         Rails.logger.debug('member email was not found')
       end
     end
