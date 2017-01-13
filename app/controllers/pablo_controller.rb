@@ -92,7 +92,7 @@ class PabloController < ApplicationController
         event = FBMessage.new(sender)
         event.bot.send_msg({:text => param[:msg]})
       rescue
-        Rails.logger.debug(member.email + ' was not found')
+        Rails.logger.debug('member email was not found')
       end
     end
     render nothing: true, status: 200
