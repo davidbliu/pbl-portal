@@ -17,7 +17,7 @@ class TablingNotifier:
     def send_fb_message(self, msg, email):
         sender_id = self.get_sender_id_from_email(email)
         if not sender_id:
-            print('Person not found')
+            print('Person not found {0}'.format(email))
             return
 
         data = {"entry": [{"messaging": [{"sender": {"id": str(sender_id)}, "message": {"text": msg}}]}]}
@@ -62,7 +62,7 @@ class TablingNotifier:
         for time in self.member_emails.keys():
             time_as_string = converter.get_time_string(time)
             for email in self.member_emails[time]:
-                self.send_fb_message("Hi {0}, your tabling slot this week is {1}".format(member[0],time_as_string), email)  
+                self.send_fb_message("/forward:Hi {0}, your tabling slot this week is {1}".format(member[0],time_as_string), email)  
 
     def get_sender_id_from_email(self, email):
         cur = self.conn.cursor()
@@ -87,5 +87,6 @@ class TablingNotifier:
         for email in self.member_emails[time]:
             hour = time % 24
             hour = (str(hour - 12) + 'pm') if hour > 12 else (str(hour) + 'am')
-            self.send_fb_message("Just a reminder that your tabling at {0} starts in an hour".format(hour), email)
-
+            self.send_fb_message("/forward:Just a reminder that your tabling at {0} starts in an hour".format(hour), email)
+tn = TablingNotifier()
+tn.send_fb_message('testing', 'wilson1.yan@berkeley.edu')

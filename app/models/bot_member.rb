@@ -41,8 +41,7 @@ class BotMember < ActiveRecord::Base
 	end
 
 	def self.get_name_from_fb(sender_id)
-    token = "EAADlFtqK2ykBAOTmdimj54wnrLPZC2x0CQog5bXH7Aiv7e49D2AWOgOk8ZA9G6ieGFY68VZAIH726aczpEKvMxaU1sSjpKsKX4UEeF8ilLXN54ILRFJbgZCOyPXuayz2HTWECCP8upDmrsWsOs9IaLHipN4wlZAG9L5LQ18Th3AZDZD"
-		fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+token.to_s
+		fb_url = 'https://graph.facebook.com/v2.6/'+sender_id.to_s+'?fields=first_name,last_name,profile_pic&access_token='+ENV['FB_ACCESS_TOKEN']
 		begin
 			r = RestClient.get fb_url, :content_type => :json, :accept => :json
 			r = JSON.parse(r)
@@ -260,21 +259,14 @@ class BotMember < ActiveRecord::Base
     end
 
     def send_msg(msg)
-      token = "EAADlFtqK2ykBAOTmdimj54wnrLPZC2x0CQog5bXH7Aiv7e49D2AWOgOk8ZA9G6ieGFY68VZAIH726aczpEKvMxaU1sSjpKsKX4UEeF8ilLXN54ILRFJbgZCOyPXuayz2HTWECCP8upDmrsWsOs9IaLHipN4wlZAG9L5LQ18Th3AZDZD"
 	    body = {:recipient => {:id => self.sender_id}, :message => msg}
-	    fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+token
+	    fb_url = 'https://graph.facebook.com/v2.6/me/messages?access_token='+ENV['FB_ACCESS_TOKEN']
 	    begin
-        Rails.logger.debug("In Begin")
-        Rails.logger.debug(body.to_json)
-        Rails.logger.debug(fb_url)
 	    	RestClient.post fb_url, body.to_json, :content_type => :json, :accept => :json
-        Rails.logger.debug("Posted")
 	    	if msg.keys.include?(:text)
 		    	log_pablo(msg[:text])
 		    end
 	    rescue => e
-        Rails.logger.debug("error")
-        Rails.logger.debug(e)
 	    	puts 'problem sending message'
 	    	puts e
 	    end
