@@ -55,7 +55,6 @@ class PabloController < ApplicationController
       event = FBMessage.new(sender)
       text = sender["message"]["text"]
       event.bot.log(event.msg)
-
       if event.is_delivery?
 #      elsif (event.seq.nil? and not event.is_postback?) or seen_seq.include?(event.seq)
       elsif event.member == nil
@@ -67,9 +66,15 @@ class PabloController < ApplicationController
         rescue
           event.bot.send_msg({:text => "error"})
         end
-      elsif text.include?(':') && text.split(':')[0].strip == '/forward'
-        Rails.logger.debug(text.split(':')[1].strip)
-        event.bot.send_msg({:text => text.split(':')[1].strip})
+      elsif text.start_with?('/')
+        # Format: /command: <text>
+        command = text.split(':')[0].strip
+        input = text.split(':')[1].strip
+        if command == '/forward'
+          event.bot.send_msg({:text => input})
+        else
+          # Unknown command
+        end
       else
         seen_seq << event.seq
         if event.forwarded_message

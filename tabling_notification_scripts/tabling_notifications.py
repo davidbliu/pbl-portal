@@ -15,9 +15,8 @@ class TablingNotifier:
         self.member_emails = self.get_tabling_times_with_members()
 
     def send_fb_message(self, msg, email):
-        sender_id = self.get_sender_id_from_email(email)
+        sender_id = self.get_sender_id_from_email(email, boolean_attribute='subscribed_to_tabling')
         if not sender_id:
-            print('Person not found {0}'.format(email))
             return
 
         data = {"entry": [{"messaging": [{"sender": {"id": str(sender_id)}, "message": {"text": msg}}]}]}
@@ -64,14 +63,20 @@ class TablingNotifier:
             for email in self.member_emails[time]:
                 self.send_fb_message("/forward:Hi {0}, your tabling slot this week is {1}".format(member[0],time_as_string), email)  
 
-    def get_sender_id_from_email(self, email):
+    def get_sender_id_from_email(self, email, boolean_attribute=''): 
         cur = self.conn.cursor()
         cur.execute("""select name from members where email = '{}'""".format(email))
         member = cur.fetchall()[0]
-        cur.execute("""select sender_id from bot_members where name = '{0}'""".format(member[0]))
+
+        if boolean_attribute:
+            cur.execute("""select {} from bot_members where name = '{}'""".format(boolean_attribute, member[0]))
+            fetch = cur.fetchall()
+            if not fetch or not fetch[-1][0]:
+                return None
+
+        cur.execute("""select sender_id from bot_members where name = '{}'""".format(member[0]))
         fetch = cur.fetchall()
-        
-        return fetch[-1][0] if fetch else None
+        return fetch[-1][0]
 
     def update(self):
         new_member_emails = self.get_tabling_times_with_members()
@@ -88,3 +93,4 @@ class TablingNotifier:
             hour = time % 24
             hour = (str(hour - 12) + 'pm') if hour > 12 else (str(hour) + 'am')
             self.send_fb_message("/forward:Just a reminder that your tabling at {0} starts in an hour".format(hour), email)
+
