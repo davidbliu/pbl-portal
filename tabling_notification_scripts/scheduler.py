@@ -1,6 +1,5 @@
 from tabling_notifications import TablingNotifier
 from apscheduler.schedulers.blocking import BlockingScheduler
-import time
 
 class JobManager:
 
@@ -9,6 +8,7 @@ class JobManager:
         self.sched = BlockingScheduler(timezone='America/Los_Angeles')
         self.add_reminder_jobs()
         self.add_tabling_notification_job()
+        self.add_update_job()
 
     def add_reminder_jobs(self):
         jobs = []
@@ -25,6 +25,12 @@ class JobManager:
 
     def add_tabling_notification_job(self):
         self.sched.add_job(self.notifier.notify_time_slots, trigger='cron', month='1-5,8-12', day_of_week=6)
+
+    def add_update_job(self):
+        def job():
+            self.notifier.update()
+        # Updates the time slot members every 10 minutes (to keep track of time switches)
+        self.sched.add_job(job, trigger='interval', minutes=10)
             
     def start(self):
         self.sched.start()

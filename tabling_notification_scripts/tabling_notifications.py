@@ -5,25 +5,27 @@ import psycopg2
 from time_converter import TimeConverter
 
 class TablingNotifier:
-    POST_URL = 'https://wilson.berkeley-pbl.com/pablo'
+    POST_URL = 'https://wilson.berkeley-pbl.com/pablo/send/{id}'
     DBNAME = "'v2_development'"
     USER = "'postgres'"
     PASSWORD = "'password'"
 
     def __init__(self):
         self.conn = self.connect_to_db() 
+        self.time_converter = TimeConverter()
         self.member_emails = self.get_tabling_times_with_members()
 
     def send_fb_message(self, msg, email):
-        sender_id = self.get_sender_id_from_email(email, boolean_attribute='subscribed_to_tabling')
-        if not sender_id:
+        member_id = self.get_id_from_email(email, boolean_attribute='subscribed_to_tabling')
+        if not member_id:
             return
 
-        data = {"entry": [{"messaging": [{"sender": {"id": str(sender_id)}, "message": {"text": msg}}]}]}
+#        data = {"entry": [{"messaging": [{"sender": {"id": str(sender_id)}, "message": {"text": msg}}]}]}
+        data = {"msg": msg}
 
-        response = requests.post(self.POST_URL, json=data)
+        response = requests.post(self.POST_URL.format(id=member_id), json=data)
         if response.status_code != 200:
-            print('Error {0}, failed to send message: {1}, to sender {2}, email {3}'.format(response.status_code, msg, sender_id, email))
+            print('Error {0}, failed to send message: {1}, to sender {2}, email {3}'.format(response.status_code, msg, member_id, email))
         return response
 
     def connect_to_db(self):
@@ -48,22 +50,22 @@ class TablingNotifier:
 
     def parse_emails(self, members_str):
         members = []
-        # TODO change parsing method, does not work for emails with '-'
-        for s in members_str.split('-'):
+        for s in members_str.split(' '):
             if '@' in s:
+                if s[-1] == '-':
+                    s = s[:-1]
                 members.append(s.strip())
         return members
 
     def notify_time_slots(self):
-        self.update()
+        self.member_emails = self.get_tabling_times_with_members()
         cur = self.conn.cursor()
-        converter = TimeConverter()
         for time in self.member_emails.keys():
-            time_as_string = converter.get_time_string(time)
+            time_as_string = self.time_converter.get_time_string(time)
             for email in self.member_emails[time]:
-                self.send_fb_message("/forward:Hi {0}, your tabling slot this week is {1}".format(member[0],time_as_string), email)  
+                self.send_fb_message("Hi {0}, your tabling slot this week is {1}".format(member[0],time_as_string), email)  
 
-    def get_sender_id_from_email(self, email, boolean_attribute=''): 
+    def get_id_from_email(self, email, boolean_attribute=''): 
         cur = self.conn.cursor()
         cur.execute("""select name from members where email = '{}'""".format(email))
         member = cur.fetchall()[0]
@@ -74,23 +76,25 @@ class TablingNotifier:
             if not fetch or not fetch[-1][0]:
                 return None
 
-        cur.execute("""select sender_id from bot_members where name = '{}'""".format(member[0]))
+        cur.execute("""select id from bot_members where name = '{}'""".format(member[0]))
         fetch = cur.fetchall()
         return fetch[-1][0]
 
     def update(self):
         new_member_emails = self.get_tabling_times_with_members()
-#        for time in new_member_emails:
-#            if set(new_member_emails[time]) != set(self.member_emails[time]):
-#                changed_members = [m for m in new_member_emails[time] if m not in self.member_emails[time]]
-#                for member in changed_members:
-#                    self.
+        for time in new_member_emails:
+            if set(new_member_emails[time]) != set(self.member_emails[time]):
+                changed_members = [m for m in new_member_emails[time] if m not in self.member_emails[time]]
+                for member in changed_members:
+                    if not self.time_converter.has_passed(time):
+                        time_str = self.time_converter.get_time_string(time)
+                        self.send_fb_message("Your tabling slot has been changed to {}".format(time_str), member)
+        self.member_emails = new_member_emails
 
     def remind_time_slot(self, time):
-        self.update()
         cur = self.conn.cursor()
         for email in self.member_emails[time]:
-            hour = time % 24
-            hour = (str(hour - 12) + 'pm') if hour > 12 else (str(hour) + 'am')
-            self.send_fb_message("/forward:Just a reminder that your tabling at {0} starts in an hour".format(hour), email)
-
+            hour_str = self.time_converter.get_hour(time)
+            self.send_fb_message("Just a reminder that your tabling at {} starts in an hour".format(hour_str), email)
+tn = TablingNotifier()
+tn.remind_time_slot(11)

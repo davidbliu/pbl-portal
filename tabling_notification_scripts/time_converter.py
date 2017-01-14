@@ -1,3 +1,7 @@
+import datetime
+from pytz import timezone, utc
+from datetime import datetime
+
 class TimeConverter:
     DAY_STRINGS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     
@@ -16,6 +20,19 @@ class TimeConverter:
         if h == 0:
             h = 12
         half = 'pm' if hour >= 12 else 'am'
-        hour_string = "{0}:00".format(h) + half
+        hour_string = str(h) + half
         return hour_string
+
+    def utc_to_pacific(self, time):
+        tz = timezone('America/Los_Angeles')
+        return utc.localize(time).astimezone(tz)
     
+    def now(self):
+        return datetime.now()
+    
+    def has_passed(self, time):
+        hour, week_day = time % 24, time // 24
+
+        current = self.utc_to_pacific(self.now())
+        current_h, current_d = current.hour, current.weekday()
+        return week_day == 6 or  week_day < current_d or (hour < current_h and week_day == current_d)
