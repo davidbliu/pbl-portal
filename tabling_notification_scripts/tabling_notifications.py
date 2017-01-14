@@ -24,7 +24,7 @@ class TablingNotifier:
 
         response = requests.post(self.POST_URL, json=data)
         if response.status_code != 200:
-            print('Error {0}, failed to send message: {1}, to sender {2}'.format(response.status_code, msg, sender_id))
+            print('Error {0}, failed to send message: {1}, to sender {2}, email {3}'.format(response.status_code, msg, sender_id, email))
         return response
 
     def connect_to_db(self):
@@ -88,5 +88,3 @@ class TablingNotifier:
             hour = time % 24
             hour = (str(hour - 12) + 'pm') if hour > 12 else (str(hour) + 'am')
             self.send_fb_message("/forward:Just a reminder that your tabling at {0} starts in an hour".format(hour), email)
-tn = TablingNotifier()
-tn.send_fb_message('testing', 'wilson1.yan@berkeley.edu')

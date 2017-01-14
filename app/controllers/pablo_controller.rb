@@ -52,11 +52,12 @@ class PabloController < ApplicationController
     seen_seq = []
     messaging_events = params["entry"][0]["messaging"]
     messaging_events.each do |sender|
-      event = FBMessage.new(event)
+      event = FBMessage.new(sender)
       text = sender["message"]["text"]
       event.bot.log(event.msg)
+
       if event.is_delivery?
-      elsif (event.seq.nil? and not event.is_postback?) or seen_seq.include?(event.seq)
+#      elsif (event.seq.nil? and not event.is_postback?) or seen_seq.include?(event.seq)
       elsif event.member == nil
         puts "Pablo doesnt recognize #{event.sender_id}"
       elsif event.is_pablo_command?
@@ -66,7 +67,8 @@ class PabloController < ApplicationController
         rescue
           event.bot.send_msg({:text => "error"})
         end
-      elsif text.split(':')[0].strip == '/forward':
+      elsif text.include?(':') && text.split(':')[0].strip == '/forward'
+        Rails.logger.debug(text.split(':')[1].strip)
         event.bot.send_msg({:text => text.split(':')[1].strip})
       else
         # seen_seq << event.seq
