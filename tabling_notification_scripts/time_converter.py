@@ -27,12 +27,17 @@ class TimeConverter:
         tz = timezone('America/Los_Angeles')
         return utc.localize(time).astimezone(tz)
     
+    def eastern_to_pacific(self, time):
+        pacific = timezone('America/Los_Angeles')
+        eastern = timezone('America/New_York')
+        return eastern.localize(time).astimezone(pacific)
+
     def now(self):
         return datetime.now()
     
     def has_passed(self, time):
         hour, week_day = time % 24, time // 24
-
+        # Change utc_to_pacific to eastern_to_pacific if the server runs on eastern time
         current = self.utc_to_pacific(self.now())
         current_h, current_d = current.hour, current.weekday()
         return week_day == 6 or  week_day < current_d or (hour < current_h and week_day == current_d)

@@ -5,6 +5,7 @@ import psycopg2
 from time_converter import TimeConverter
 
 class TablingNotifier:
+    # Change here to correct post url
     POST_URL = 'https://wilson.berkeley-pbl.com/pablo/send/{id}'
     DBNAME = "'v2_development'"
     USER = "'postgres'"
@@ -20,7 +21,6 @@ class TablingNotifier:
         if not member_id:
             return
 
-#        data = {"entry": [{"messaging": [{"sender": {"id": str(sender_id)}, "message": {"text": msg}}]}]}
         data = {"msg": msg}
 
         response = requests.post(self.POST_URL.format(id=member_id), json=data)
@@ -96,5 +96,3 @@ class TablingNotifier:
         for email in self.member_emails[time]:
             hour_str = self.time_converter.get_hour(time)
             self.send_fb_message("Just a reminder that your tabling at {} starts in an hour".format(hour_str), email)
-tn = TablingNotifier()
-tn.remind_time_slot(11)
