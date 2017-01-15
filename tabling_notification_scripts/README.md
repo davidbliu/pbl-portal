@@ -17,4 +17,4 @@ ln -s /usr/share/zoneinfo/America/Los_Angeles localtime
 
 To start the program
 
-Run 'python scheduler.py'
+python scheduler.py &
