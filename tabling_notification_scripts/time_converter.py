@@ -37,7 +37,8 @@ class TimeConverter:
     
     def has_passed(self, time):
         hour, week_day = time % 24, time // 24
-        # Change utc_to_pacific to eastern_to_pacific if the server runs on eastern time
-        current = self.utc_to_pacific(self.now())
+        # Change utc_to_pacific to eastern_to_pacific if the server runs on eastern time, or if the server is one pacific time, set current = self.now()
+        # current = self.utc_to_pacific(self.now())
+        current = self.now()
         current_h, current_d = current.hour, current.weekday()
         return week_day == 6 or  week_day < current_d or (hour < current_h and week_day == current_d)
