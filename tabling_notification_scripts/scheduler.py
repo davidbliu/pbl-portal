@@ -3,13 +3,16 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 class JobManager:
 
+    LOCAL_TIMEZONE = 'America/Los_Angeles'
+
     def __init__(self):
         self.notifier = TablingNotifier()
-        self.sched = BlockingScheduler(timezone='America/Los_Angeles')
+        self.sched = BlockingScheduler(timezone=self.LOCAL_TIMEZONE)
         self.add_reminder_jobs()
         self.add_tabling_notification_job()
         self.add_update_job()
 
+    # Adds cron jobs for each time slot
     def add_reminder_jobs(self):
         jobs = []
         for time in self.notifier.member_emails.keys():

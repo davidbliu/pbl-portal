@@ -42,3 +42,7 @@ class TimeConverter:
         current = self.now()
         current_h, current_d = current.hour, current.weekday()
         return week_day == 6 or  week_day < current_d or (hour < current_h and week_day == current_d)
+
+    # TODO Add in function to return True if tabling day is a holiday, finals, etc
+    def no_tabling_day(self, date):
+        pass

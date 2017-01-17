@@ -5,8 +5,11 @@ import psycopg2
 from time_converter import TimeConverter
 
 class TablingNotifier:
-    # Change here to correct post url
+    SUBSCRIBED_TO_TABLING = 'subscribed_to_tabling'
+
+    # Change here to correct post url, make sure to include the 'id' string format
     POST_URL = 'https://wilson.berkeley-pbl.com/pablo/send/{id}'
+    # Makge sure that DBNAME, USER, PASSWORD have single quotes
     DBNAME = "'v2_development'"
     USER = "'postgres'"
     PASSWORD = "'password'"
@@ -17,7 +20,7 @@ class TablingNotifier:
         self.member_emails = self.get_tabling_times_with_members()
 
     def send_fb_message(self, msg, email):
-        member_id = self.get_id_from_email(email, boolean_attribute='subscribed_to_tabling')
+        member_id = self.get_id_from_email(email, boolean_attribute=self.SUBSCRIBED_TO_TABLING)
         if not member_id:
             return
 
@@ -83,14 +86,13 @@ class TablingNotifier:
     def update(self):
         new_member_emails = self.get_tabling_times_with_members()
         for time in new_member_emails:
-            if set(new_member_emails[time]) != set(self.member_emails[time]):
-                changed_members = [m for m in new_member_emails[time] if m not in self.member_emails[time]]
-                for member in changed_members:
-                    if not self.time_converter.has_passed(time):
-                        time_str = self.time_converter.get_time_string(time)
-                        self.send_fb_message("Your tabling slot has been changed to {}".format(time_str), member)
+            changed_members = [m for m in new_member_emails[time] if m not in self.member_emails[time]]
+            for member in changed_members:
+                if not self.time_converter.has_passed(time):
+                    time_str = self.time_converter.get_time_string(time)
+                    self.send_fb_message("Your tabling slot has been changed to {}".format(time_str), member)
         self.member_emails = new_member_emails
-
+        
     def remind_time_slot(self, time):
         cur = self.conn.cursor()
         for email in self.member_emails[time]:
