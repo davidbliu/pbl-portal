@@ -414,6 +414,14 @@ class Pablo
     end
   end
 
+  def self.create_pairs
+    Rails.logger.debug('Creating pairs')
+    members = Pablo.get_active_bot_members
+    members, pairs = Pablo.generate_pairs(members, false)
+    Pablo.assign_pairs(members, pairs)
+    Rails.logger.debug('Done')
+  end
+
   def self.reupdate_pairs
     Rails.logger.debug('Reupdating randomized pairings')
     members = Pablo.get_active_bot_members
