@@ -8,7 +8,7 @@ $('.send-btn').click(function(){
 	// alert($('#broadcast-text').val());
 	// $('#broadcast-text').val('');
 	$.ajax({
-		url:'/pablo/broadcast_all',
+		url:'/pablo/broadcast',
 		type:'post',
 		data:{
 			msg: $('#broadcast-text').val()
