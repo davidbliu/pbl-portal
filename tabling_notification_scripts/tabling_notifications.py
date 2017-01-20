@@ -20,7 +20,7 @@ class TablingNotifier:
         self.member_emails = self.get_tabling_times_with_members()
 
     def send_fb_message(self, msg, email):
-        member_id = self.get_id_from_email(email, boolean_attribute=self.SUBSCRIBED_TO_TABLING)
+        member_id = self.get_id_from_email(email)
         if not member_id:
             return
 

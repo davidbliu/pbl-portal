@@ -403,4 +403,70 @@ class Pablo
       event.bot.send_msg({:text => 'oops i fudged'})
     end
   end
+
+  def self.reupdate_pairs
+    Rails.logger.debug('Reupdating randomized pairings')
+    members = Pablo.get_active_bot_members
+    members, pairs = Pablo.generate_pairs(members)
+    Pablo.assign_pairs(members, pairs)
+    Rails.logger.debug('Finished')
+  end
+
+  def self.assign_pairs(members, member_groups)
+    Rails.logger.debug('Assigning Pairs')
+    n = members.length
+    (0...n).each do |i|
+      BotMember.where(:id => members[i].id).update_all(:group_id => member_groups[i])
+    end
+  end
+
+  def self.get_active_bot_members
+    Rails.logger.debug('Getting active bot member')
+    members = []
+    Member.where(:is_active => true).each do |m|
+      member = BotMember.where(:name => m.name).take
+      if member != nil
+        members << member
+      end
+    end  
+    return members
+  end
+
+  def self.generate_pairs(members)
+    Rails.logger.debug('Generating pairs')
+    members = members.shuffle
+    member_groups = []
+    num_members = members.length
+    (0...num_members).each do |i| 
+      member_groups << i / 2
+    end
+    if num_members % 2 == 1
+      member_groups[-1] = member_groups[-2]
+    end
+    
+    if !check(members, member_groups)
+     members, member_groups = self.generate_pairs(members) 
+    end
+
+    return members, member_groups
+  end
+
+  def self.check(members, member_groups)
+    e = members.select { |m| m == nil }
+    num_members = members.length
+    (0...num_members/2).each do |i|
+      member = members[2*i]
+      partner = members[2*i+1]
+      last_group = members.select do |m|
+        m.group_id == member.group_id 
+      end
+      last_group.each { |m| Rails.logger.debug(m.name) }
+      if last_group.select { |m| m.name == partner.name }.length > 0
+        return false
+      end
+    end
+
+    return true
+  end
+
 end
