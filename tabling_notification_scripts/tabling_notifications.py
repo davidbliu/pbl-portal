@@ -8,7 +8,7 @@ class TablingNotifier:
     SUBSCRIBED_TO_TABLING = 'subscribed_to_tabling'
 
     # Change here to correct post url, make sure to include the 'id' string format
-    POST_URL = 'https://wilson.berkeley-pbl.com/pablo/send/{id}'
+    POST_URL = 'https://portal.berkeley-pbl.com/pablo/send/{id}'
     # Makge sure that DBNAME, USER, PASSWORD have single quotes
     DBNAME = "'v2_development'"
     USER = "'postgres'"
@@ -20,7 +20,7 @@ class TablingNotifier:
         self.member_emails = self.get_tabling_times_with_members()
 
     def send_fb_message(self, msg, email):
-        member_id = self.get_id_from_email(email, boolean_attribute=self.SUBSCRIBED_TO_TABLING)
+        member_id = self.get_id_from_email(email)
         if not member_id:
             return
 

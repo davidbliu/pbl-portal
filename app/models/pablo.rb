@@ -309,8 +309,22 @@ class Pablo
     return self.get_button_msg(title, buttons)
   end
 
+  def self.send_pablo_update_warning
+    message = {:text => "Hi we are going to pair you with someone new in one hour! If you'd like to tell your partner who you are do so now!"}
+    Pablo.get_active_bot_members.each do |bot|
+      bot.send_msg(message)
+    end
+  end
 
-
+  def self.send_pairing_all
+    Pablo.get_active_bot_members.each do |bot|
+      message1 = {:text => "Hey #{bot.get_alias}, I've paired you with a new secret friend in PBL. #{bot.pairing_info}"}
+      message2 = {:text => "If you want a new secret friend, just type skip."}
+      bot.send_msg(message1)
+      bot.send_msg(message2)
+    end
+  end
+  
   def self.send_pairing_info(bot)
     p1 = {:text => "Hey #{bot.get_alias}, I've paired you up with a secret friend in PBL who can help answer questions on my behalf. You'll known them by an alias only"}
     p2 = {:text => "Your name is #{bot.get_alias} and #{bot.pairing_info}"}
@@ -397,6 +411,81 @@ class Pablo
 
     else
       event.bot.send_msg({:text => 'oops i fudged'})
+    end
+  end
+
+  def self.reupdate_pairs
+    Rails.logger.debug('Reupdating randomized pairings')
+    members = Pablo.get_active_bot_members
+    members, pairs = Pablo.generate_pairs(members)
+    Pablo.assign_pairs(members, pairs)
+    Rails.logger.debug('Finished')
+  end
+
+  def self.assign_pairs(members, member_groups)
+    Rails.logger.debug('Assigning Pairs')
+    n = members.length
+    (0...n).each do |i|
+      BotMember.where(:id => members[i].id).update_all(:group_id => member_groups[i])
+    end
+  end
+
+  def self.get_active_bot_members
+    Rails.logger.debug('Getting active bot member')
+    members = []
+    Member.where(:is_active => true).each do |m|
+      member = BotMember.where(:name => m.name).take
+      if member != nil
+        members << member
+      end
+    end  
+    return members
+  end
+
+  def self.generate_pairs(members)
+    Rails.logger.debug('Generating pairs')
+    members = members.shuffle
+    member_groups = []
+    num_members = members.length
+    (0...num_members).each do |i| 
+      member_groups << i / 2
+    end
+    if num_members % 2 == 1
+      member_groups[-1] = member_groups[-2]
+    end
+    
+    if !check(members, member_groups)
+     members, member_groups = self.generate_pairs(members) 
+    end
+
+    return members, member_groups
+  end
+
+  def self.check(members, member_groups)
+    e = members.select { |m| m == nil }
+    num_members = members.length
+    (0...num_members/2).each do |i|
+      member = members[2*i]
+      partner = members[2*i+1]
+      last_group = members.select do |m|
+        m.group_id == member.group_id 
+      end
+      last_group.each { |m| Rails.logger.debug(m.name) }
+      if last_group.select { |m| m.name == partner.name }.length > 0
+        return false
+      end
+    end
+
+    return true
+  end
+
+  def self.update_tabling_all
+    Pablo.get_active_bot_members.each do |bot|
+      member = Member.where(:name => bot.name)
+      msg1 = {:text => "Hi tabling has just been updated!"}
+      msg2 = {:text => Pablo.tabling_string(member)}
+      bot.send_msg(msg1)
+      bot.send_msg(msg2)
     end
   end
 end
