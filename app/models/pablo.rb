@@ -309,8 +309,12 @@ class Pablo
     return self.get_button_msg(title, buttons)
   end
 
-
-
+  def self.send_pairing_all
+    BotMember.get_active_bot_members.each do |bot|
+      message = {:text => "Hey #{bot.get_alias}, I've paired you with a new secret friend in PBL. #{bot.pairing_info}"}
+    end
+  end
+  
   def self.send_pairing_info(bot)
     p1 = {:text => "Hey #{bot.get_alias}, I've paired you up with a secret friend in PBL who can help answer questions on my behalf. You'll known them by an alias only"}
     p2 = {:text => "Your name is #{bot.get_alias} and #{bot.pairing_info}"}

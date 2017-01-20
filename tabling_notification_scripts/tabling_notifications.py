@@ -8,7 +8,7 @@ class TablingNotifier:
     SUBSCRIBED_TO_TABLING = 'subscribed_to_tabling'
 
     # Change here to correct post url, make sure to include the 'id' string format
-    POST_URL = 'https://wilson.berkeley-pbl.com/pablo/send/{id}'
+    POST_URL = 'https://portal.berkeley-pbl.com/pablo/send/{id}'
     # Makge sure that DBNAME, USER, PASSWORD have single quotes
     DBNAME = "'v2_development'"
     USER = "'postgres'"
