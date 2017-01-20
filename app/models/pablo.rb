@@ -425,7 +425,7 @@ class Pablo
   def self.reupdate_pairs
     Rails.logger.debug('Reupdating randomized pairings')
     members = Pablo.get_active_bot_members
-    members, pairs = Pablo.generate_pairs(members, true)
+    members, pairs = Pablo.generate_pairs(members, false)
     Pablo.assign_pairs(members, pairs)
     Rails.logger.debug('Finished')
   end
