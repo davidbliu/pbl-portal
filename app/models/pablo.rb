@@ -481,7 +481,7 @@ class Pablo
 
   def self.update_tabling_all
     Pablo.get_active_bot_members.each do |bot|
-      member = Member.where(:name => bot.name)
+      member = Member.where(:name => bot.name).first
       msg1 = {:text => "Hi tabling has just been updated!"}
       msg2 = {:text => Pablo.tabling_string(member)}
       bot.send_msg(msg1)
