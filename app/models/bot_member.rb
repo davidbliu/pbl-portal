@@ -93,7 +93,7 @@ class BotMember < ActiveRecord::Base
 		self.last_group_id = curr_group_id
 		self.group_id = nil
 		self.save!
-		bot_members = BotMember.where(group_id: curr_group_id)
+		bot_members = Pablo.get_active_bot_members
 		if bot_members.length == 1
 			bot_members.each do |bm|
 				bm.last_group_id = curr_group_id
@@ -105,7 +105,7 @@ class BotMember < ActiveRecord::Base
 	end
 
 	def self.fix_unpaired
-		unpaired = BotMember.where(group_id: nil)
+		unpaired = Member.where(:is_active => true).map{|x| BotMember.where(:group_id => nil).where(:name => x.name)}.compact
 		done = []
 		pairings = []
 		unpaired.each do |bm1|
