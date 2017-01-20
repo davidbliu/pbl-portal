@@ -499,7 +499,7 @@ class Pablo
 
   def self.broadcast_all(msg)
     BotMember.all do |bot|
-      bot.send_msg(msg)
+      bot.send_msg({:text => msg})
     end
   end
 end
