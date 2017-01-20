@@ -86,7 +86,7 @@ class PabloController < ApplicationController
   end
 
   def broadcast_all
-    BotMember.each do |bot|
+    BotMember.all.each do |bot|
       bot.send_msg({:text => params[:msg]})
     end
     render nothing: true, status: 200
@@ -96,10 +96,8 @@ class PabloController < ApplicationController
     active_members = Member.where(:is_active => true)
     active_members.each do |member|
       begin
-        member = BotMember.where(:email => member.email).first
-        if member.subscribed_to_announcements?
-          member.send_msg({:text => 'ANNOUNCEMENT: '+params[:msg]})
-        end
+        member = BotMember.where(:name => member.name).first
+        member.send_msg({:text => 'ANNOUNCEMENT: '+params[:msg]})
       rescue Exception => e
         Rails.logger.debug(e)
         Rails.logger.debug('member email was not found')

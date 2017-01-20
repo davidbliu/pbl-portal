@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   # get '/hook' => 'pablo#hook'
   get '/pablo' => 'pablo#hook'
   get '/pablo/broadcast' => 'pablo#admin_broadcast'
-  post '/pablo/broadcast' => 'pablo#broadcast_all'
+  post '/pablo/broadcast' => 'pablo#broadcast'
 
   # authentication 
   get "/auth/google_oauth2/callback", to: "auth#google_callback"
