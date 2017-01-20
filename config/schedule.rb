@@ -29,3 +29,11 @@ end
 every :sunday, :at => '11 pm' do
 	rake "events:update"
 end
+
+every :day, :at '10 pm' do
+	rake "events:warn"
+end
+
+every :day, :at '11 pm' do
+	rake "events:update"
+end
