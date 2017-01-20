@@ -309,9 +309,19 @@ class Pablo
     return self.get_button_msg(title, buttons)
   end
 
+  def self.send_pablo_update_warning
+    message = {:text => "Hi we are going to pair you with someone new in one hour! If you'd like to tell your partner who you are do so now!"}
+    Pablo.get_active_bot_members.each do |bot|
+      bot.send_msg(message)
+    end
+  end
+
   def self.send_pairing_all
-    BotMember.get_active_bot_members.each do |bot|
-      message = {:text => "Hey #{bot.get_alias}, I've paired you with a new secret friend in PBL. #{bot.pairing_info}"}
+    Pablo.get_active_bot_members.each do |bot|
+      message1 = {:text => "Hey #{bot.get_alias}, I've paired you with a new secret friend in PBL. #{bot.pairing_info}"}
+      message2 = {:text => "If you want a new secret friend, just type skip."}
+      bot.send_msg(message1)
+      bot.send_msg(message2)
     end
   end
   
@@ -469,4 +479,13 @@ class Pablo
     return true
   end
 
+  def self.update_tabling_all
+    Pablo.get_active_bot_members.each do |bot|
+      member = Member.where(:name => bot.name)
+      msg1 = {:text => "Hi tabling has just been updated!"}
+      msg2 = {:text => Pablo.tabling_string(member)}
+      bot.send_msg(msg1)
+      bot.send_msg(msg2)
+    end
+  end
 end
