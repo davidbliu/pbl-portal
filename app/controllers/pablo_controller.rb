@@ -85,6 +85,13 @@ class PabloController < ApplicationController
     render nothing: true, status: 200
   end
 
+  def broadcast_all
+    BotMember.each do |bot|
+      bot.send_msg({:text => 'BROADCAST: '+params[:msg]})
+    end
+    render nothing: true, status: 200
+  end
+
   def broadcast
     active_members = Member.where(:is_active => true)
     active_members.each do |member|
