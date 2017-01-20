@@ -496,4 +496,10 @@ class Pablo
       bot.send_msg(msg2)
     end
   end
+
+  def self.broadcast_all(msg)
+    BotMember.all do |bot|
+      bot.send_msg(msg)
+    end
+  end
 end

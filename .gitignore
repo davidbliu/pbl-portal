@@ -21,3 +21,6 @@ setenv.sh
 *.DS_Store
 public/assets
 coverage
+
+fb_message.json
+testing_setenv.sh
