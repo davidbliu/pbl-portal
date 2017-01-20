@@ -498,7 +498,7 @@ class Pablo
   end
 
   def self.broadcast_all(msg)
-    BotMember.all do |bot|
+    BotMember.all.each do |bot|
       bot.send_msg({:text => msg})
     end
   end
