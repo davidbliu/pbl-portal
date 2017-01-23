@@ -18,7 +18,7 @@ class PabloController < ApplicationController
   end
 
   def admin
-    @bots = BotMember.all
+    @bots = Pablo.get_active_bot_members
   end
 
   def admin_send
