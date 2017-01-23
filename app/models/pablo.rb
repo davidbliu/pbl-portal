@@ -366,9 +366,9 @@ class Pablo
       event.bot.send_msg(self.joke_response)
     when :wiki
       event.bot.send_msg(self.wiki_response(event.msg))
-    # when :skip
-    #   event.bot.send_msg({:text => 'Finding you a new partner'})
-    #   event.bot.skip
+    when :skip
+      event.bot.send_msg({:text => 'Finding you a new partner'})
+      event.bot.skip
     when :pair
       bot_alias = event.msg.split('pair ')[1]
       if event.bot.pair(bot_alias)
@@ -500,6 +500,13 @@ class Pablo
   def self.broadcast_all(msg)
     BotMember.all.each do |bot|
       bot.send_msg({:text => msg})
+    end
+  end
+
+  def self.reset_aliases
+    BotMember.update_all(:alias => nil)
+    BotMember.all.each do |bot|
+      bot.generate_alias
     end
   end
 end
