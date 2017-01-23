@@ -506,7 +506,7 @@ class Pablo
   def self.reset_aliases
     BotMember.update_all(:alias => nil)
     BotMember.all.each do |bot|
-      if !Member.where(:is_active => true).where(:name => bot.name).nil?
+      if !Member.where(:is_active => true).where(:name => bot.name).empty?
         bot.generate_alias
       end
     end

@@ -111,10 +111,10 @@ class BotMember < ActiveRecord::Base
 		pairings = []
 		unpaired.each do |bm1|
 			unpaired.each do |bm2|
-				if bm1.sender_id != bm2.sender_id and
+				if bm1.id != bm2.id and
 					(bm1.last_group_id != bm2.last_group_id or bm1.last_group_id.nil? or bm2.last_group_id.nil?) and
-					done.exclude?(bm1.sender_id) and
-					done.exclude?(bm2.sender_id)
+					done.exclude?(bm1.id) and
+					done.exclude?(bm2.id)
 					
 					pairings << [bm1, bm2]
 					done << bm1.id
