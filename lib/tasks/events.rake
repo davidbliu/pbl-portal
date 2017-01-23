@@ -4,6 +4,7 @@ namespace :events do
 		TablingManager.gen_tabling
 		Pablo.update_tabling_all
 
+		Pablo.reset_aliases
 		Pablo.reupdate_pairs
 		Pablo.send_pairing_all
 	end
