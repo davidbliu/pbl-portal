@@ -508,6 +508,7 @@ class Pablo
     BotMember.all.each do |bot|
       if !Member.where(:is_active => true).where(:name => bot.name).nil?
         bot.generate_alias
+      end
     end
   end
 end

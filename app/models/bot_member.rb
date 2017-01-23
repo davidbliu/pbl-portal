@@ -59,6 +59,7 @@ class BotMember < ActiveRecord::Base
 	def generate_alias
 		if not self.alias
 			self.alias = self.random_alias
+                        self.save
 		end
 	end
 
