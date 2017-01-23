@@ -18,7 +18,7 @@ class PabloController < ApplicationController
   end
 
   def admin
-    @bots = Pablo.get_active_bot_members
+    @bots = BotMember.where.not(:group_id => nil)
   end
 
   def admin_send
