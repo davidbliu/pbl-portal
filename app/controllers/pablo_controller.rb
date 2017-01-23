@@ -18,7 +18,12 @@ class PabloController < ApplicationController
   end
 
   def admin
-    @bots = BotMember.where.not(:group_id => nil)
+    if Pablo.pablo_admin.exclude?(myEmail)
+      render :template => 'members/unauthorized'
+    else
+      @bots = BotMember.where.not(:group_id => nil)
+      render :template => 'pablo/admin'
+    end
   end
 
   def admin_send
