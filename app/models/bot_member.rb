@@ -87,13 +87,16 @@ class BotMember < ActiveRecord::Base
 	end
 
 	def skip
-		if self.group_id.nil?
+		if Pablo.get_active_bot_members.exclude?(self)
 			return
 		end
-		curr_group_id = self.group_id
-		self.last_group_id = curr_group_id
-		self.group_id = nil
-		self.save!
+
+		BotMember.where(:group_id => self.group_id).each do |bot|
+			bot.last_group_id = bot.group_id
+			bot.group_id = nil
+			bot.save!
+		end
+
 		bot_members = Pablo.get_active_bot_members
 		if bot_members.length == 1
 			bot_members.each do |bm|
@@ -106,7 +109,14 @@ class BotMember < ActiveRecord::Base
 	end
 
 	def self.fix_unpaired
-		unpaired = Member.where(:is_active => true).map{|x| BotMember.where(:group_id => nil).where(:name => x.name)}.compact
+		unpaired = []
+		Pablo.get_active_bot_members.each do |bot|
+			if BotMember.where(:group_id => bot.group_id).count == 1
+				bot.group_id = nil
+				unpaired << bot
+			end
+		end
+
 		done = []
 		pairings = []
 		unpaired.each do |bm1|
