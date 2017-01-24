@@ -7,6 +7,7 @@
 $('.send-btn').click(function(){
 	// alert($('#broadcast-text').val());
 	// $('#broadcast-text').val('');
+	$('.send-btn').replace_with('<p id="send-status">Sending</p>')
 	$.ajax({
 		url:'/pablo/broadcast',
 		type:'post',
@@ -15,6 +16,7 @@ $('.send-btn').click(function(){
 		},
 		success:function(data){
 			$('#broadcast-text').val('');
+			$('#send-status').replace_with('<p>Sent!</p>')
 		}
 	});
 })
