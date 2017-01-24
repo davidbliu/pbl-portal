@@ -2,7 +2,7 @@ class PabloController < ApplicationController
   skip_before_filter :is_signed_in
 
   def admin_broadcast
-    if Pablo.pablo_admin.exclude?(myEmail)
+    if Pablo.pablo_admin.exclude?(myEmail) and Member.where(:is_active => true).where(:position => 'exec').pluck(:email).exclude?(myEmail) and Member.where(:is_active => true).where(:position => 'chair').pluck(:email).exclude?(myEmail)
       render :template => 'members/unauthorized'
     else
       render :template => 'pablo/broadcast'
@@ -18,7 +18,7 @@ class PabloController < ApplicationController
   end
 
   def admin
-    if Pablo.pablo_admin.exclude?(myEmail)
+    if myEmail != 'david.yan@berkeley.edu'
       render :template => 'members/unauthorized'
     else
       @bots = BotMember.where.not(:group_id => nil)
