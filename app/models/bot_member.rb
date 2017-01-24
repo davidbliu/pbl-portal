@@ -111,7 +111,7 @@ class BotMember < ActiveRecord::Base
 	def self.fix_unpaired
 		unpaired = []
 		Pablo.get_active_bot_members.each do |bot|
-			if BotMember.where(:group_id => bot.group_id).count == 1
+			if bot.group_id == nil or BotMember.where(:group_id => bot.group_id).count == 1
 				bot.group_id = nil
 				unpaired << bot
 			end
