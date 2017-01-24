@@ -33,6 +33,7 @@ namespace :sp17_officers do
 	      m.phone = phone
 	      m.major = major
 	      m.is_active = true
+	      m.save!
 	  end
 	end
 end
