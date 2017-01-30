@@ -7,7 +7,7 @@ class FBMessage
 		generate: [/^generate$/],
 		blog: [/^blog$/, /^posts$/, /^blogposts$/],
 		events: [/^events$/, /^cal$/, /^c$/, /^calendar$/],
-		go: [/^go (.*)$/],
+		# go: [/^go (.*)$/],
 		help: [/^help$/],
 		points: [/^points$/],
 		more_blog: [/^more blog$/],

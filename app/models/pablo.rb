@@ -345,8 +345,8 @@ class Pablo
     # member = BotMember.get_member_from_id(event.sender_id)
     member = event.member
     case event.pablo_method
-    when :go
-      event.bot.send_msg(self.go_response(member, event.msg))
+    # when :go
+    #   event.bot.send_msg(self.go_response(member, event.msg))
     when :tabling
       event.bot.send_msg(self.tabling_response(member))
     when :points
