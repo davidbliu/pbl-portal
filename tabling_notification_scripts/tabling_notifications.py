@@ -60,13 +60,13 @@ class TablingNotifier:
                 members.append(s.strip())
         return members
 
-    def notify_time_slots(self):
-        self.member_emails = self.get_tabling_times_with_members()
-        cur = self.conn.cursor()
-        for time in self.member_emails.keys():
-            time_as_string = self.time_converter.get_time_string(time)
-            for email in self.member_emails[time]:
-                self.send_fb_message("Hi {0}, your tabling slot this week is {1}".format(member[0],time_as_string), email)  
+#    def notify_time_slots(self):
+#        self.member_emails = self.get_tabling_times_with_members()
+#        cur = self.conn.cursor()
+#        for time in self.member_emails.keys():
+#            time_as_string = self.time_converter.get_time_string(time)
+#            for email in self.member_emails[time]:
+#                self.send_fb_message("Hi {0}, your tabling slot this week is {1}".format(member[0],time_as_string), email)  
 
     def get_id_from_email(self, email, boolean_attribute=''): 
         cur = self.conn.cursor()
@@ -84,14 +84,15 @@ class TablingNotifier:
         return fetch[-1][0]
 
     def update(self):
-        new_member_emails = self.get_tabling_times_with_members()
-        for time in new_member_emails:
-            changed_members = [m for m in new_member_emails[time] if m not in self.member_emails[time]]
-            for member in changed_members:
-                if not self.time_converter.has_passed(time):
-                    time_str = self.time_converter.get_time_string(time)
-                    self.send_fb_message("Your tabling slot has been changed to {}".format(time_str), member)
-        self.member_emails = new_member_emails
+        self.member_emails = self.get_tabling_times_with_members()
+#        new_member_emails = self.get_tabling_times_with_members()
+#        for time in new_member_emails:
+#            changed_members = [m for m in new_member_emails[time] if m not in self.member_emails[time]]
+#            for member in changed_members:
+#                if not self.time_converter.has_passed(time):
+#                    time_str = self.time_converter.get_time_string(time)
+#                    self.send_fb_message("Your tabling slot has been changed to {}".format(time_str), member)
+#        self.member_emails = new_member_emails
         
     def remind_time_slot(self, time):
         cur = self.conn.cursor()

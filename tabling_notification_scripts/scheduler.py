@@ -9,8 +9,8 @@ class JobManager:
         self.notifier = TablingNotifier()
         self.sched = BlockingScheduler(timezone=self.LOCAL_TIMEZONE)
         self.add_reminder_jobs()
-        self.add_tabling_notification_job()
-        self.add_update_job()
+#        self.add_tabling_notification_job()
+#        self.add_update_job()
 
     # Adds cron jobs for each time slot
     def add_reminder_jobs(self):
