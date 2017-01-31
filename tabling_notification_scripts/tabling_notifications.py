@@ -95,6 +95,7 @@ class TablingNotifier:
 #        self.member_emails = new_member_emails
         
     def remind_time_slot(self, time):
+        self.update()
         cur = self.conn.cursor()
         for email in self.member_emails[time]:
             hour_str = self.time_converter.get_hour(time)

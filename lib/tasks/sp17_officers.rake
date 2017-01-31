@@ -13,6 +13,7 @@ namespace :sp17_officers do
 	      phone = row['Phone Number']
 	      major = row['1st Major']
 	      returning = true
+              puts "name #{name} committee #{committee} position #{position}"
 	      row_string = "#{name},#{committee},#{position},#{phone},#{major}"
 	      qm = Member.where(email: email)
 	      if qm.length > 0
@@ -33,7 +34,9 @@ namespace :sp17_officers do
 	      m.phone = phone
 	      m.major = major
 	      m.is_active = true
-	      m.save!
+              puts "#{m.name},#{m.committee},#{m.position}"
+              puts m.save
+              puts Member.find(m.id).committee
 	  end
 	end
 end

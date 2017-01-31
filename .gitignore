@@ -24,3 +24,5 @@ coverage
 
 fb_message.json
 testing_setenv.sh
+nohup.out
+/tabling_notification_scripts/__pycache__/
