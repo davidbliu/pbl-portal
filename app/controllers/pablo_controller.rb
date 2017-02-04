@@ -83,9 +83,9 @@ class PabloController < ApplicationController
       #       event.bot.send_msg(Pablo.joke_response)
       #     end
       #   end
-        event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
-        event.bot.send_msg(Pablo.joke_response)
-      end
+      # end
+      event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
+      event.bot.send_msg(Pablo.joke_response)
     end
     render nothing: true, status: 200
   end
