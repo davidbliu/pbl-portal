@@ -60,32 +60,32 @@ class PabloController < ApplicationController
     messaging_events.each do |event|
       event = FBMessage.new(event)
       event.bot.log(event.msg)
-      if event.is_delivery?
-      elsif (event.seq.nil? and not event.is_postback?) or seen_seq.include?(event.seq)
-      elsif event.member == nil
-        puts "Pablo doesnt recognize #{event.sender_id}"
-      elsif event.is_pablo_command?
-        seen_seq << event.seq
-        begin
-          Pablo.execute(event)
-        rescue
-          event.bot.send_msg({:text => "error"})
-        end
-      else
-        seen_seq << event.seq
-        if event.forwarded_message
-          if event.bot.group_id
-            event.bot.group.each do |bot|
-              bot.send_msg(event.forwarded_message)
-            end
-          else
-            event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
-            event.bot.send_msg(Pablo.joke_response)
-          end
-        end
-        # event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
-        # event.bot.send_msg(Pablo.joke_response)
-      end
+      # if event.is_delivery?
+      # elsif (event.seq.nil? and not event.is_postback?) or seen_seq.include?(event.seq)
+      # elsif event.member == nil
+      #   puts "Pablo doesnt recognize #{event.sender_id}"
+      # elsif event.is_pablo_command?
+      #   seen_seq << event.seq
+      #   begin
+      #     Pablo.execute(event)
+      #   rescue
+      #     event.bot.send_msg({:text => "error"})
+      #   end
+      # else
+      #   seen_seq << event.seq
+      #   if event.forwarded_message
+      #     if event.bot.group_id
+      #       event.bot.group.each do |bot|
+      #         bot.send_msg(event.forwarded_message)
+      #       end
+      #     else
+      #       event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
+      #       event.bot.send_msg(Pablo.joke_response)
+      #     end
+      #   end
+      # end
+      # event.bot.send_msg({:text => 'Looks like theres no one here...how about a joke'})
+      # event.bot.send_msg(Pablo.joke_response)
     end
     render nothing: true, status: 200
   end
