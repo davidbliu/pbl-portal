@@ -9,7 +9,7 @@ class Member < ActiveRecord::Base
   end
 
   def self.committees
-    ['CS', 'CO', 'FI', 'HT', 'MK', 'GM', 'CD', 'DS', 'SO', 'WD', 'IN', 'EX']
+    ['CS', 'CO', 'FI', 'HT', 'MK', 'DS', 'TC', 'IN', 'EX']
   end
 
   def self.david
@@ -70,7 +70,7 @@ class Member < ActiveRecord::Base
   end
 
   def self.cms
-    return Member.active.where('position = ?', 'cm')
+    return Member.active.where('position = ?', 'CM')
         .where.not(committee:'GM')
   end
 

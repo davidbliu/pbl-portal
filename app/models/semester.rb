@@ -1,6 +1,6 @@
 class Semester
 	def self.current_semester
-		'Fall 2016'
+		'Spring 2017'
 	end
 
 	def self.past_semesters
