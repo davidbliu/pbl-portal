@@ -15,7 +15,7 @@ class TablingNotifier:
     PASSWORD = "'password'"
 
     def __init__(self):
-        self.conn = self.connect_to_db() 
+#        self.conn = self.connect_to_db() 
         self.time_converter = TimeConverter()
         self.member_emails = self.get_tabling_times_with_members()
 
@@ -29,6 +29,7 @@ class TablingNotifier:
         response = requests.post(self.POST_URL.format(id=member_id), json=data)
         if response.status_code != 200:
             print('Error {0}, failed to send message: {1}, to sender {2}, email {3}'.format(response.status_code, msg, member_id, email))
+        print("Successfully sent message '{}' to {}".format(msg, email))
         return response
 
     def connect_to_db(self):
@@ -39,7 +40,8 @@ class TablingNotifier:
         return conn
 
     def get_tabling_times_with_members(self):
-        cur = self.conn.cursor()
+        conn = self.connect_to_db()
+        cur = conn.cursor()
         cur.execute("""select time, member_emails from tabling_slots""")
         rows = cur.fetchall()
 
@@ -48,7 +50,8 @@ class TablingNotifier:
             time = row[0] # retrieves time as an integer
             member_emails = row[1] # retrieves emails as a string of emails
             time_slot_members[time] = self.parse_emails(member_emails)
-            
+
+        conn.close()
         return time_slot_members
 
     def parse_emails(self, members_str):
@@ -69,7 +72,8 @@ class TablingNotifier:
 #                self.send_fb_message("Hi {0}, your tabling slot this week is {1}".format(member[0],time_as_string), email)  
 
     def get_id_from_email(self, email, boolean_attribute=''): 
-        cur = self.conn.cursor()
+        conn = self.connect_to_db()
+        cur = conn.cursor()
         cur.execute("""select name from members where email = '{}'""".format(email))
         member = cur.fetchall()[0]
 
@@ -77,10 +81,12 @@ class TablingNotifier:
             cur.execute("""select {} from bot_members where name = '{}'""".format(boolean_attribute, member[0]))
             fetch = cur.fetchall()
             if not fetch or not fetch[-1][0]:
+                conn.close()
                 return None
 
         cur.execute("""select id from bot_members where name = '{}'""".format(member[0]))
         fetch = cur.fetchall()
+        conn.close()
         return fetch[-1][0]
 
     def update(self):
@@ -96,7 +102,6 @@ class TablingNotifier:
         
     def remind_time_slot(self, time):
         self.update()
-        cur = self.conn.cursor()
         for email in self.member_emails[time]:
             hour_str = self.time_converter.get_hour(time)
             self.send_fb_message("Just a reminder that your tabling at {} starts in an hour".format(hour_str), email)
