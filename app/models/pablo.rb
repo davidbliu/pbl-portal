@@ -456,7 +456,7 @@ class Pablo
     Rails.logger.debug('Getting active bot member')
     members = []
     Member.where(:is_active => true).each do |m|
-      member = BotMember.where(:name => m.name).take
+      member = BotMember.where(:name => m.name).where(:participating => true).take
       if member != nil
         members << member
       end

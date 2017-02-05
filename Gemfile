@@ -81,3 +81,4 @@ gem 'coveralls', require: false
 
 #task scheduler
 gem 'whenever', :require => false
+gem 'yaml_db'
