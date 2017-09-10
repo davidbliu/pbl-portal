@@ -141,6 +141,10 @@ class GoController < ApplicationController
 			description: params[:desc],
 			member_email: myEmail,
 		)
+                # TODO: add default groups
+                if myEmail == 'daliu@linkedin.com' or myEmail == 'davidbliu@gmail.com'
+                  @golink.update(groups: Group.where(name: 'David'))
+                end
 	end
 
 	def lookup
