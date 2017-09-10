@@ -40,7 +40,7 @@ class Post < ActiveRecord::Base
 		email_dict = {}
 		email_dict['GMs'] = 'berkeley-pbl-spring-2016-general-members@googlegroups.com'
 		email_dict['CMs'] ='berkeley-pbl-spring-2016-committee-members@googlegroups.com'
-		email_dict['CMs_and_Officers'] = 'berkeleypblcommittees@lists.berkeley.edu'
+		email_dict['CMs_and_Officers'] = 'berkeleypblmembers@lists.berkeley.edu'
 		email_dict['Officers'] = 'berkeleypblofficers@lists.berkeley.edu'
 		email_dict['Execs'] = 'berkeleypblexecs@lists.berkeley.edu'
 		email_dict['David'] =  'davidbliu@gmail.com'

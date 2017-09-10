@@ -27,6 +27,8 @@ Rails.application.routes.draw do
 
   # pbl links
   get ':key/go' => 'go#redirect'
+  get ':key/go/redirect' => 'go#redirect'
+  get 'go/redirect/:key' => 'go#redirect'
   get 'go' => 'go#index'
   get 'go/menu' => 'go#index'
   get 'go/ajax_scroll/:page' => 'go#ajax_scroll'

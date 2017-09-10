@@ -1,9 +1,9 @@
 class Semester
 	def self.current_semester
-		'Spring 2017'
+		'Fall 2017'
 	end
 
 	def self.past_semesters
-		['Fall 2015', 'Spring 2016', 'Fall 2016']
+		['Fall 2015', 'Spring 2016', 'Fall 2016', 'Spring 2017']
 	end
 end
