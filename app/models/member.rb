@@ -21,7 +21,7 @@ class Member < ActiveRecord::Base
   end
 
   def is_admin?
-    self.name == 'David Liu' or self.name == 'Min Tseng' or self.name == 'Alex Park'
+    self.name == 'David Liu' or self.name == 'Min Tseng' or self.name == 'Alex Park' or self.name == 'Shalandy Zhang'
   end
 
   def is_officer?
