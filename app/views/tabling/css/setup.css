@@ -1,0 +1,38 @@
+/* ~~~~~~~~~~~~~~~~~~ Main Styles for Setup ~~~~~~~~~~~~~~~~~~~~~*/
+body {
+	font-family: Noto-sans;
+	font-size: 18px;
+	background-color: #d1d1d1;
+}
+
+.main {
+	width: 100%;
+	margin: 0 auto;
+}
+
+.wrapper {
+	width: 40%;
+	margin-left: 30%;
+	margin-top: 5%;
+	background-color: #fff;
+	padding: 5px 5px 5px 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.title {
+	font-family: Montserrat-Medium;
+	font-size: 24px;
+}
+
+@media screen and (max-width: 760px) {
+	body {
+		font-size: 18px;
+	}
+	.wrapper {
+		width: 100%;
+		margin-left: 0%;
+		margin-top: 0%;
+		padding-right: 5%;
+		height: 100%;
+	}
+}
